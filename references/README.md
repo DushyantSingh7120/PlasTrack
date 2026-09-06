@@ -35,3 +35,14 @@ Contains live code samples for reference during implementation:
 - **`background-bottom.png`**: Gradient/mesh backdrop asset.
 - **`pricing-menu.png`**: UI reference for card and navigation menus.
 - **`application-performance-monitoring-error-tracking-software-sentry.palette.Woblo.png`**: Visual color palette swatch card.
+
+---
+
+## 4. `references/external/` (Integrated Toolkits & Repositories)
+- **`ui-ux-pro-max-skill/`**: Comprehensive design intelligence repository (192 reasoning rules, 79 searchable UI styles, color palettes, motion scales, and chart standards from uupm.cc). Skills also loaded into `.agents/skills/`.
+- **`awesome-design-md/`**: Curated collection of production-grade `design.md` files (Linear, Raycast, Supabase, Vercel, Sentry, Stripe) aligning with Google Stitch design systems.
+- **`Scrapegraph-ai/`**: AI-powered Python web scraping library using direct graph LLM pipelines for extracting real academic/government plastic data (CPCB, UNEP, NOAA).
+- **`bigset-oss/`**: Scalable structured web data extraction toolkit for compiling large-scale environmental datasets.
+- **`vaul/`**: Emil Kowalski's iOS-style, physics-based gesture drawer / bottom sheet component (installed via npm as `vaul`).
+- **`sonner/`**: Emil Kowalski's high-polish, stacked toast notification system (installed via npm as `sonner`).
+
