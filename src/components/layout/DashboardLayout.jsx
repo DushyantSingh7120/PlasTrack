@@ -81,16 +81,14 @@ export default function DashboardLayout({ children }) {
   const headerMeta = getHeaderMeta();
 
   return (
-    <div className="flex h-screen w-full bg-background font-body text-foreground overflow-hidden selection:bg-primary selection:text-white">
-      {/* Immersive Background overlay with Grafana Mesh blended to #e5e4d8 */}
-      <div className="absolute inset-0 z-0 bg-mesh-top opacity-70 pointer-events-none" />
+    <div className="flex h-screen w-full bg-transparent font-body text-foreground overflow-hidden selection:bg-primary selection:text-white">
 
       {/* Sidebar - PlastiTrack Observability Console Style */}
       <motion.aside
         initial={{ x: -300 }}
         animate={{ x: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="z-10 w-64 lg:w-72 h-full flex flex-col border-r border-[#cfcdc1] bg-[#e2e1d5]/85 backdrop-blur-xl shadow-xs shrink-0"
+        className="z-10 w-64 lg:w-72 h-full flex flex-col border-r border-[#cfcdc1]/60 bg-white/40 backdrop-blur-2xl shadow-xs shrink-0"
       >
         <div className="p-5 border-b border-[#cfcdc1]/60 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
@@ -177,7 +175,7 @@ export default function DashboardLayout({ children }) {
       {/* Main Content Area */}
       <main className="z-10 flex-1 flex flex-col h-full overflow-hidden min-w-0">
         {/* Header */}
-        <header className="h-16 border-b border-[#cfcdc1]/60 flex items-center justify-between px-8 bg-white/70 backdrop-blur-xl shrink-0">
+        <header className="h-16 border-b border-[#cfcdc1]/60 flex items-center justify-between px-8 bg-white/40 backdrop-blur-2xl shrink-0">
           <div className="flex items-center gap-4 min-w-0">
             <button className="lg:hidden p-2 text-stone-600 hover:bg-black/5 rounded-lg">
               <Menu size={20} />
