@@ -1,54 +1,75 @@
 import React from 'react';
-import { Menu } from 'lucide-react';
+import { Menu, Activity, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Navbar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/85 backdrop-blur-md transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z"></path>
-              </svg>
+          {/* Logo & Telemetry Indicator */}
+          <div className="flex items-center gap-4">
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
+                <Activity size={20} className="text-white" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold font-heading tracking-tight text-foreground leading-none">
+                  PlastiTrack
+                </span>
+                <span className="font-mono text-[10px] text-muted-foreground tracking-wider uppercase">
+                  OBSERVABILITY
+                </span>
+              </div>
+            </Link>
+
+            {/* Live Telemetry Ping Badge (New Relic style) */}
+            <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-md bg-black/5 border border-border text-[11px] font-mono text-muted-foreground">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+              </span>
+              <span>TELEMETRY: ACTIVE</span>
             </div>
-            <span className="text-xl font-bold font-heading text-foreground">
-              PlastiTrack
-            </span>
           </div>
 
           {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center gap-6 sm:gap-8">
-            <a href="#features" className="text-muted-foreground hover:text-primary transition-colors cursor-pointer font-medium">
+          <div className="hidden md:flex items-center gap-7">
+            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer font-medium">
               Features
             </a>
-            <a href="#calculator" className="text-muted-foreground hover:text-primary transition-colors cursor-pointer font-medium">
+            <a href="#telemetry" className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer font-medium">
+              Telemetry
+            </a>
+            <a href="#calculator" className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer font-medium">
               Calculator
             </a>
-            <a href="#impact" className="text-muted-foreground hover:text-primary transition-colors cursor-pointer font-medium">
+            <a href="#impact" className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer font-medium">
               Impact
-            </a>
-            <a href="#certifications" className="text-muted-foreground hover:text-primary transition-colors cursor-pointer font-medium">
-              Certifications
             </a>
           </div>
 
           {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-4">
-            <Link to="/dashboard" className="text-muted-foreground hover:text-primary font-medium transition-colors cursor-pointer">
-              Log in
+          <div className="hidden md:flex items-center gap-3">
+            <Link 
+              to="/dashboard" 
+              className="text-sm text-muted-foreground hover:text-foreground font-medium px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+            >
+              Sign In
             </Link>
-            <Link to="/dashboard" className="btn-primary text-sm py-2.5 px-5">
-              Get Started Free
+            <Link 
+              to="/dashboard" 
+              className="px-4 py-2 rounded-lg bg-primary text-white font-mono text-xs font-semibold uppercase tracking-wider hover:bg-black/90 transition-all shadow-sm flex items-center gap-2"
+            >
+              <ShieldCheck size={15} />
+              <span>Launch Console</span>
             </Link>
           </div>
 
           {/* Mobile Menu Toggle */}
-          <button className="md:hidden p-2 text-foreground cursor-pointer">
-            <Menu size={24} />
+          <button className="md:hidden p-2 text-foreground cursor-pointer rounded-lg hover:bg-black/5">
+            <Menu size={22} />
           </button>
         </div>
       </div>

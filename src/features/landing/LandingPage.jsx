@@ -1,211 +1,356 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../components/layout/Navbar';
+import { Activity, Cpu, ShieldCheck, Database, BarChart3, ArrowUpRight, CheckCircle2, Layers } from 'lucide-react';
 
 export default function LandingPage() {
   return (
-    <div className="bg-background min-h-screen font-sans text-foreground">
+    <div className="bg-background min-h-screen font-body text-foreground selection:bg-primary selection:text-white">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center pt-16 overflow-hidden bg-mesh-bottom">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-20 right-10 w-[400px] h-[400px] rounded-full bg-leaf/10 blur-3xl"></div>
-          <div className="absolute bottom-20 left-10 w-[300px] h-[300px] rounded-full bg-sky/10 blur-3xl"></div>
-          <svg className="leaf-decoration absolute top-32 right-20 w-24 h-24 text-primary opacity-10" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z"></path>
-          </svg>
+      {/* Infrastructure Telemetry Ticker Ribbon */}
+      <div className="pt-16 border-b border-border bg-black/[0.02] text-xs font-mono text-muted-foreground overflow-x-auto">
+        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-8 whitespace-nowrap">
+          <div className="flex items-center gap-6">
+            <span className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+              <span className="font-semibold text-foreground">CLUSTER: GLOBAL-OCEAN-01</span>
+            </span>
+            <span>INGESTION: 1.2M OPS/SEC</span>
+            <span>DATA INTEGRITY: 99.98%</span>
+            <span>SCOPES: I, II &amp; SUPPLY CHAIN</span>
+          </div>
+          <div className="hidden sm:flex items-center gap-4 text-[11px]">
+            <span className="text-foreground font-semibold">STANDARDS: ISO 14064 // GRI // GHG PROTOCOL</span>
+          </div>
         </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
-          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
-            {/* Left Content */}
-            <div>
-              <div className="badge-eco mb-6">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
-                </svg>
-                <span>Global Certified Platform</span>
-              </div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight font-heading">
-                Track Your <br/>
-                <span className="gradient-text-eco">Plastic Footprint</span>
-              </h1>
-              <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-xl">
-                Measure, reduce, and offset your environmental plastic impact. Join thousands of users committed to a sustainable, plastic-free future.
-              </p>
+      </div>
+
+      {/* Hero Section */}
+      <section className="relative pt-12 pb-24 md:py-24 overflow-hidden bg-mesh-bottom">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Left Column: New Relic style Headline & Narrative */}
+            <div className="lg:col-span-7 space-y-8">
               
-              <div className="flex flex-col sm:flex-row gap-4 mb-12">
-                <Link to="/dashboard" className="btn-primary flex items-center justify-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                  </svg>
-                  Calculate Your Impact
-                </Link>
-                <Link to="/dashboard" className="btn-secondary">View Demo</Link>
+              {/* Infrastructure Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 border border-border text-xs font-mono tracking-wide text-foreground shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+                <span>ENVIRONMENTAL OBSERVABILITY PLATFORM</span>
               </div>
 
-              <div className="flex flex-wrap gap-6">
-                {[
-                  { text: 'Free to start' },
-                  { text: 'Global ISO compliant' },
-                  { text: '10,000+ communities' }
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-muted-foreground">
-                    <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
-                    </svg>
-                    <span>{item.text}</span>
-                  </div>
-                ))}
+              {/* Mona Sans Hero Headline */}
+              <h1 className="text-4xl sm:text-6xl lg:text-[68px] font-bold font-heading tracking-tight text-foreground leading-[1.08]">
+                See your plastic impact. <br />
+                <span className="text-primary underline decoration-emerald-500/30 decoration-wavy">
+                  Trace every gram.
+                </span>
+              </h1>
+
+              {/* Inter Body Copy */}
+              <p className="text-lg sm:text-xl text-muted-foreground font-body max-w-xl leading-relaxed">
+                The all-in-one observability system for single-use plastic telemetry, real-time lifecycle tracking, and verified reduction analytics.
+              </p>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+                <Link 
+                  to="/dashboard" 
+                  className="px-7 py-3.5 rounded-xl bg-primary text-white font-mono text-sm font-semibold tracking-wider uppercase hover:bg-black transition-all shadow-md flex items-center justify-center gap-2.5 group"
+                >
+                  <span>Start Live Telemetry</span>
+                  <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </Link>
+                <a 
+                  href="#telemetry" 
+                  className="px-6 py-3.5 rounded-xl bg-white/80 border border-border text-foreground font-medium text-sm hover:bg-white hover:border-foreground/30 transition-all text-center"
+                >
+                  Explore Infrastructure Demo
+                </a>
               </div>
+
+              {/* Proof Points */}
+              <div className="pt-4 border-t border-border/80 flex flex-wrap gap-8 text-xs font-mono text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-emerald-600" />
+                  <span>Zero-config ingestion</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-emerald-600" />
+                  <span>SOC2 &amp; ISO compliant</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-emerald-600" />
+                  <span>Real-time emission alerts</span>
+                </div>
+              </div>
+
             </div>
 
-            {/* Right Content / Calculator UI Widget */}
-            <div className="relative mt-12 lg:mt-0">
-              <div className="organic-card p-8 w-full max-w-md mx-auto shadow-[0_20px_60px_rgba(0,0,0,0.08)] relative z-10 block !top-auto !left-auto">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-semibold text-foreground font-heading text-xl">Your Plastic Footprint</h3>
-                  <span className="badge-eco !text-xs">Live Data</span>
-                </div>
+            {/* Right Column: New Relic Telemetry Console Widget */}
+            <div className="lg:col-span-5">
+              <div className="infra-card p-6 md:p-8 bg-white/95 backdrop-blur-xl border border-border shadow-xl relative">
                 
-                <div className="text-center mb-8">
+                {/* Console Window Header */}
+                <div className="flex items-center justify-between pb-5 border-b border-border text-xs font-mono text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <span className="h-3 w-3 rounded-full bg-red-400/80"></span>
+                    <span className="h-3 w-3 rounded-full bg-amber-400/80"></span>
+                    <span className="h-3 w-3 rounded-full bg-emerald-400/80"></span>
+                    <span className="ml-2 font-medium text-foreground">telemetry.live.dashboard</span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold text-[10px]">
+                    LIVE SYNC
+                  </span>
+                </div>
+
+                {/* Telemetry Gauge Display */}
+                <div className="py-6 text-center">
                   <div className="relative inline-block">
-                    <svg className="w-48 h-48" viewBox="0 0 120 120">
-                      <circle cx="60" cy="60" r="54" fill="none" stroke="var(--color-border)" strokeWidth="8"></circle>
-                      <circle cx="60" cy="60" r="54" fill="none" stroke="url(#gradient)" strokeWidth="8" strokeLinecap="round" strokeDasharray="339.3" strokeDashoffset="85" transform="rotate(-90 60 60)"></circle>
-                      <defs>
-                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="var(--color-primary)"></stop>
-                          <stop offset="100%" stopColor="var(--color-leaf)"></stop>
-                        </linearGradient>
-                      </defs>
+                    <svg className="w-44 h-44" viewBox="0 0 120 120">
+                      <circle cx="60" cy="60" r="52" fill="none" stroke="var(--color-border-subtle)" strokeWidth="8"></circle>
+                      <circle 
+                        cx="60" 
+                        cy="60" 
+                        r="52" 
+                        fill="none" 
+                        stroke="#1b4332" 
+                        strokeWidth="8" 
+                        strokeLinecap="round" 
+                        strokeDasharray="326.7" 
+                        strokeDashoffset="98" 
+                        transform="rotate(-90 60 60)"
+                      ></circle>
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span className="text-4xl font-bold text-foreground">12.4</span>
-                      <span className="text-sm text-muted-foreground mt-1">kg / month</span>
+                      <span className="text-3xl font-bold font-mono text-foreground tracking-tight">12.4</span>
+                      <span className="text-xs font-mono text-muted-foreground uppercase">KG / CYCLE</span>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-4 font-medium">35% below national average</p>
+                  <div className="mt-2 text-xs font-mono text-muted-foreground">
+                    STREAM HEALTH: <span className="text-emerald-700 font-semibold">98.4% NOMINAL</span>
+                  </div>
                 </div>
 
-                <div className="space-y-4">
-                  <ProgressBar label="Single-use (PET)" value="4.8kg" percent="33%" color="#228b22" />
-                  <ProgressBar label="Packaging (HDPE)" value="3.6kg" percent="25%" color="#4caf50" />
-                  <ProgressBar label="Household (PP)" value="4.0kg" percent="42%" color="#87ceeb" />
+                {/* Telemetry Metrics Breakdown */}
+                <div className="space-y-3.5 pt-2 border-t border-border font-mono text-xs">
+                  <TelemetryRow label="PET // SINGLE-USE POLYMER" value="4.8 kg" pct="38%" barColor="bg-primary" />
+                  <TelemetryRow label="HDPE // PACKAGING INGESTION" value="3.6 kg" pct="29%" barColor="bg-leaf" />
+                  <TelemetryRow label="PP // INDUSTRIAL CONSUMPTION" value="4.0 kg" pct="33%" barColor="bg-sky" />
                 </div>
+
+                {/* Console Footer */}
+                <div className="mt-5 pt-4 border-t border-border flex items-center justify-between text-[11px] font-mono text-muted-foreground">
+                  <span>LAST REFRESH: 4s AGO</span>
+                  <span className="text-primary font-medium hover:underline cursor-pointer">
+                    VIEW RAW LOGS &rarr;
+                  </span>
+                </div>
+
               </div>
-
-              {/* Floating Widgets */}
-              <div className="absolute -top-6 -left-6 organic-card p-4 hidden lg:flex items-center gap-3 z-20 !block !top-[-24px] !left-[-24px] shadow-lg">
-                <div className="w-12 h-12 rounded-full bg-leaf flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <div className="font-bold text-lg text-foreground">-15%</div>
-                  <div className="text-xs text-muted-foreground">vs last month</div>
-                </div>
-              </div>
-
-              <div className="absolute -bottom-6 -right-6 organic-card p-4 hidden lg:flex items-center gap-3 z-20 !block !bottom-[-24px] !right-[-24px] shadow-lg">
-                <div className="w-12 h-12 rounded-full bg-sun flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <div className="font-bold text-lg text-foreground">100%</div>
-                  <div className="text-xs text-muted-foreground">Recycled Material</div>
-                </div>
-              </div>
-
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-24 bg-background-alt">
+      {/* Features & Architecture Grid */}
+      <section id="features" className="py-20 border-t border-border bg-background-alt/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="badge-eco mx-auto mb-4"><span>Features</span></div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 font-heading">
-              Everything You Need for <br/>
-              <span className="gradient-text-eco">Sustainability</span>
+          
+          <div className="max-w-3xl mb-14">
+            <span className="font-mono text-xs text-primary font-semibold uppercase tracking-widest">
+              [ 01 // OBSERVABILITY MODULES ]
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-heading text-foreground mt-2 tracking-tight">
+              Enterprise Telemetry Built for Sustainability Teams
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              A complete platform to measure, manage, and improve your environmental impact.
+            <p className="text-base text-muted-foreground font-body mt-3">
+              Full-stack environmental monitoring and data analytics that connects every department, supply chain partner, and audit workflow.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <FeatureCard 
-              title="Plastic Tracking" 
-              desc="Automatically measure your plastic consumption across all categories with AI-powered data."
-              color="#228b22"
+          <div className="grid md:grid-cols-3 gap-6">
+            <ModuleCard 
+              code="MOD_01"
+              icon={<Cpu size={22} className="text-primary" />}
+              title="Real-Time Data Ingestion"
+              desc="Connect ERP, procurement orders, and waste logistics via automated webhook agents with sub-second processing."
             />
-            <FeatureCard 
-              title="Reduction Planning" 
-              desc="Get personalized recommendations to reduce your environmental impact based on your data."
-              color="#4caf50"
+            <ModuleCard 
+              code="MOD_02"
+              icon={<BarChart3 size={22} className="text-primary" />}
+              title="Categorical Telemetry"
+              desc="Instant segregation by polymer chemistry: PET, HDPE, LDPE, PP, PS, and composite multi-layer packaging."
             />
-            <FeatureCard 
-              title="Ocean Offsetting" 
-              desc="Invest in verified ocean cleanup projects worldwide to neutralize your remaining usage."
-              color="#87ceeb"
+            <ModuleCard 
+              code="MOD_03"
+              icon={<ShieldCheck size={22} className="text-primary" />}
+              title="Automated ESG Auditing"
+              desc="One-click cryptographic audit reports prepared for GRI 306, CSRD, ISO 14001, and plastic packaging tax filings."
             />
+          </div>
+
+        </div>
+      </section>
+
+      {/* Telemetry Architecture Section */}
+      <section id="telemetry" className="py-20 border-t border-border bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            
+            <div>
+              <span className="font-mono text-xs text-primary font-semibold uppercase tracking-widest">
+                [ 02 // REAL-TIME TRACING ]
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-bold font-heading text-foreground mt-2 tracking-tight">
+                Single pane of glass for all environmental metrics
+              </h2>
+              <p className="text-base text-muted-foreground font-body mt-4 leading-relaxed">
+                Traditional plastic tracking relies on manual spreadsheets updated once a year. PlastiTrack turns environmental data into streaming observability metrics with root-cause traces and automated threshold warnings.
+              </p>
+
+              <div className="mt-8 space-y-4 font-mono text-sm">
+                <div className="flex items-start gap-3">
+                  <div className="h-6 w-6 rounded bg-primary/10 text-primary flex items-center justify-center font-bold text-xs mt-0.5">
+                    1
+                  </div>
+                  <div>
+                    <span className="font-semibold text-foreground">Continuous Data Pipeline:</span>
+                    <p className="text-xs text-muted-foreground font-body mt-0.5">Stream inventory scans and disposal receipts via lightweight collector APIs.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="h-6 w-6 rounded bg-primary/10 text-primary flex items-center justify-center font-bold text-xs mt-0.5">
+                    2
+                  </div>
+                  <div>
+                    <span className="font-semibold text-foreground">Anomaly &amp; Peak Detection:</span>
+                    <p className="text-xs text-muted-foreground font-body mt-0.5">Detect unexpected spikes in single-use consumption across offices and factories.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="h-6 w-6 rounded bg-primary/10 text-primary flex items-center justify-center font-bold text-xs mt-0.5">
+                    3
+                  </div>
+                  <div>
+                    <span className="font-semibold text-foreground">Automated Circular Offsets:</span>
+                    <p className="text-xs text-muted-foreground font-body mt-0.5">Direct API handoff to verified ocean recovery initiatives for verified plastic-neutral certification.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Architecture Card Visual */}
+            <div className="infra-card p-6 bg-white border border-border shadow-md">
+              <div className="font-mono text-xs text-muted-foreground pb-4 border-b border-border flex justify-between items-center">
+                <span>SYSTEM TOPOLOGY // TELEMETRY PIPELINE</span>
+                <span className="text-emerald-700 font-semibold">100% OPERATIONAL</span>
+              </div>
+              <div className="py-6 space-y-4">
+                <PipelineNode title="Sources: ERP, Procurement, Barcode Scanners" status="ONLINE" rate="4.2k events/s" />
+                <div className="w-0.5 h-6 bg-border mx-auto"></div>
+                <PipelineNode title="Ingestion Engine &amp; Polymer Classifier" status="PROCESSING" rate="0.8ms latency" />
+                <div className="w-0.5 h-6 bg-border mx-auto"></div>
+                <PipelineNode title="PlastiTrack Analytics &amp; Compliance Store" status="SYNCED" rate="Encrypted SOC2" />
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
-      {/* Mini CTA Footer */}
-      <section className="py-24 bg-background-dark relative overflow-hidden text-center">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 left-1/4 w-[300px] h-[300px] rounded-full bg-primary/20 blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-[250px] h-[250px] rounded-full bg-leaf/20 blur-3xl"></div>
-        </div>
-        <div className="relative z-10 max-w-4xl mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-heading">
-            Ready to Make a <span className="text-leaf">Positive Impact?</span>
-          </h2>
-          <p className="text-lg text-white/70 mb-8 max-w-2xl mx-auto">
-            Join thousands of users committed to a sustainable future. Start measuring your plastic footprint today—it's free.
-          </p>
-          <div className="flex justify-center gap-4">
-            <Link to="/dashboard" className="btn-primary">Get Started Free</Link>
+      {/* Dark Technical Footer Call to Action (New Relic / Sentry Style) */}
+      <section className="py-20 bg-background-dark text-white border-t border-black/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-12 gap-8 items-center">
+            
+            <div className="md:col-span-8 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-white/10 font-mono text-xs text-emerald-400">
+                <span>NEW RELEASE v2.4 // FULL TRACE MATRIX</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold font-heading tracking-tight">
+                Ready to deploy environmental observability?
+              </h2>
+              <p className="text-white/70 font-body text-base max-w-xl">
+                Get comprehensive visibility across all plastic materials in less than 5 minutes. Free for individual teams and community projects.
+              </p>
+            </div>
+
+            <div className="md:col-span-4 flex flex-col sm:flex-row md:flex-col gap-3">
+              <Link 
+                to="/dashboard" 
+                className="px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider transition-all text-center shadow-lg"
+              >
+                Launch PlastiTrack Free
+              </Link>
+              <Link 
+                to="/dashboard" 
+                className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-white font-mono text-xs font-semibold uppercase tracking-wider transition-all text-center"
+              >
+                View Live Telemetry Demo
+              </Link>
+            </div>
+
           </div>
+
+          <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono text-white/50">
+            <div>&copy; 2026 PlastiTrack Systems Inc. All rights reserved.</div>
+            <div className="flex gap-6">
+              <span className="hover:text-white cursor-pointer">PRIVACY</span>
+              <span className="hover:text-white cursor-pointer">TERMS</span>
+              <span className="hover:text-white cursor-pointer">TELEMETRY DOCS</span>
+              <span className="hover:text-white cursor-pointer">API</span>
+            </div>
+          </div>
+
         </div>
       </section>
+
     </div>
   );
 }
 
-function ProgressBar({ label, value, percent, color }) {
+function TelemetryRow({ label, value, pct, barColor }) {
   return (
     <div>
-      <div className="flex justify-between text-sm mb-2">
-        <span className="text-muted-foreground font-medium">{label}</span>
-        <span className="font-bold text-foreground">{value}</span>
+      <div className="flex justify-between items-center mb-1">
+        <span className="text-muted-foreground">{label}</span>
+        <span className="font-semibold text-foreground">{value}</span>
       </div>
-      <div className="h-2.5 bg-background-alt rounded-full overflow-hidden">
-        <div className="h-full rounded-full transition-all duration-1000 ease-out" style={{ width: percent, backgroundColor: color }}></div>
+      <div className="h-2 w-full bg-stone rounded-full overflow-hidden">
+        <div className={`h-full rounded-full ${barColor}`} style={{ width: pct }}></div>
       </div>
     </div>
   );
 }
 
-function FeatureCard({ title, desc, color }) {
+function ModuleCard({ code, icon, title, desc }) {
   return (
-    <div className="feature-card">
-      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style={{ backgroundColor: `${color}15`, color: color }}>
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-        </svg>
+    <div className="infra-card p-6 bg-white border border-border">
+      <div className="flex items-center justify-between mb-4">
+        <div className="p-2.5 rounded-lg bg-black/5">{icon}</div>
+        <span className="font-mono text-[11px] text-muted-foreground tracking-wider">{code}</span>
       </div>
-      <h3 className="text-2xl font-semibold text-foreground mb-3 font-heading">{title}</h3>
-      <p className="text-muted-foreground leading-relaxed">{desc}</p>
+      <h3 className="text-lg font-bold font-heading text-foreground mb-2">{title}</h3>
+      <p className="text-sm text-muted-foreground font-body leading-relaxed">{desc}</p>
+    </div>
+  );
+}
+
+function PipelineNode({ title, status, rate }) {
+  return (
+    <div className="p-3.5 rounded-lg bg-background-alt/50 border border-border flex items-center justify-between font-mono text-xs">
+      <div className="flex items-center gap-2.5">
+        <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+        <span className="font-medium text-foreground">{title}</span>
+      </div>
+      <div className="flex items-center gap-3 text-muted-foreground">
+        <span className="hidden sm:inline">{rate}</span>
+        <span className="px-1.5 py-0.5 rounded bg-black/5 text-[10px] text-foreground font-semibold">{status}</span>
+      </div>
     </div>
   );
 }

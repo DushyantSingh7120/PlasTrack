@@ -1,36 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.cdnfonts.com/css/mona-sans');
 @import "tailwindcss";
 
 @theme {
-  /* EcoTrack Forest Green Palette */
-  --color-primary: #228b22;
+  /* New Relic & EcoTrack Infrastructure Palette */
+  --color-primary: #1b4332;
   --color-on-primary: #FFFFFF;
   
-  --color-leaf: #4caf50;
+  --color-leaf: #228b22;
+  --color-brand: #008c5a;
+  --color-accent: #ea580c;
   
   --color-sky: #87ceeb;
   --color-sun: #ffb300;
 
-  --color-background: #fafaf5;
-  --color-background-alt: #f5f5e8;
-  --color-background-dark: #1b4332;
+  /* Primary warm stone background requested: #e5e4d8 */
+  --color-background: #e5e4d8;
+  --color-background-alt: #dedcd0;
+  --color-background-dark: #0e1e17;
+  --color-stone: #e5e4d8;
   
-  --color-foreground: #1b4332;
-  --color-muted-foreground: #52796f;
-  --color-subtle-foreground: #84a98c;
+  --color-foreground: #0e1e17;
+  --color-muted-foreground: #4a5c53;
+  --color-subtle-foreground: #718379;
   
-  --color-card: #FFFFFF;
-  --color-card-foreground: #1b4332;
+  --color-card: #ffffff;
+  --color-card-muted: #f2f1e8;
+  --color-card-foreground: #0e1e17;
   
-  --color-border: #d8e2dc;
+  --color-border: #cfcdc1;
+  --color-border-subtle: #dbd9ce;
   
-  /* Retaining some accents from previous for compatibility if needed */
   --color-destructive: #DC2626;
-  --color-ring: #228b22;
+  --color-ring: #1b4332;
 
-  /* Typography */
-  --font-sans: "DM Sans", "DM Sans Fallback", "Inter", sans-serif;
-  --font-heading: "Fraunces", serif;
-  --font-mono: "Space Grotesk", "Fira Code", monospace;
+  /* Typography requested by user */
+  --font-sans: "Mona Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: "Mona Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "Geist Mono", "Fira Code", monospace;
 }
 
 /* Base resets */
@@ -41,17 +49,18 @@ html, body, #root {
   padding: 0;
   background-color: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-heading);
+  letter-spacing: -0.025em;
 }
 
 /* 
-  Utility Classes mapped directly from the provided design 
+  Utility Classes mapped directly from the provided design & New Relic telemetry aesthetics
 */
 @layer utilities {
   .gradient-text {
@@ -63,22 +72,53 @@ h1, h2, h3, h4 {
   
   .gradient-text-eco {
     color: transparent;
-    background: linear-gradient(90deg, #228b22, #4caf50);
+    background: linear-gradient(90deg, #1b4332, #228b22, #4caf50);
     -webkit-background-clip: text;
     background-clip: text;
   }
 
-  /* Grafana-inspired Mesh Gradients */
+  /* Grafana-inspired Mesh Gradients blended seamlessly with warm stone #e5e4d8 rgb(229, 228, 216) */
   .bg-mesh-top {
     background-image: 
-      linear-gradient(rgb(250, 250, 245) 20%, rgba(255, 255, 255, 0)), 
+      linear-gradient(rgb(229, 228, 216) 20%, rgba(229, 228, 216, 0)), 
       linear-gradient(120deg, rgb(247, 191, 163) 10%, rgb(230, 179, 230) 40%, rgb(163, 216, 247) 75%, rgb(123, 231, 231));
   }
 
   .bg-mesh-bottom {
     background-image: 
-      linear-gradient(rgba(255, 255, 255, 0), rgb(250, 250, 245) 80%), 
+      linear-gradient(rgba(229, 228, 216, 0), rgb(229, 228, 216) 80%), 
       linear-gradient(120deg, rgb(247, 191, 163) 10%, rgb(230, 179, 230) 40%, rgb(163, 216, 247) 75%, rgb(123, 231, 231));
+  }
+
+  /* New Relic Telemetry & Infrastructure Elements */
+  .badge-telemetry {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .infra-card {
+    background: #ffffff;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px -2px rgba(14, 30, 23, 0.05);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .infra-card:hover {
+    border-color: #1b4332;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px -4px rgba(14, 30, 23, 0.1);
   }
 
   .organic-card {

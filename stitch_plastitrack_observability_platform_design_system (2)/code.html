@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PlastiTrack - Environmental Telemetry Console v2.4</title>
+<!-- Google Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            forest: {
+              DEFAULT: '#1b4332',
+              light: '#2d6a4f',
+              dark: '#143628',
+              accent: '#228b22',
+            },
+            warmstone: {
+              DEFAULT: '#e5e4d8',
+              card: '#ffffff',
+              border: '#cfcdc1',
+              muted: '#8b8a80',
+              hover: '#dcdbd0',
+            },
+            telemetry: {
+              emerald: '#008c5a',
+              amber: '#ea580c',
+              cyan: '#38bdf8',
+            }
+          },
+          boxShadow: {
+            'card-subtle': '0 4px 20px -2px rgba(14, 30, 23, 0.05), 0 2px 6px -1px rgba(14, 30, 23, 0.03)',
+            'card-hover': '0 10px 25px -4px rgba(14, 30, 23, 0.08), 0 4px 10px -2px rgba(14, 30, 23, 0.04)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="ambient-canvas">
+    /* Subtle Grafana-inspired ambient background mesh */
+    body {
+      background-color: #e5e4d8;
+      background-image: 
+        radial-gradient(at 15% 15%, rgba(247, 191, 163, 0.35) 0px, transparent 50%),
+        radial-gradient(at 85% 20%, rgba(230, 179, 230, 0.25) 0px, transparent 45%),
+        radial-gradient(at 20% 85%, rgba(163, 216, 247, 0.30) 0px, transparent 50%),
+        radial-gradient(at 80% 85%, rgba(123, 231, 231, 0.25) 0px, transparent 45%);
+      background-attachment: fixed;
+    }
+  </style>
+<style data-purpose="chart-enhancements">
+    /* Chart SVG spline animation & styling */
+    .chart-path {
+      stroke-dasharray: 2000;
+      stroke-dashoffset: 2000;
+      animation: drawChart 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes drawChart {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    .grid-line-dash {
+      stroke-dasharray: 4 4;
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="min-h-screen text-slate-800 antialiased font-sans flex flex-col md:flex-row overflow-x-hidden selection:bg-forest selection:text-white">
+<!-- BEGIN: LeftSidebar -->
+<aside class="w-full md:w-64 lg:w-72 bg-[#e2e1d5]/80 backdrop-blur-md border-r border-[#cfcdc1] flex flex-col justify-between shrink-0 min-h-screen" data-purpose="navigation-sidebar">
+<!-- Top Nav Group -->
+<div>
+<!-- Brand / Console ID -->
+<div class="px-6 pt-6 pb-5 flex items-center gap-3.5 border-b border-[#cfcdc1]/60">
+<!-- Logo Badge -->
+<div class="w-10 h-10 rounded-xl bg-forest flex items-center justify-center text-white shadow-sm shrink-0">
+<svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24">
+<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+</svg>
+</div>
+<div>
+<h1 class="text-lg font-bold tracking-tight text-forest leading-none">PlastiTrack</h1>
+<p class="font-mono text-[11px] font-semibold text-stone-500 tracking-wider mt-1">CONSOLE V2.4</p>
+</div>
+</div>
+<!-- Cluster Status Ribbon in Sidebar -->
+<div class="px-6 py-3 border-b border-[#cfcdc1]/60 flex items-center justify-between text-xs font-mono">
+<div class="flex items-center gap-2 text-stone-700">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+</span>
+<span class="tracking-wide">CLUSTER_OK</span>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] uppercase font-semibold bg-stone-300/80 text-stone-700 border border-stone-400/50">PROD</span>
+</div>
+<!-- Main Navigation Menu -->
+<nav class="p-4 space-y-1.5 font-medium text-sm"><!-- Dashboard -->
+<a class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-stone-700 hover:bg-[#d8d7cb] transition-colors" href="#dashboard">
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="7" width="7" x="3" y="3"></rect>
+<rect height="7" width="7" x="14" y="3"></rect>
+<rect height="7" width="7" x="14" y="14"></rect>
+<rect height="7" width="7" x="3" y="14"></rect>
+</svg>
+<span class="font-normal">Dashboard</span>
+</div>
+</a>
+<!-- Daily Tracker (Inactive) -->
+<a class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-stone-700 hover:bg-[#d8d7cb] transition-colors" href="#daily-tracker">
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+</svg>
+<span class="font-normal">Daily Tracker</span>
+</div>
+</a>
+<!-- Daily Insights (Active) -->
+<a class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-forest text-white shadow-sm transition-all" href="#insights">
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 opacity-90 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+</svg>
+<span class="font-normal tracking-wide">Daily Insights</span>
+</div>
+<span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-forest-light text-emerald-300 font-semibold tracking-wider">ACTIVE</span>
+</a>
+<!-- Sunday Review -->
+<a class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-stone-700 hover:bg-[#d8d7cb] transition-colors" href="#sunday-review">
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+<polyline points="14 2 14 8 20 8"></polyline>
+<line x1="16" x2="8" y1="13" y2="13"></line>
+<line x1="16" x2="8" y1="17" y2="17"></line>
+<polyline points="10 9 9 9 8 9"></polyline>
+</svg>
+<span class="font-normal">Sunday Review</span>
+</div>
+</a></nav>
+</div>
+<!-- Bottom Footer Links in Sidebar -->
+<div class="p-4 border-t border-[#cfcdc1]/70 space-y-1 font-mono text-xs text-stone-600">
+<a class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:text-stone-900 hover:bg-[#dcdbd0] transition-colors" href="#landing">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<line x1="19" x2="5" y1="12" y2="12"></line>
+<polyline points="12 19 5 12 12 5"></polyline>
+</svg>
+<span class="">Return to Landing</span>
+</a>
+<a class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:text-stone-900 hover:bg-[#dcdbd0] transition-colors" href="#settings">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="3"></circle>
+<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+</svg>
+<span class="">System Settings</span>
+</a>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- BEGIN: MainContentArea -->
+<main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+<!-- BEGIN: TopTelemetryHeader -->
+<header class="px-8 py-5 border-b border-[#cfcdc1]/60 flex flex-wrap items-center justify-between gap-4" data-purpose="console-header"><!-- Title & Telemetry Header -->
+<div>
+<h2 class="text-xl font-bold text-stone-900 tracking-tight">Daily Scientific Insights &amp; Polymer Chemistry</h2>
+<div class="flex items-center gap-2 mt-1 font-mono text-xs text-stone-600">
+<span class="tracking-wider">RESEARCH_NODE // POLYMER DEGRADATION DYNAMICS &amp; CIRCULAR BIO-ALTERNATIVES</span>
+</div>
+</div>
+<!-- Right Action Indicators -->
+<div class="flex items-center gap-4">
+<!-- Live Status Badge -->
+<button class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-lg border border-[#cfcdc1] bg-white/70 hover:bg-white text-stone-800 font-mono text-xs font-medium tracking-wide transition shadow-sm" type="button">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+</span>
+<span>((•)) LAB_KNOWLEDGE: SYNCED</span>
+</button>
+<!-- Notification Bell with Ping -->
+<div class="relative cursor-pointer p-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-white/50 transition">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+</svg>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-500 rounded-full ring-2 ring-[#e5e4d8]"></span>
+</div>
+<!-- User Profile Pill / Workspace -->
+<div class="flex items-center gap-2.5 pl-2 border-l border-[#cfcdc1]/60">
+<div class="w-8 h-8 rounded-full bg-stone-300 border border-stone-400/60 flex items-center justify-center font-mono text-xs text-stone-700 font-semibold shadow-inner">
+<svg class="w-4 h-4 text-stone-600" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+<circle cx="12" cy="7" r="4"></circle>
+</svg>
+</div>
+</div>
+</div></header>
+<!-- END: TopTelemetryHeader -->
+<!-- Inner Scrollable Dashboard View -->
+<div class="p-6 md:p-8 space-y-6 max-w-7xl"><!-- BEGIN: TrackerTopBanner -->
+<section class="bg-white/80 backdrop-blur-sm border border-warmstone-border rounded-xl px-5 py-3 shadow-card-subtle flex flex-wrap items-center justify-between gap-4" data-purpose="tracker-status-bar"><div class="flex flex-wrap items-center gap-3 font-mono text-xs text-stone-600">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-400"></span>
+<span class="font-bold text-stone-900 tracking-wide">● CURATED_INSIGHT // ARCHIVE ID: RES-2026-M4</span>
+</div>
+<span class="text-stone-300">|</span>
+<span>DISCIPLINE: <span class="text-stone-800 font-semibold">POLYMER SCIENCE &amp; ECO-TOXICOLOGY</span></span>
+<span class="text-stone-300">|</span>
+<span>SOURCE: <span class="text-forest font-semibold">JOURNAL OF MACROMOLECULAR CHEMISTRY</span></span>
+</div>
+<div class="flex items-center gap-2 font-mono text-[11px] font-semibold">
+<span class="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+PEER REVIEWED (Q1)
+</span>
+<span class="px-2.5 py-1 rounded-md bg-stone-100 text-stone-700 border border-stone-300">
+DEGRADATION MODEL NIST-ALIGNED
+</span>
+</div></section>
+<!-- END: TrackerTopBanner -->
+<!-- BEGIN: 2-Column Tracker Workspace -->
+<div class="space-y-6">
+<!-- SECTION A: Top Featured Hero Card -->
+<section class="bg-white rounded-2xl border border-warmstone-border p-6 md:p-8 shadow-card-subtle relative overflow-hidden">
+<div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-stone-200/80">
+<div class="flex items-center gap-2 text-forest font-mono text-xs font-semibold tracking-wider">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+<span>RESEARCH BRIEF // PET CHEMICAL DYNAMICS &amp; ENVIRONMENTAL PERSISTENCE</span>
+</div>
+<span class="font-mono text-xs px-2.5 py-1 rounded bg-stone-100 text-stone-700 border border-stone-200 font-semibold">FEATURED INSIGHT</span>
+</div>
+<div class="mt-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<div class="lg:col-span-8 space-y-4">
+<h3 class="text-2xl md:text-3xl font-bold text-stone-900 tracking-tight leading-snug">
+PET Photolytic &amp; Hydrolytic Degradation: The 450-Year Half-Life Paradox
+</h3>
+<p class="text-sm md:text-base text-stone-700 leading-relaxed">
+Polyethylene Terephthalate (PET, <span class="font-mono font-medium text-stone-900">(C₁₀H₈O₄)ₙ</span>) is engineered for immense tensile strength and barrier resistance via ester bonds that resist standard microbial enzymatic cleavage. In terrestrial and ocean conditions, PET breaks down primarily via mechanical shearing and UV photolysis into sub-5mm secondary microplastics and nanoplastics (&lt;100nm) rather than mineralizing, accumulating persistent synthetic additives into marine food webs.
+</p>
+<!-- Chemical Formula Reaction Box -->
+<div class="p-4 rounded-xl bg-stone-100/70 border border-stone-200 font-mono text-xs space-y-1.5">
+<div class="flex items-center justify-between text-stone-500 font-semibold text-[11px]">
+<span>REACTION BACKBONE &amp; ESTER BOND CLEAVAGE</span>
+<span class="text-forest">HYDROLYSIS ΔG° = +18.4 kJ/mol</span>
+</div>
+<div class="p-2.5 bg-white rounded-lg border border-stone-300/80 text-stone-900 font-bold overflow-x-auto tracking-wide text-xs">
+[—CO—C₆H₄—CO—O—CH₂—CH₂—O—]ₙ + H₂O ⟶ [—CO—C₆H₄—COOH] + [HO—CH₂—CH₂—O—]ₙ
+</div>
+<p class="text-[11px] text-stone-600">High activation energy required for ester bond scission under ambient temperatures yields extreme biological recalcitrance.</p>
+</div>
+</div>
+<!-- Right Stat Column: 3 Key Metrics -->
+<div class="lg:col-span-4 space-y-3">
+<div class="p-4 rounded-xl bg-stone-100/70 border border-stone-200">
+<p class="font-mono text-[11px] text-stone-500 uppercase tracking-wider font-medium">Half-Life Estimate</p>
+<p class="font-mono text-2xl font-bold text-stone-900 tracking-tight mt-0.5">450+ Years</p>
+<p class="font-mono text-[11px] text-stone-600 mt-1">Hydrolytic resistance in marine basins</p>
+</div>
+<div class="p-4 rounded-xl bg-amber-50/50 border border-amber-200">
+<p class="font-mono text-[11px] text-amber-700 uppercase tracking-wider font-medium">Ocean Microplastic Fragmentation</p>
+<p class="font-mono text-2xl font-bold text-stone-900 tracking-tight mt-0.5">1.8M Particles / kg</p>
+<p class="font-mono text-[11px] text-stone-600 mt-1">Estimated surface area degradation yield</p>
+</div>
+<div class="p-4 rounded-xl bg-emerald-50/50 border border-emerald-200">
+<p class="font-mono text-[11px] text-emerald-800 uppercase tracking-wider font-medium">Enzymatic Breakthrough</p>
+<p class="font-mono text-2xl font-bold text-forest tracking-tight mt-0.5">72 Hours</p>
+<p class="font-mono text-[11px] text-stone-600 mt-1">PETase / Cutinase engineered depolymerization speed</p>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION B: Middle Section - Polymer Resin Identification & Thermochemical Directory -->
+<section class="space-y-4">
+<div class="flex flex-wrap items-center justify-between gap-2 pb-1">
+<div>
+<div class="flex items-center gap-2 text-stone-700 font-mono text-xs font-semibold tracking-wider">
+<svg class="w-4 h-4 text-forest" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+<polyline points="2 17 12 22 22 17"></polyline>
+<polyline points="2 12 12 17 22 12"></polyline>
+</svg>
+<span class="uppercase font-bold text-stone-900 text-sm">Polymer Resin Identification &amp; Thermochemical Directory</span>
+</div>
+<p class="text-xs text-stone-500 font-mono mt-0.5">STANDARDIZED RESIN CODES // ASTM D7611 THERMOPLASTIC CHARACTERISTICS</p>
+</div>
+<span class="font-mono text-xs px-2.5 py-1 rounded bg-white text-stone-700 border border-stone-300 font-semibold">6 CODES CATALOGED</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<!-- Code #1: PET -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between">
+<div class="w-10 h-10 rounded-xl border border-emerald-200 bg-emerald-50/50 flex items-center justify-center font-mono font-bold text-forest text-base">
+♳ 1
+</div>
+<span class="font-mono text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">HIGH RECYCLABILITY</span>
+</div>
+<div class="mt-3">
+<h4 class="text-base font-bold text-stone-900">PET (Polyethylene Terephthalate)</h4>
+<p class="font-mono text-xs text-stone-500 mt-0.5">Formula: (C₁₀H₈O₄)ₙ</p>
+</div>
+<div class="mt-3 space-y-1.5 font-mono text-xs text-stone-600">
+<div class="flex justify-between"><span>Melting Point:</span><span class="font-bold text-stone-900">260°C (500°F)</span></div>
+<div class="flex justify-between"><span>Stream:</span><span class="font-bold text-forest">Bottle-to-fiber / rPET</span></div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-stone-100 text-xs text-stone-600">
+<span class="font-medium text-stone-800 block text-[11px] uppercase font-mono mb-1">Common Uses</span>
+<p class="leading-relaxed">Beverage bottles, clamshell containers, synthetic polyester textiles.</p>
+</div>
+</div>
+<!-- Code #2: HDPE -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between">
+<div class="w-10 h-10 rounded-xl border border-teal-200 bg-teal-50/50 flex items-center justify-center font-mono font-bold text-teal-700 text-base">
+♴ 2
+</div>
+<span class="font-mono text-[11px] font-semibold px-2 py-0.5 rounded bg-teal-50/50 text-teal-700 border border-teal-200">EXCELLENT (CLOSED-LOOP)</span>
+</div>
+<div class="mt-3">
+<h4 class="text-base font-bold text-stone-900">HDPE (High-Density Polyethylene)</h4>
+<p class="font-mono text-xs text-stone-500 mt-0.5">Formula: (C₂H₄)ₙ (High linearity)</p>
+</div>
+<div class="mt-3 space-y-1.5 font-mono text-xs text-stone-600">
+<div class="flex justify-between"><span>Melting Point:</span><span class="font-bold text-stone-900">130°C (266°F)</span></div>
+<div class="flex justify-between"><span>Stream:</span><span class="font-bold text-stone-900">High-purity mechanical regrind</span></div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-stone-100 text-xs text-stone-600">
+<span class="font-medium text-stone-800 block text-[11px] uppercase font-mono mb-1">Common Uses</span>
+<p class="leading-relaxed">Milk jugs, detergent bottles, agricultural piping, geomembranes.</p>
+</div>
+</div>
+<!-- Code #3: PVC -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between">
+<div class="w-10 h-10 rounded-xl border border-amber-200 bg-amber-50/50 flex items-center justify-center font-mono font-bold text-amber-600 text-base">
+♵ 3
+</div>
+<span class="font-mono text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-50/50 text-amber-700 border border-amber-200">VERY LOW (&lt;1%)</span>
+</div>
+<div class="mt-3">
+<h4 class="text-base font-bold text-stone-900">PVC (Polyvinyl Chloride)</h4>
+<p class="font-mono text-xs text-stone-500 mt-0.5">Formula: (C₂H₃Cl)ₙ</p>
+</div>
+<div class="mt-3 space-y-1.5 font-mono text-xs text-stone-600">
+<div class="flex justify-between"><span>Melting Point:</span><span class="font-bold text-stone-900">212°C (414°F)</span></div>
+<div class="flex justify-between"><span>Stream:</span><span class="font-bold text-amber-700">Hazardous Cl contamination</span></div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-stone-100 text-xs text-stone-600">
+<span class="font-medium text-stone-800 block text-[11px] uppercase font-mono mb-1">Common Uses</span>
+<p class="leading-relaxed">Construction pipes, medical tubing, cable sheathing, blood bags.</p>
+</div>
+</div>
+<!-- Code #4: LDPE -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between">
+<div class="w-10 h-10 rounded-xl border border-stone-300 bg-stone-100 flex items-center justify-center font-mono font-bold text-stone-700 text-base">
+♶ 4
+</div>
+<span class="font-mono text-[11px] font-semibold px-2 py-0.5 rounded bg-stone-100 text-stone-700 border border-stone-300">MODERATE RECOVERY</span>
+</div>
+<div class="mt-3">
+<h4 class="text-base font-bold text-stone-900">LDPE (Low-Density Polyethylene)</h4>
+<p class="font-mono text-xs text-stone-500 mt-0.5">Formula: (C₂H₄)ₙ (Branched)</p>
+</div>
+<div class="mt-3 space-y-1.5 font-mono text-xs text-stone-600">
+<div class="flex justify-between"><span>Melting Point:</span><span class="font-bold text-stone-900">110°C (230°F)</span></div>
+<div class="flex justify-between"><span>Stream:</span><span class="font-bold text-stone-900">Film consolidation drop-offs</span></div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-stone-100 text-xs text-stone-600">
+<span class="font-medium text-stone-800 block text-[11px] uppercase font-mono mb-1">Common Uses</span>
+<p class="leading-relaxed">Squeeze bottles, grocery bags, shrink wrap, bubble liners.</p>
+</div>
+</div>
+<!-- Code #5: PP -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between">
+<div class="w-10 h-10 rounded-xl border border-emerald-200 bg-emerald-50/50 flex items-center justify-center font-mono font-bold text-emerald-700 text-base">
+♷ 5
+</div>
+<span class="font-mono text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">GROWING (NIR SORT)</span>
+</div>
+<div class="mt-3">
+<h4 class="text-base font-bold text-stone-900">PP (Polypropylene)</h4>
+<p class="font-mono text-xs text-stone-500 mt-0.5">Formula: (C₃H₆)ₙ</p>
+</div>
+<div class="mt-3 space-y-1.5 font-mono text-xs text-stone-600">
+<div class="flex justify-between"><span>Melting Point:</span><span class="font-bold text-stone-900">165°C (329°F)</span></div>
+<div class="flex justify-between"><span>Stream:</span><span class="font-bold text-forest">Curbside expansion underway</span></div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-stone-100 text-xs text-stone-600">
+<span class="font-medium text-stone-800 block text-[11px] uppercase font-mono mb-1">Common Uses</span>
+<p class="leading-relaxed">Takeout meal boxes, bottle caps, yogurt tubs, automotive battery casings.</p>
+</div>
+</div>
+<!-- Code #6: PS -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between">
+<div class="w-10 h-10 rounded-xl border border-stone-300 bg-stone-100 flex items-center justify-center font-mono font-bold text-stone-700 text-base">
+♸ 6
+</div>
+<span class="font-mono text-[11px] font-semibold px-2 py-0.5 rounded bg-stone-200/70 text-stone-700 border border-stone-300">POOR / LEACH RISK</span>
+</div>
+<div class="mt-3">
+<h4 class="text-base font-bold text-stone-900">PS (Polystyrene)</h4>
+<p class="font-mono text-xs text-stone-500 mt-0.5">Formula: (C₈H₈)ₙ</p>
+</div>
+<div class="mt-3 space-y-1.5 font-mono text-xs text-stone-600">
+<div class="flex justify-between"><span>Melting Point:</span><span class="font-bold text-stone-900">240°C (464°F)</span></div>
+<div class="flex justify-between"><span>Stream:</span><span class="font-bold text-stone-600">Economically unviable</span></div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-stone-100 text-xs text-stone-600">
+<span class="font-medium text-stone-800 block text-[11px] uppercase font-mono mb-1">Common Uses</span>
+<p class="leading-relaxed">Styrofoam cups, disposable cutlery, CD jewel cases, meat trays.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION C: Bottom Section - Circular Alternatives & Next-Generation Biopolymer Matrix -->
+<section class="space-y-4">
+<div class="flex flex-wrap items-center justify-between gap-2 pb-1">
+<div>
+<div class="flex items-center gap-2 text-stone-700 font-mono text-xs font-semibold tracking-wider">
+<svg class="w-4 h-4 text-forest" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+</svg>
+<span class="uppercase font-bold text-stone-900 text-sm">Circular Alternatives &amp; Next-Generation Biopolymer Matrix</span>
+</div>
+<p class="text-xs text-stone-500 font-mono mt-0.5">CIRCULAR HORIZON // BIO-BENIGN REPLACEMENTS &amp; ENZYMATIC ADVANCEMENTS</p>
+</div>
+<span class="font-mono text-xs px-2.5 py-1 rounded bg-forest text-white font-semibold">3 BENCHMARKS</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+<!-- Card 1: PLA -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between space-y-4">
+<div>
+<div class="flex items-center justify-between">
+<span class="font-mono text-xs font-bold text-forest tracking-wider uppercase">Bio-Polyester</span>
+<span class="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">-68% CO₂e</span>
+</div>
+<h4 class="text-lg font-bold text-stone-900 mt-2">PLA (Polylactic Acid)</h4>
+<p class="text-xs text-stone-600 mt-1 font-mono">Source: Fermented plant starches (Corn / Cassava)</p>
+<div class="mt-4 space-y-2 font-mono text-xs">
+<div class="p-2.5 rounded-lg bg-stone-100/70 border border-stone-200 flex justify-between">
+<span class="text-stone-600">Degradability:</span>
+<span class="font-bold text-stone-900">Industrial 58°C, 90d</span>
+</div>
+<div class="p-2.5 rounded-lg bg-stone-100/70 border border-stone-200 flex justify-between">
+<span class="text-stone-600">Tensile Strength:</span>
+<span class="font-bold text-forest">50–70 MPa</span>
+</div>
+</div>
+</div>
+<div class="pt-3 border-t border-stone-100 text-xs text-stone-600 font-mono">
+<span class="text-[11px] font-bold text-stone-800 block uppercase mb-1">Target Application</span>
+<p class="font-sans text-xs">Cold food packaging, 3D printing filaments, agricultural mulches.</p>
+</div>
+</div>
+<!-- Card 2: PHA -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between space-y-4">
+<div>
+<div class="flex items-center justify-between">
+<span class="font-mono text-xs font-bold text-teal-700 tracking-wider uppercase">Bacterial Polymer</span>
+<span class="font-mono text-[10px] px-2 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200 font-semibold">-80% CO₂e</span>
+</div>
+<h4 class="text-lg font-bold text-stone-900 mt-2">PHA (Polyhydroxyalkanoates)</h4>
+<p class="text-xs text-stone-600 mt-1 font-mono">Source: Microbial fermentation of lipids/sugars</p>
+<div class="mt-4 space-y-2 font-mono text-xs">
+<div class="p-2.5 rounded-lg bg-stone-100/70 border border-stone-200 flex justify-between">
+<span class="text-stone-600">Degradability:</span>
+<span class="font-bold text-emerald-700">Marine &amp; Soil (6-12 mo)</span>
+</div>
+<div class="p-2.5 rounded-lg bg-stone-100/70 border border-stone-200 flex justify-between">
+<span class="text-stone-600">Residue:</span>
+<span class="font-bold text-forest">Zero Microplastics</span>
+</div>
+</div>
+</div>
+<div class="pt-3 border-t border-stone-100 text-xs text-stone-600 font-mono">
+<span class="text-[11px] font-bold text-stone-800 block uppercase mb-1">Target Application</span>
+<p class="font-sans text-xs">Marine coatings, single-use food wraps, biomedical suture scaffolds.</p>
+</div>
+</div>
+<!-- Card 3: Mycelium Composite -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between space-y-4">
+<div>
+<div class="flex items-center justify-between">
+<span class="font-mono text-xs font-bold text-amber-700 tracking-wider uppercase">Fungal Bio-Composite</span>
+<span class="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">100% REGENERATIVE</span>
+</div>
+<h4 class="text-lg font-bold text-stone-900 mt-2">Mycelium Composite Packaging</h4>
+<p class="text-xs text-stone-600 mt-1 font-mono">Source: Fungal vegetative root network on hemp/sawdust</p>
+<div class="mt-4 space-y-2 font-mono text-xs">
+<div class="p-2.5 rounded-lg bg-stone-100/70 border border-stone-200 flex justify-between">
+<span class="text-stone-600">Degradability:</span>
+<span class="font-bold text-emerald-700">Home Compost (30–45 days)</span>
+</div>
+<div class="p-2.5 rounded-lg bg-stone-100/70 border border-stone-200 flex justify-between">
+<span class="text-stone-600">Thermal Insulation:</span>
+<span class="font-bold text-forest">Exceeds EPS foam</span>
+</div>
+</div>
+</div>
+<div class="pt-3 border-t border-stone-100 text-xs text-stone-600 font-mono">
+<span class="text-[11px] font-bold text-stone-800 block uppercase mb-1">Target Application</span>
+<p class="font-sans text-xs">Custom shock-absorbing packaging, thermal cool boxes, acoustic insulation.</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- END: 2-Column Tracker Workspace --></div>
+</main>
+<!-- END: MainContentArea -->
+<!-- BEGIN: InteractiveScripts -->
+<script data-purpose="tooltip-hover-handler">
+    document.addEventListener('DOMContentLoaded', () => {
+      // Setup subtle interaction for telemetry chart hover markers
+      const metricCards = document.querySelectorAll('[data-purpose="kpi-metrics"] > div');
+      metricCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.classList.add('border-forest/40');
+        });
+        card.addEventListener('mouseleave', () => {
+          card.classList.remove('border-forest/40');
+        });
+      });
+    });
+  </script>
+<!-- END: InteractiveScripts -->
+</body></html>

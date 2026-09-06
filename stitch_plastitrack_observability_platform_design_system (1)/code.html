@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>PlastiTrack Console</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Chivo:wght@600;700&amp;family=Geist:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-tertiary-container":"#d29895","on-error":"#ffffff","border-subtle":"#dbd9ce","error":"#ba1a1a","outline":"#717973","text-muted":"#4a5c53","surface-container-low":"#f5f4e8","tertiary-fixed":"#ffdad8","surface-card":"#ffffff","surface-tint":"#3f6653","inverse-primary":"#a5d0b9","on-secondary":"#ffffff","tertiary":"#401b1b","primary-container":"#1b4332","on-surface":"#1b1c15","background-dark":"#0e1e17","tertiary-container":"#5a302f","border-primary":"#cfcdc1","primary-fixed-dim":"#a5d0b9","secondary":"#006c45","on-tertiary-fixed":"#331111","status-sun":"#ffb300","on-error-container":"#93000a","primary":"#012d1d","on-primary-container":"#86af99","surface-dim":"#dbdacf","surface-container-high":"#eae9dd","status-leaf":"#228b22","background-alt":"#dedcd0","on-primary-fixed":"#002114","inverse-surface":"#303129","surface":"#fbfaed","inverse-on-surface":"#f2f1e5","secondary-container":"#8af8bc","on-primary-fixed-variant":"#274e3d","on-secondary-container":"#007349","error-container":"#ffdad6","status-destructive":"#dc2626","on-primary":"#ffffff","status-sky":"#87ceeb","background":"#fbfaed","surface-container-lowest":"#ffffff","primary-fixed":"#c1ecd4","on-tertiary-fixed-variant":"#673a39","surface-card-muted":"#f2f1e8","surface-bright":"#fbfaed","on-background":"#1b1c15","on-secondary-fixed-variant":"#005233","outline-variant":"#c1c8c2","on-tertiary":"#ffffff","text-foreground":"#0e1e17","on-surface-variant":"#414844","tertiary-fixed-dim":"#f5b7b4","on-secondary-fixed":"#002112","surface-variant":"#e4e3d7","surface-container":"#efeee2","surface-container-highest":"#e4e3d7","status-accent":"#ea580c","secondary-fixed-dim":"#6ddba2","secondary-fixed":"#8af8bc","text-subtle":"#718379"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-xs":"0.25rem","space-md":"0.75rem","gutter-desktop":"1.25rem","space-base":"1rem","space-xl":"1.5rem","gutter-mobile":"0.75rem","space-lg":"1.25rem","space-sm":"0.5rem","space-2xl":"2rem","space-2xs":"0.125rem","space-3xl":"3rem"},"fontFamily":{"body-lg":["Inter"],"headline-md":["Chivo"],"body-sm":["Inter"],"label-md":["Inter"],"display-lg":["Chivo"],"body-md":["Inter"],"headline-sm":["Chivo"],"mono-metric-md":["Geist"],"mono-metric-lg":["Geist"],"display-lg-mobile":["Chivo"],"headline-lg":["Chivo"],"mono-label-sm":["Geist"]},"fontSize":{"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"headline-md":["22px",{"lineHeight":"28px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"500"}],"display-lg":["44px",{"lineHeight":"52px","letterSpacing":"-0.03em","fontWeight":"700"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"headline-sm":["18px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"600"}],"mono-metric-md":["20px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"600"}],"mono-metric-lg":["32px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"display-lg-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-lg":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"mono-label-sm":["11px",{"lineHeight":"16px","letterSpacing":"0.08em","fontWeight":"500"}]}}}};</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low border-r border-border-primary z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="p-space-lg border-b border-border-primary bg-surface-container-lowest"><div class="flex items-center justify-between mb-space-xs"><div class="flex items-center gap-space-sm"><div class="w-7 h-7 rounded-lg bg-primary-container flex items-center justify-center text-secondary-container"><span class="material-symbols-outlined text-[18px]">vital_signs</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-none">PlastiTrack</span><span class="font-mono-label-sm text-mono-label-sm text-text-subtle uppercase">Console v2.4</span></div></div><span class="px-space-xs py-space-2xs bg-primary-container text-on-primary-container font-mono-label-sm text-mono-label-sm rounded">PROD</span></div><div class="mt-space-sm pt-space-xs border-t border-border-subtle flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span><span class="font-mono-label-sm text-mono-label-sm text-text-muted">CLUSTER_OK</span></div><span class="font-mono-label-sm text-mono-label-sm text-text-subtle">ZONE: US-EAST</span></div></div><nav class="flex flex-col gap-space-xs p-space-md" data-active-classes="bg-primary-container text-on-primary font-body-md font-semibold rounded"><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="dashboard" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-body-md text-body-md">Dashboard</span></div><span class="px-space-xs py-space-2xs bg-secondary-container text-on-secondary-container font-mono-label-sm text-mono-label-sm rounded uppercase">LIVE</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="telemetry-stream" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">sensors</span><span class="font-body-md text-body-md">Telemetry Stream</span></div><span class="px-space-xs py-space-2xs bg-surface-variant text-primary-container font-mono-label-sm text-mono-label-sm rounded uppercase">NEW</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="lifecycle-traces" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">route</span><span class="font-body-md text-body-md">Lifecycle Traces</span></div></a><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="esg-compliance" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">verified</span><span class="font-body-md text-body-md">ESG Compliance</span></div><span class="px-space-xs py-space-2xs bg-surface-card-muted text-text-muted font-mono-label-sm text-mono-label-sm rounded uppercase">GRI</span></a><a aria-current="page" class="flex items-center justify-between px-space-md py-space-sm transition-colors bg-primary-container text-on-primary font-body-md font-semibold rounded" data-path="audit-reports" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">description</span><span class="font-body-md text-body-md">Audit Reports</span></div></a></nav></div><div class="p-space-md border-t border-border-primary bg-surface-container-lowest/50 flex flex-col gap-space-xs"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="landing-page" href="#"><span class="material-symbols-outlined text-[18px]">arrow_back</span><span class="font-body-sm text-body-sm">Return to Landing</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="system-settings" href="#"><span class="material-symbols-outlined text-[18px]">settings</span><span class="font-body-sm text-body-sm">System Settings</span></a></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/90 backdrop-blur-md border-b border-border-primary z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-lg"><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-mono-label-sm text-mono-label-sm text-text-muted uppercase tracking-wider">INGESTION_RATE:</span><span class="font-mono-metric-md text-mono-metric-md text-primary">12.4</span><span class="font-mono-label-sm text-mono-label-sm text-text-muted">kg/s</span><span class="text-border-primary mx-space-xs">|</span><span class="font-mono-label-sm text-mono-label-sm text-secondary font-semibold">ZERO LOSS BUFFER</span></div></div></div><div class="flex items-center gap-space-md"><div class="inline-flex items-center gap-space-xs px-space-sm py-space-2xs bg-surface-card border border-border-primary rounded-full"><span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span><span class="font-mono-label-sm text-mono-label-sm text-text-foreground">((•)) STREAM: ACTIVE</span></div><button class="relative p-space-xs rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-status-accent border-2 border-surface"></span></button><div class="h-6 w-px bg-border-primary"></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="w-full pt-16 bg-background min-h-screen"><div class="flex flex-col w-full min-h-screen bg-[#e5e4d8] text-on-surface relative overflow-hidden" style="background-image: linear-gradient(120deg, rgba(247, 191, 163, 0.25) 10%, rgba(230, 179, 230, 0.2) 40%, rgba(163, 216, 247, 0.25) 75%, rgba(123, 231, 231, 0.2));">
+<!-- Ambient Micro Mesh Accents (contained within parent) -->
+<div class="absolute top-0 right-1/4 w-96 h-96 bg-secondary-container/10 rounded-full blur-3xl pointer-events-none -z-0"></div>
+<div class="absolute bottom-1/3 left-10 w-80 h-80 bg-tertiary-fixed/20 rounded-full blur-3xl pointer-events-none -z-0"></div>
+<!-- Primary Content Container -->
+<div class="relative z-10 px-space-lg py-space-md flex flex-col gap-space-md w-full max-w-[1600px] mx-auto">
+<!-- Top Status Banner / Telemetry Ribbon -->
+<div class="bg-surface-card rounded-xl px-space-md py-space-sm flex flex-wrap items-center justify-between gap-space-sm shadow-sm" style="box-shadow: 0 1px 3px rgba(14, 30, 23, 0.05);">
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-mono-label-sm text-mono-label-sm text-primary font-semibold tracking-wider">COMPLETED_CYCLE // WEEK 09 AUDIT</span>
+</div>
+<span class="text-border-primary font-mono-label-sm">|</span>
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted">PROTOCOL: CIRCULAR RECAPTURE CERTIFIED</span>
+<span class="text-border-primary font-mono-label-sm">|</span>
+<span class="font-mono-label-sm text-mono-label-sm text-secondary font-semibold">HABIT DELTA: -14% VS W-08</span>
+</div>
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="px-space-xs py-space-2xs bg-secondary-container text-on-secondary-container font-mono-label-sm text-mono-label-sm rounded uppercase font-semibold">AUDIT GRADE: A- (SUPERIOR)</span>
+<span class="px-space-xs py-space-2xs bg-surface-container-high text-primary font-mono-label-sm text-mono-label-sm rounded uppercase">TARGET: MET (94.2%)</span>
+<span class="px-space-xs py-space-2xs bg-surface-card-muted text-text-subtle font-mono-label-sm text-mono-label-sm rounded">#SHA-256-W09-881A</span>
+</div>
+</div>
+<!-- Screen Title / Overline Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted uppercase tracking-widest">RETROSPECTIVE_CADENCE // 7-DAY MASS BALANCE &amp; REDUCTION PLAYBOOK</span>
+<span class="text-text-subtle font-mono-label-sm">·</span>
+<span class="font-mono-label-sm text-mono-label-sm text-primary font-bold">CYCLE W-09</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-text-foreground tracking-tight">Sunday Review &amp; Weekly Reduction Audit</h1>
+</div>
+<div class="flex items-center gap-space-xs self-start md:self-auto">
+<div class="inline-flex items-center gap-space-xs px-space-sm py-space-2xs bg-surface-card rounded-full shadow-sm text-text-foreground font-mono-label-sm text-mono-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>AUDIT_CYCLE: SEALED</span>
+</div>
+<button class="px-space-sm py-space-2xs bg-surface-card hover:bg-surface-container-high rounded text-text-foreground text-body-sm font-label-md transition-colors flex items-center gap-space-2xs shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px] text-text-muted">history</span>
+<span>Archive</span>
+</button>
+</div>
+</div>
+<!-- Row 1: 4 Metric Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Card 1: Total Mass -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm flex flex-col justify-between transition-all hover:translate-y-[-1px]">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">scale</span>
+</div>
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle uppercase">METRIC_W01 // MASS</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-text-muted">Total 7-Day Ingestion</span>
+<div class="flex items-baseline gap-space-xs mt-space-2xs">
+<span class="font-mono-metric-lg text-mono-metric-lg text-primary tracking-tight">284</span>
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted font-bold">g</span>
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle ml-space-xs">(0.284 kg)</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between bg-surface-container-low px-space-xs py-space-2xs rounded">
+<div class="flex items-center gap-space-2xs text-secondary font-mono-label-sm text-mono-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">trending_down</span>
+<span>-46 g (-14%)</span>
+</div>
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle">vs W-08 (330 g)</span>
+</div>
+</div>
+<!-- Card 2: Habit Grade -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm flex flex-col justify-between transition-all hover:translate-y-[-1px]">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="w-8 h-8 rounded bg-secondary-container/40 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+</div>
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle uppercase">METRIC_W02 // COMPLIANCE</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-text-muted">7-Day Habit Grade</span>
+<div class="flex items-baseline gap-space-xs mt-space-2xs">
+<span class="font-mono-metric-lg text-mono-metric-lg text-secondary tracking-tight">A-</span>
+<span class="font-mono-label-sm text-mono-label-sm text-secondary uppercase font-semibold">/ EXCELLENT</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between bg-surface-container-low px-space-xs py-space-2xs rounded">
+<span class="font-mono-label-sm text-mono-label-sm text-secondary font-semibold">Top 8% low-waste cohorts</span>
+<span class="material-symbols-outlined text-[14px] text-secondary">military_tech</span>
+</div>
+</div>
+<!-- Card 3: Cleanest Day -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm flex flex-col justify-between transition-all hover:translate-y-[-1px]">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="w-8 h-8 rounded bg-primary-fixed/50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">eco</span>
+</div>
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle uppercase">METRIC_W03 // LOWEST</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-text-muted">Cleanest Logging Day</span>
+<div class="flex items-baseline gap-space-xs mt-space-2xs">
+<span class="font-headline-md text-headline-md text-text-foreground">Wednesday</span>
+<span class="font-mono-metric-md text-mono-metric-md text-secondary">12g</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between bg-surface-container-low px-space-xs py-space-2xs rounded">
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted truncate">Zero single-use packaging</span>
+<span class="font-mono-label-sm text-mono-label-sm text-secondary font-bold">★ BENCHMARK</span>
+</div>
+</div>
+<!-- Card 4: Peak Anomaly -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm flex flex-col justify-between transition-all hover:translate-y-[-1px]">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="w-8 h-8 rounded bg-tertiary-fixed flex items-center justify-center text-status-accent">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+</div>
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle uppercase">METRIC_W04 // PEAK</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-text-muted">Maximum Spike Detected</span>
+<div class="flex items-baseline gap-space-xs mt-space-2xs">
+<span class="font-headline-md text-headline-md text-text-foreground">Friday</span>
+<span class="font-mono-metric-md text-mono-metric-md text-status-accent">86g</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between bg-surface-container-low px-space-xs py-space-2xs rounded">
+<span class="font-mono-label-sm text-mono-label-sm text-status-accent font-semibold truncate">Takeout + Film Pouches</span>
+<span class="font-mono-label-sm text-mono-label-sm text-status-accent bg-error-container/40 px-space-2xs rounded">▲ ANOMALY</span>
+</div>
+</div>
+</div>
+<!-- Row 2: Comparative Bar Chart & Telemetry Breakdown -->
+<div class="bg-surface-card rounded-xl p-space-lg shadow-sm flex flex-col">
+<!-- Card Header -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-sm pb-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-primary">bar_chart</span>
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted uppercase tracking-wider">TELEMETRY_SERIES // 7-DAY INGESTION PROFILE vs BENCHMARK</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-text-foreground mt-space-2xs">Weekly Consumption Breakdown &amp; Baseline Variance</h2>
+</div>
+<!-- Legend & Filters -->
+<div class="flex flex-wrap items-center gap-space-md">
+<div class="flex items-center gap-space-sm flex-wrap text-label-md font-label-md">
+<div class="flex items-center gap-space-2xs">
+<span class="w-3 h-3 rounded-sm bg-primary-container"></span>
+<span class="text-text-muted font-mono-label-sm text-mono-label-sm">Logged Mass (g)</span>
+</div>
+<div class="flex items-center gap-space-2xs">
+<span class="w-4 h-0.5 bg-status-accent" style="border-top: 2px dashed #ea580c;"></span>
+<span class="text-text-muted font-mono-label-sm text-mono-label-sm">Ceiling (40g)</span>
+</div>
+<div class="flex items-center gap-space-2xs">
+<span class="w-4 h-0.5 bg-outline-variant" style="border-top: 2px dotted #717973;"></span>
+<span class="text-text-muted font-mono-label-sm text-mono-label-sm">Baseline (55g)</span>
+</div>
+</div>
+<div class="inline-flex rounded bg-surface-container-high p-0.5">
+<button class="px-space-sm py-space-2xs rounded bg-surface-card text-text-foreground font-mono-label-sm text-mono-label-sm font-semibold shadow-sm">MASS (g)</button>
+<button class="px-space-sm py-space-2xs rounded text-text-muted hover:text-text-foreground font-mono-label-sm text-mono-label-sm">RESIN CODES</button>
+</div>
+</div>
+</div>
+<!-- High Fidelity Bar Chart Canvas (SVG + Structural Grid) -->
+<div class="relative w-full h-72 sm:h-80 my-space-sm bg-surface-container-lowest rounded-lg p-space-sm">
+<!-- Y-Axis Gridlines & Labels -->
+<div class="absolute inset-x-12 top-6 bottom-10 flex flex-col justify-between pointer-events-none">
+<div class="w-full flex items-center gap-space-xs">
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle w-8 text-right">100g</span>
+<div class="flex-1 h-px bg-surface-container-high"></div>
+</div>
+<div class="w-full flex items-center gap-space-xs">
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle w-8 text-right">80g</span>
+<div class="flex-1 h-px bg-surface-container-high"></div>
+</div>
+<div class="w-full flex items-center gap-space-xs">
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle w-8 text-right">60g</span>
+<div class="flex-1 h-px bg-surface-container-high"></div>
+</div>
+<div class="w-full flex items-center gap-space-xs">
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle w-8 text-right">40g</span>
+<div class="flex-1 h-px bg-surface-container-high"></div>
+</div>
+<div class="w-full flex items-center gap-space-xs">
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle w-8 text-right">20g</span>
+<div class="flex-1 h-px bg-surface-container-high"></div>
+</div>
+<div class="w-full flex items-center gap-space-xs">
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle w-8 text-right">0g</span>
+<div class="flex-1 h-px bg-border-subtle"></div>
+</div>
+</div>
+<!-- Target Ceiling Overlay Line (at 40g = 60% up from bottom) -->
+<div class="absolute inset-x-20 bottom-[108px] sm:bottom-[118px] pointer-events-none flex items-center z-20">
+<div class="w-full h-0 border-t-2 border-dashed border-status-accent/80"></div>
+<span class="absolute right-0 -top-3 bg-tertiary-fixed text-status-accent font-mono-label-sm text-mono-label-sm px-space-xs rounded uppercase font-semibold">CEILING: 40g</span>
+</div>
+<!-- Baseline Average Dotted Line (at 55g) -->
+<div class="absolute inset-x-20 bottom-[148px] sm:bottom-[164px] pointer-events-none flex items-center z-20">
+<div class="w-full h-0 border-t border-dotted border-outline"></div>
+<span class="absolute left-0 -top-3 bg-surface-container text-text-muted font-mono-label-sm text-mono-label-sm px-space-xs rounded">BASELINE: 55g</span>
+</div>
+<!-- 7 Daily Columns -->
+<div class="relative h-full pl-12 pr-4 pb-8 pt-4 grid grid-cols-7 gap-space-sm items-end z-10">
+<!-- Day 1: MON (38g) -->
+<div class="group flex flex-col items-center justify-end h-full relative cursor-pointer">
+<div class="font-mono-label-sm text-mono-label-sm text-primary font-semibold mb-space-2xs opacity-90 group-hover:scale-110 transition-transform">38g</div>
+<!-- Bar -->
+<div class="w-full max-w-[48px] bg-primary-container hover:bg-secondary rounded-t-lg transition-all" style="height: 38%;"></div>
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted uppercase mt-space-xs">MON</span>
+<!-- Popover on hover -->
+<div class="absolute -top-10 hidden group-hover:flex flex-col items-center bg-background-dark text-on-primary px-space-sm py-1 rounded text-label-md z-30 shadow-lg whitespace-nowrap">
+<span>Mon: 38g (PET #1 Bottle, PP Wrap)</span>
+<span class="text-secondary-fixed text-mono-label-sm">-2g under target</span>
+</div>
+</div>
+<!-- Day 2: TUE (42g) -->
+<div class="group flex flex-col items-center justify-end h-full relative cursor-pointer">
+<div class="font-mono-label-sm text-mono-label-sm text-text-muted font-semibold mb-space-2xs opacity-90 group-hover:scale-110 transition-transform">42g</div>
+<!-- Bar -->
+<div class="w-full max-w-[48px] bg-primary-container/80 hover:bg-primary-container rounded-t-lg transition-all" style="height: 42%;"></div>
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted uppercase mt-space-xs">TUE</span>
+<div class="absolute -top-10 hidden group-hover:flex flex-col items-center bg-background-dark text-on-primary px-space-sm py-1 rounded text-label-md z-30 shadow-lg whitespace-nowrap">
+<span>Tue: 42g (+2g marginal excess)</span>
+<span class="text-status-sun text-mono-label-sm">1 PET beverage</span>
+</div>
+</div>
+<!-- Day 3: WED (12g - Cleanest Day) -->
+<div class="group flex flex-col items-center justify-end h-full relative cursor-pointer">
+<span class="px-space-2xs py-0.5 bg-secondary-container text-on-secondary-container font-mono-label-sm text-mono-label-sm rounded-full font-bold mb-space-2xs text-[10px]">★ BEST</span>
+<div class="font-mono-label-sm text-mono-label-sm text-secondary font-bold mb-space-2xs">12g</div>
+<!-- Bar -->
+<div class="w-full max-w-[48px] bg-secondary hover:bg-status-leaf rounded-t-lg transition-all" style="height: 12%;"></div>
+<span class="font-mono-label-sm text-mono-label-sm text-secondary font-bold uppercase mt-space-xs">WED</span>
+<div class="absolute -top-12 hidden group-hover:flex flex-col items-center bg-background-dark text-on-primary px-space-sm py-1 rounded text-label-md z-30 shadow-lg whitespace-nowrap">
+<span>Wed: 12g (★ Cleanest Day)</span>
+<span class="text-secondary-fixed text-mono-label-sm">Only 1 medicine blister strip</span>
+</div>
+</div>
+<!-- Day 4: THU (35g) -->
+<div class="group flex flex-col items-center justify-end h-full relative cursor-pointer">
+<div class="font-mono-label-sm text-mono-label-sm text-primary font-semibold mb-space-2xs opacity-90 group-hover:scale-110 transition-transform">35g</div>
+<!-- Bar -->
+<div class="w-full max-w-[48px] bg-primary-container hover:bg-secondary rounded-t-lg transition-all" style="height: 35%;"></div>
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted uppercase mt-space-xs">THU</span>
+<div class="absolute -top-10 hidden group-hover:flex flex-col items-center bg-background-dark text-on-primary px-space-sm py-1 rounded text-label-md z-30 shadow-lg whitespace-nowrap">
+<span>Thu: 35g (Grocery netting &amp; film)</span>
+<span class="text-secondary-fixed text-mono-label-sm">-5g under ceiling</span>
+</div>
+</div>
+<!-- Day 5: FRI (86g - Spike) -->
+<div class="group flex flex-col items-center justify-end h-full relative cursor-pointer">
+<div class="inline-flex items-center gap-0.5 px-space-xs py-0.5 bg-tertiary-fixed text-status-accent font-mono-label-sm text-mono-label-sm rounded font-bold mb-space-2xs whitespace-nowrap animate-pulse">
+              ▲ 86g
+            </div>
+<!-- Bar -->
+<div class="w-full max-w-[48px] bg-status-accent hover:bg-error rounded-t-lg transition-all relative overflow-hidden" style="height: 86%;">
+<div class="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:16px_16px]"></div>
+</div>
+<span class="font-mono-label-sm text-mono-label-sm text-status-accent font-bold uppercase mt-space-xs">FRI</span>
+<div class="absolute -top-14 hidden group-hover:flex flex-col items-center bg-background-dark text-on-primary px-space-sm py-1.5 rounded text-label-md z-30 shadow-xl whitespace-nowrap">
+<span class="font-bold text-status-accent">Peak Ingestion Spike: 86g</span>
+<span class="text-text-subtle text-mono-label-sm">Takeout PP Clamshell + 2 Drink Cups</span>
+</div>
+</div>
+<!-- Day 6: SAT (44g) -->
+<div class="group flex flex-col items-center justify-end h-full relative cursor-pointer">
+<div class="font-mono-label-sm text-mono-label-sm text-text-muted font-semibold mb-space-2xs opacity-90 group-hover:scale-110 transition-transform">44g</div>
+<!-- Bar -->
+<div class="w-full max-w-[48px] bg-primary-container/80 hover:bg-primary-container rounded-t-lg transition-all" style="height: 44%;"></div>
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted uppercase mt-space-xs">SAT</span>
+<div class="absolute -top-10 hidden group-hover:flex flex-col items-center bg-background-dark text-on-primary px-space-sm py-1 rounded text-label-md z-30 shadow-lg whitespace-nowrap">
+<span>Sat: 44g (Transit PET water + snack pouch)</span>
+<span class="text-status-sun text-mono-label-sm">+4g over target</span>
+</div>
+</div>
+<!-- Day 7: SUN (27g) -->
+<div class="group flex flex-col items-center justify-end h-full relative cursor-pointer">
+<div class="font-mono-label-sm text-mono-label-sm text-secondary font-semibold mb-space-2xs opacity-90 group-hover:scale-110 transition-transform">27g</div>
+<!-- Bar -->
+<div class="w-full max-w-[48px] bg-primary-container hover:bg-secondary rounded-t-lg transition-all" style="height: 27%;"></div>
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted uppercase mt-space-xs">SUN</span>
+<div class="absolute -top-10 hidden group-hover:flex flex-col items-center bg-background-dark text-on-primary px-space-sm py-1 rounded text-label-md z-30 shadow-lg whitespace-nowrap">
+<span>Sun: 27g (Home cooking, clean wrap)</span>
+<span class="text-secondary-fixed text-mono-label-sm">-13g under target</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Comparative Stats Inside Chart Card -->
+<div class="mt-space-md pt-space-md grid grid-cols-2 md:grid-cols-4 gap-space-sm bg-surface-container-low p-space-sm rounded-lg">
+<div class="flex flex-col">
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle uppercase">7-Day Cumulative</span>
+<span class="font-mono-metric-md text-mono-metric-md text-primary font-bold">284 g</span>
+</div>
+<div class="flex flex-col">
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle uppercase">Daily Mean Mass</span>
+<span class="font-mono-metric-md text-mono-metric-md text-primary font-bold">40.5 g/day</span>
+</div>
+<div class="flex flex-col">
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle uppercase">Target Compliance</span>
+<span class="font-mono-metric-md text-mono-metric-md text-secondary font-bold">5 of 7 Days (71%)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle uppercase">Avoided Plastic</span>
+<span class="font-mono-metric-md text-mono-metric-md text-secondary font-bold">~310 g Saved</span>
+</div>
+</div>
+</div>
+<!-- Row 3: Tailored Reduction Tips (Playbook) & Action Dock -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
+<!-- 3 Habit Reduction Playbook Cards (8 cols) -->
+<div class="lg:col-span-8 flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-secondary">psychology</span>
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted uppercase tracking-wider">PRESCRIPTIVE_TELEMETRY // TAILORED REDUCTION PLAYBOOK</span>
+</div>
+<span class="font-mono-label-sm text-mono-label-sm text-secondary font-semibold">3 HIGH-LEVERAGE OPPORTUNITIES IDENTIFIED</span>
+</div>
+<!-- Tip Card 1: Friday Spike (Polypropylene Takeout) -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm transition-all hover:bg-surface-container-lowest flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-md flex-1">
+<div class="w-10 h-10 rounded bg-tertiary-fixed flex-shrink-0 flex items-center justify-center text-status-accent mt-1 md:mt-0">
+<span class="material-symbols-outlined text-[22px]">takeout_dining</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="px-space-xs py-0.5 bg-tertiary-container/10 text-status-accent font-mono-label-sm text-mono-label-sm rounded uppercase font-semibold">HIGH IMPACT // TARGET: 35g PP #5</span>
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle">AUDIT TRIGGER: FRIDAY +86g</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-text-foreground mt-space-2xs">Swap Friday Takeout to BYO Stainless Steel Containers</h3>
+<p class="font-body-sm text-body-sm text-text-muted mt-space-2xs">
+                Friday's spike was driven by polypropylene (#5) clamshell takeout boxes and dipping cups. Switching to your own stainless tin or opting for dine-in cuts an estimated 35–50g weekly.
+              </p>
+</div>
+</div>
+<div class="flex flex-col items-start md:items-end gap-space-xs w-full md:w-auto flex-shrink-0">
+<span class="px-space-xs py-space-2xs bg-secondary-container text-on-secondary-container font-mono-label-sm text-mono-label-sm rounded uppercase font-bold">Est. Savings: -140g / mo</span>
+<button class="px-space-sm py-space-xs bg-primary-container text-on-primary hover:bg-primary font-body-sm text-body-sm rounded font-medium transition-colors flex items-center gap-space-2xs w-full md:w-auto justify-center">
+<span>Explore Recommended Tins</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Tip Card 2: Transit Bottle -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm transition-all hover:bg-surface-container-lowest flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-md flex-1">
+<div class="w-10 h-10 rounded bg-primary-fixed flex-shrink-0 flex items-center justify-center text-primary mt-1 md:mt-0">
+<span class="material-symbols-outlined text-[22px]">water_bottle</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="px-space-xs py-0.5 bg-primary-fixed-dim/30 text-primary font-mono-label-sm text-mono-label-sm rounded uppercase font-semibold">BEVERAGE INTERCEPTION // TARGET: 20g PET #1</span>
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle">AUDIT TRIGGER: TUE &amp; SAT</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-text-foreground mt-space-2xs">Deploy Double-Walled Thermal Bottle at Transit Hubs</h3>
+<p class="font-body-sm text-body-sm text-text-muted mt-space-2xs">
+                Two PET #1 single-use water bottles logged on Tuesday and Saturday. Pre-filling an insulated stainless canteen eliminates ~40g of virgin PET resin and $7 in recurring weekly spend.
+              </p>
+</div>
+</div>
+<div class="flex flex-col items-start md:items-end gap-space-xs w-full md:w-auto flex-shrink-0">
+<span class="px-space-xs py-space-2xs bg-secondary-container text-on-secondary-container font-mono-label-sm text-mono-label-sm rounded uppercase font-bold">Est. Savings: -80g / mo</span>
+<button class="px-space-sm py-space-xs bg-surface-card hover:bg-surface-container-high text-text-foreground font-body-sm text-body-sm rounded font-medium transition-colors flex items-center gap-space-2xs w-full md:w-auto justify-center shadow-sm">
+<span>Set Refill Reminder</span>
+<span class="material-symbols-outlined text-[16px]">alarm</span>
+</button>
+</div>
+</div>
+<!-- Tip Card 3: Film Produce Bags -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm transition-all hover:bg-surface-container-lowest flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-md flex-1">
+<div class="w-10 h-10 rounded bg-surface-container-high flex-shrink-0 flex items-center justify-center text-primary-container mt-1 md:mt-0">
+<span class="material-symbols-outlined text-[22px]">shopping_bag</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="px-space-xs py-0.5 bg-surface-variant text-text-muted font-mono-label-sm text-mono-label-sm rounded uppercase font-semibold">FILM ELIMINATION // TARGET: 10g LDPE #4</span>
+<span class="font-mono-label-sm text-mono-label-sm text-text-subtle">AUDIT TRIGGER: THU GROCERY</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-text-foreground mt-space-2xs">Bulk Dry Goods &amp; Washable Linen Produce Bags</h3>
+<p class="font-body-sm text-body-sm text-text-muted mt-space-2xs">
+                Grocery films and produce pouches represented 14% of residual waste. Using washable cotton mesh produce sacks prevents low-density film landfill drift entirely.
+              </p>
+</div>
+</div>
+<div class="flex flex-col items-start md:items-end gap-space-xs w-full md:w-auto flex-shrink-0">
+<span class="px-space-xs py-space-2xs bg-secondary-container text-on-secondary-container font-mono-label-sm text-mono-label-sm rounded uppercase font-bold">Est. Savings: -45g / mo</span>
+<button class="px-space-sm py-space-xs bg-surface-card hover:bg-surface-container-high text-text-foreground font-body-sm text-body-sm rounded font-medium transition-colors flex items-center gap-space-2xs w-full md:w-auto justify-center shadow-sm">
+<span>Grocery Checklist</span>
+<span class="material-symbols-outlined text-[16px]">checklist</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Action & Export Dossier Dock (4 cols) -->
+<div class="lg:col-span-4 flex flex-col gap-space-md">
+<!-- Dossier Card -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm flex flex-col">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted uppercase tracking-wider">LEDGER_SEAL // DOSSIER</span>
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-text-foreground">Audit Dossier &amp; Export</h3>
+<p class="font-body-sm text-body-sm text-text-muted mt-space-2xs">
+            Cryptographically signed weekly reduction report compliant with GRI-306 circular accounting protocol.
+          </p>
+<!-- Monospace Terminal Meta Box -->
+<div class="mt-space-md bg-surface-card-muted p-space-sm rounded font-mono-label-sm text-mono-label-sm flex flex-col gap-1 text-text-muted">
+<div class="flex justify-between">
+<span class="text-text-subtle">AUDIT_ID:</span>
+<span class="text-text-foreground font-semibold">AUD-2026-W09-REV</span>
+</div>
+<div class="flex justify-between">
+<span class="text-text-subtle">ISSUED:</span>
+<span class="text-text-foreground">SUNDAY 23:59 UTC</span>
+</div>
+<div class="flex justify-between">
+<span class="text-text-subtle">LEDGER_VALIDITY:</span>
+<span class="text-secondary font-bold">100% (SEALED)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-text-subtle">CIRCULAR_SCORE:</span>
+<span class="text-primary font-bold">88.6 / 100</span>
+</div>
+</div>
+<!-- Buttons -->
+<div class="mt-space-md flex flex-col gap-space-xs">
+<button class="w-full px-space-md py-space-sm bg-primary-container text-on-primary hover:bg-primary font-body-sm text-body-sm font-semibold rounded transition-colors flex items-center justify-center gap-space-xs shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span>Download Weekly Report (.PDF)</span>
+</button>
+<button class="w-full px-space-md py-space-sm bg-surface-card text-text-foreground hover:bg-surface-container-high font-body-sm text-body-sm font-medium rounded transition-colors flex items-center justify-center gap-space-xs shadow-sm">
+<span class="material-symbols-outlined text-[18px]">data_object</span>
+<span>Export Telemetry (.JSON / .CSV)</span>
+</button>
+</div>
+<!-- Next Week Commitment Toggle -->
+<div class="mt-space-md pt-space-md bg-surface-container-low p-space-sm rounded flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-semibold text-text-foreground">Target W-10: 250 g</span>
+<span class="font-mono-label-sm text-mono-label-sm text-secondary font-bold">-12% Progressive Goal</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+</div>
+<!-- Cohort Benchmark Mini-Widget -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm flex flex-col">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-mono-label-sm text-mono-label-sm text-text-muted uppercase">COMMUNITY_COHORT</span>
+<span class="font-mono-label-sm text-mono-label-sm text-secondary font-bold">TOP DECILER</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-text-foreground">Your 7-Day Standing</span>
+<p class="font-body-sm text-body-sm text-text-muted mt-space-2xs">
+            You produced <strong>284 g</strong>. The average household benchmark for metropolitan cohorts of 2 adults is <strong>740 g</strong> plastic packaging per week.
+          </p>
+<div class="w-full bg-surface-container-high h-2.5 rounded-full mt-space-sm overflow-hidden flex">
+<div class="bg-secondary h-full rounded-full" style="width: 38.3%"></div>
+</div>
+<div class="flex justify-between font-mono-label-sm text-mono-label-sm text-text-subtle mt-space-xs">
+<span>YOU: 284g</span>
+<span>COHORT MEAN: 740g</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Client-side Interactive Behavior Script for Sunday Review -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Micro-interaction: Highlight bar on hover and dynamic metrics
+      const chartBars = document.querySelectorAll('.group');
+      chartBars.forEach(bar => {
+        bar.addEventListener('mouseenter', () => {
+          bar.classList.add('opacity-100');
+        });
+      });
+    });
+  </script>
+</div></main></div></body></html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>PlastiTrack - Environmental Telemetry Console v2.4</title>
+<!-- Google Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            forest: {
+              DEFAULT: '#1b4332',
+              light: '#2d6a4f',
+              dark: '#143628',
+              accent: '#228b22',
+            },
+            warmstone: {
+              DEFAULT: '#e5e4d8',
+              card: '#ffffff',
+              border: '#cfcdc1',
+              muted: '#8b8a80',
+              hover: '#dcdbd0',
+            },
+            telemetry: {
+              emerald: '#008c5a',
+              amber: '#ea580c',
+              cyan: '#38bdf8',
+            }
+          },
+          boxShadow: {
+            'card-subtle': '0 4px 20px -2px rgba(14, 30, 23, 0.05), 0 2px 6px -1px rgba(14, 30, 23, 0.03)',
+            'card-hover': '0 10px 25px -4px rgba(14, 30, 23, 0.08), 0 4px 10px -2px rgba(14, 30, 23, 0.04)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="ambient-canvas">
+    /* Subtle Grafana-inspired ambient background mesh */
+    body {
+      background-color: #e5e4d8;
+      background-image: 
+        radial-gradient(at 15% 15%, rgba(247, 191, 163, 0.35) 0px, transparent 50%),
+        radial-gradient(at 85% 20%, rgba(230, 179, 230, 0.25) 0px, transparent 45%),
+        radial-gradient(at 20% 85%, rgba(163, 216, 247, 0.30) 0px, transparent 50%),
+        radial-gradient(at 80% 85%, rgba(123, 231, 231, 0.25) 0px, transparent 45%);
+      background-attachment: fixed;
+    }
+  </style>
+<style data-purpose="chart-enhancements">
+    /* Chart SVG spline animation & styling */
+    .chart-path {
+      stroke-dasharray: 2000;
+      stroke-dashoffset: 2000;
+      animation: drawChart 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes drawChart {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    .grid-line-dash {
+      stroke-dasharray: 4 4;
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="min-h-screen text-slate-800 antialiased font-sans flex flex-col md:flex-row overflow-x-hidden selection:bg-forest selection:text-white">
+<!-- BEGIN: LeftSidebar -->
+<aside class="w-full md:w-64 lg:w-72 bg-[#e2e1d5]/80 backdrop-blur-md border-r border-[#cfcdc1] flex flex-col justify-between shrink-0 min-h-screen" data-purpose="navigation-sidebar">
+<!-- Top Nav Group -->
+<div>
+<!-- Brand / Console ID -->
+<div class="px-6 pt-6 pb-5 flex items-center gap-3.5 border-b border-[#cfcdc1]/60">
+<!-- Logo Badge -->
+<div class="w-10 h-10 rounded-xl bg-forest flex items-center justify-center text-white shadow-sm shrink-0">
+<svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24">
+<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+</svg>
+</div>
+<div>
+<h1 class="text-lg font-bold tracking-tight text-forest leading-none">PlastiTrack</h1>
+<p class="font-mono text-[11px] font-semibold text-stone-500 tracking-wider mt-1">CONSOLE V2.4</p>
+</div>
+</div>
+<!-- Cluster Status Ribbon in Sidebar -->
+<div class="px-6 py-3 border-b border-[#cfcdc1]/60 flex items-center justify-between text-xs font-mono">
+<div class="flex items-center gap-2 text-stone-700">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+</span>
+<span class="tracking-wide">CLUSTER_OK</span>
+</div>
+<span class="px-1.5 py-0.5 rounded text-[10px] uppercase font-semibold bg-stone-300/80 text-stone-700 border border-stone-400/50">PROD</span>
+</div>
+<!-- Main Navigation Menu -->
+<nav class="p-4 space-y-1.5 font-medium text-sm"><!-- Dashboard (Active) -->
+<a class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-forest text-white shadow-sm transition-all" href="#dashboard">
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<rect height="7" width="7" x="3" y="3"></rect>
+<rect height="7" width="7" x="14" y="3"></rect>
+<rect height="7" width="7" x="14" y="14"></rect>
+<rect height="7" width="7" x="3" y="14"></rect>
+</svg>
+<span class="font-normal tracking-wide">Dashboard</span>
+</div>
+<span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-forest-light text-emerald-300 font-semibold tracking-wider">LIVE</span>
+</a>
+<!-- Daily Tracker -->
+<a class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-stone-700 hover:bg-[#d8d7cb] transition-colors" href="#daily-tracker">
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+</svg>
+<span class="">Daily Tracker</span>
+</div>
+</a>
+<!-- Daily Insights -->
+<a class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-stone-700 hover:bg-[#d8d7cb] transition-colors" href="#insights">
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+</svg>
+<span class="">Daily Insights</span>
+</div>
+</a>
+<!-- Sunday Review -->
+<a class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-stone-700 hover:bg-[#d8d7cb] transition-colors" href="#sunday-review">
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+<polyline points="14 2 14 8 20 8"></polyline>
+<line x1="16" x2="8" y1="13" y2="13"></line>
+<line x1="16" x2="8" y1="17" y2="17"></line>
+<polyline points="10 9 9 9 8 9"></polyline>
+</svg>
+<span class="">Sunday Review</span>
+</div>
+</a></nav>
+</div>
+<!-- Bottom Footer Links in Sidebar -->
+<div class="p-4 border-t border-[#cfcdc1]/70 space-y-1 font-mono text-xs text-stone-600">
+<a class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:text-stone-900 hover:bg-[#dcdbd0] transition-colors" href="#landing">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<line x1="19" x2="5" y1="12" y2="12"></line>
+<polyline points="12 19 5 12 12 5"></polyline>
+</svg>
+<span class="">Return to Landing</span>
+</a>
+<a class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:text-stone-900 hover:bg-[#dcdbd0] transition-colors" href="#settings">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="3"></circle>
+<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+</svg>
+<span class="">System Settings</span>
+</a>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- BEGIN: MainContentArea -->
+<main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+<!-- BEGIN: TopTelemetryHeader -->
+<header class="px-8 py-5 border-b border-[#cfcdc1]/60 flex flex-wrap items-center justify-between gap-4" data-purpose="console-header">
+<!-- Title & Live Throughput Rate -->
+<div>
+<h2 class="text-xl font-bold text-stone-900 tracking-tight">Personal Plastic Tracking Dashboard</h2>
+<div class="flex items-center gap-2 mt-1 font-mono text-xs text-stone-600"><span class="">7-Day Habit Monitor</span>
+<span class="text-stone-400">•</span>
+<span class="text-forest font-semibold tracking-wide">Live Tracking Active</span></div>
+</div>
+<!-- Right Action Indicators -->
+<div class="flex items-center gap-4">
+<!-- Live Stream Toggle Indicator -->
+<button class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-lg border border-[#cfcdc1] bg-white/70 hover:bg-white text-stone-800 font-mono text-xs font-medium tracking-wide transition shadow-sm" type="button">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+</span>
+<span class="">STREAM: ACTIVE</span>
+</button>
+<!-- Notification Bell with Ping -->
+<div class="relative cursor-pointer p-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-white/50 transition">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+</svg>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-500 rounded-full ring-2 ring-[#e5e4d8]"></span>
+</div>
+<!-- User Profile Pill / Workspace -->
+<div class="flex items-center gap-2.5 pl-2 border-l border-[#cfcdc1]/60">
+<div class="w-8 h-8 rounded-full bg-stone-300 border border-stone-400/60 flex items-center justify-center font-mono text-xs text-stone-700 font-semibold shadow-inner">
+<svg class="w-4 h-4 text-stone-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+<circle cx="12" cy="7" r="4"></circle>
+</svg>
+</div>
+</div>
+</div>
+</header>
+<!-- END: TopTelemetryHeader -->
+<!-- Inner Scrollable Dashboard View -->
+<div class="p-6 md:p-8 space-y-6 max-w-7xl">
+<!-- BEGIN: StreamDiagnosticsRibbon -->
+<section class="bg-white/80 backdrop-blur-sm border border-warmstone-border rounded-xl px-5 py-3 shadow-card-subtle flex flex-wrap items-center justify-between gap-4" data-purpose="telemetry-ribbon"><!-- Stream Metadata -->
+<div class="flex flex-wrap items-center gap-3 font-mono text-xs text-stone-600">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-400"></span>
+<span class="font-bold text-stone-900 tracking-wide">CURRENT CYCLE // WEEK 1</span>
+</div>
+<span class="text-stone-300">|</span>
+<span class="">DAILY AVERAGE: <span class="text-stone-800 font-semibold">4.8 kg</span></span>
+<span class="text-stone-300">|</span>
+<span class="">HABIT SCORE: <span class="text-stone-800 font-semibold">92% (EXCELLENT)</span></span>
+</div>
+<!-- Pill Badges -->
+<div class="flex items-center gap-2 font-mono text-[11px] font-semibold">
+<span class="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+  TRACKING (99.9%)
+</span>
+<span class="px-2.5 py-1 rounded-md bg-stone-100 text-stone-700 border border-stone-300">
+  HABIT OPTIMIZED
+</span>
+</div></section>
+<!-- END: StreamDiagnosticsRibbon -->
+<!-- BEGIN: MetricCardsGrid -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" data-purpose="kpi-metrics">
+<!-- Card 1: Total Plastic Ingested -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between"><div class="flex items-start justify-between">
+<div class="w-9 h-9 rounded-lg border border-amber-200 bg-amber-50/50 flex items-center justify-center text-amber-600">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<polyline points="3 6 5 6 21 6"></polyline>
+<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+</svg>
+</div>
+<span class="font-mono text-[11px] text-stone-600 tracking-wider">METRIC_01</span>
+</div>
+<div class="mt-4">
+<p class="text-xs font-medium text-stone-500">Total Plastic Used</p>
+<p class="font-mono text-3xl font-bold text-stone-900 tracking-tight mt-1">33.5 <span class="text-xl font-normal text-stone-600">kg</span></p>
+</div>
+<div class="mt-3 pt-3 border-t border-stone-100 flex items-center font-mono text-xs text-amber-600 font-medium">
+<span class="">+12% vs last week</span>
+</div></div>
+<!-- Card 2: Circular Recovery Rate -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between"><div class="flex items-start justify-between">
+<div class="w-9 h-9 rounded-lg border border-emerald-200 bg-emerald-50/50 flex items-center justify-center text-emerald-700">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"></path>
+<path d="M11 19h8.2a1.8 1.8 0 0 0 1.57-.88 1.78 1.78 0 0 0 .01-1.79L17.5 10"></path>
+<path d="m15.5 14-2.5-4 2.5-4"></path>
+<path d="M4.5 14h6.8"></path>
+</svg>
+</div>
+<span class="font-mono text-[11px] text-stone-600 tracking-wider">METRIC_02</span>
+</div>
+<div class="mt-4">
+<p class="text-xs font-medium text-stone-500">Plastic Recycled</p>
+<p class="font-mono text-3xl font-bold text-stone-900 tracking-tight mt-1">14.2 <span class="text-xl font-normal text-stone-600">kg</span></p>
+</div>
+<div class="mt-3 pt-3 border-t border-stone-100 flex items-center font-mono text-xs text-emerald-700 font-medium">
+<span class="">+5% this week</span>
+</div></div>
+<!-- Card 3: Anomaly Thresholds -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between"><div class="flex items-start justify-between">
+<div class="w-9 h-9 rounded-lg border border-amber-200 bg-amber-50/50 flex items-center justify-center text-amber-600">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+<line x1="12" x2="12" y1="9" y2="13"></line>
+<line x1="12" x2="12.01" y1="17" y2="17"></line>
+</svg>
+</div>
+<span class="font-mono text-[11px] text-stone-600 tracking-wider">METRIC_03</span>
+</div>
+<div class="mt-4">
+<p class="text-xs font-medium text-stone-500">Single-Use Alerts</p>
+<p class="font-mono text-3xl font-bold text-stone-900 tracking-tight mt-1">2</p>
+</div>
+<div class="mt-3 pt-3 border-t border-stone-100 flex items-center font-mono text-xs text-amber-700 font-medium">
+<span class="">Single-use spikes detected</span>
+</div></div>
+<!-- Card 4: Net Offset Equivalent -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-5 shadow-card-subtle hover:shadow-card-hover transition-all flex flex-col justify-between"><div class="flex items-start justify-between">
+<div class="w-9 h-9 rounded-lg border border-teal-200 bg-teal-50/50 flex items-center justify-center text-teal-700">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+<polyline points="17 6 23 6 23 12"></polyline>
+</svg>
+</div>
+<span class="font-mono text-[11px] text-stone-600 tracking-wider">METRIC_04</span>
+</div>
+<div class="mt-4">
+<p class="text-xs font-medium text-stone-500">Carbon Offset Saved</p>
+<p class="font-mono text-3xl font-bold text-stone-900 tracking-tight mt-1">45 <span class="text-xl font-normal text-stone-600">kg CO2</span></p>
+</div>
+<div class="mt-3 pt-3 border-t border-stone-100 flex items-center font-mono text-xs text-forest font-medium">
+<span class="">Equivalent saved</span>
+</div></div>
+</section>
+<!-- END: MetricCardsGrid -->
+<!-- BEGIN: TelemetryDetailedAnalysisSection -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start" data-purpose="charts-and-breakdown">
+<!-- Pipeline Consumption Area Chart (Col Span 2) -->
+<div class="lg:col-span-2 bg-white rounded-2xl border border-warmstone-border p-6 shadow-card-subtle">
+<!-- Chart Header -->
+<div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-stone-200/80">
+<div>
+<div class="flex items-center gap-2 text-stone-500 font-mono text-xs font-semibold tracking-wider">
+<svg class="w-3.5 h-3.5 text-forest" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+</svg>
+<span class="">TELEMETRY_SERIES // 7-DAY INGESTION</span>
+</div>
+<h3 class="text-lg font-bold text-stone-900 tracking-tight mt-1">7-Day Plastic Consumption Trend (kg/day)</h3>
+</div>
+<span class="font-mono text-xs px-2.5 py-1 rounded bg-stone-100 text-stone-600 border border-stone-200 font-medium">
+              TIME_SPAN: 168h
+            </span>
+</div>
+<!-- SVG Chart Area -->
+<div class="mt-6 relative">
+<div class="flex">
+<!-- Y-Axis Ticks -->
+<div class="flex flex-col justify-between text-right pr-4 font-mono text-xs text-stone-400 h-[240px] pb-6 select-none">
+<span class="">8</span>
+<span class="">6</span>
+<span class="">4</span>
+<span class="">2</span>
+<span class="">0</span>
+</div>
+<!-- Main SVG Canvas -->
+<div class="relative flex-1 h-[240px] w-full">
+<!-- Hairline Horizontal Gridlines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none pb-6">
+<div class="border-b border-stone-200 border-dashed w-full"></div>
+<div class="border-b border-stone-200 border-dashed w-full"></div>
+<div class="border-b border-stone-200 border-dashed w-full"></div>
+<div class="border-b border-stone-200 border-dashed w-full"></div>
+<div class="border-b border-stone-300 w-full"></div>
+</div>
+<!-- Spline Vector Graphic -->
+<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 700 240">
+<defs>
+<!-- Gradient for Area Fill -->
+<linearGradient id="ingestionGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#1b4332" stop-opacity="0.30"></stop>
+<stop offset="65%" stop-color="#2d6a4f" stop-opacity="0.10"></stop>
+<stop offset="100%" stop-color="#ffffff" stop-opacity="0.0"></stop>
+</linearGradient>
+</defs>
+<!-- Area Path -->
+<path d="M 0 145 
+                       C 70 152, 130 155, 175 140 
+                       C 220 120, 260 124, 305 138 
+                       C 350 145, 380 125, 420 102 
+                       C 460 78, 520 82, 580 98 
+                       C 630 112, 670 135, 700 150 
+                       L 700 240 L 0 240 Z" fill="url(#ingestionGradient)"></path>
+<!-- Stroke Spline Path -->
+<path class="chart-path" d="M 0 145 
+                       C 70 152, 130 155, 175 140 
+                       C 220 120, 260 124, 305 138 
+                       C 350 145, 380 125, 420 102 
+                       C 460 78, 520 82, 580 98 
+                       C 630 112, 670 135, 700 150" fill="none" stroke="#1b4332" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+<!-- Anomaly Peak Highlight Marker (Sample coordinate x: 420, y: 102) -->
+<g class="cursor-pointer group">
+<circle class="transition-transform group-hover:scale-125" cx="420" cy="102" fill="#ffffff" r="4.5" stroke="#1b4332" stroke-width="2.5"></circle>
+<circle class="animate-ping" cx="420" cy="102" fill="#1b4332" opacity="0.15" r="8"></circle>
+</g>
+</svg>
+</div>
+</div>
+<!-- X-Axis Timeline Indicators -->
+<div class="flex justify-between pl-8 pt-2 font-mono text-[11px] text-stone-600">
+<span class="">DAY_01 (T-168h)</span>
+<span class="">DAY_02</span>
+<span class="">DAY_03</span>
+<span class="">DAY_04 (PEAK_SPIKE)</span>
+<span class="">DAY_05</span>
+<span class="">DAY_06</span>
+<span class="">DAY_07 (CURRENT)</span>
+</div>
+</div>
+</div>
+<!-- Polymer Segregation Composition Breakdown (Col Span 1) -->
+<div class="bg-white rounded-2xl border border-warmstone-border p-6 shadow-card-subtle flex flex-col justify-between">
+<div>
+<!-- Section Header -->
+<div class="flex items-center justify-between pb-4 border-b border-stone-200/80">
+<span class="font-mono text-xs text-stone-500 font-semibold tracking-wider">POLYMERS // CATEGORICAL</span>
+<span class="font-mono text-xs font-bold text-stone-800">100%</span>
+</div>
+<!-- Description -->
+<div class="mt-4">
+<h3 class="text-lg font-bold text-stone-900 tracking-tight">Polymer Breakdown</h3>
+<p class="text-xs text-stone-500 mt-0.5">Classification by chemical resin composition</p>
+</div>
+<!-- Polymers Bars List -->
+<div class="mt-6 space-y-5"><!-- PET #1 -->
+<div>
+<div class="flex justify-between items-center text-xs mb-1.5 font-mono">
+<span class="font-medium text-stone-800">Single-use Bottles (PET #1)</span>
+<span class="font-bold text-stone-900">45%</span>
+</div>
+<div class="w-full h-2.5 bg-stone-200/70 rounded-full overflow-hidden">
+<div class="h-full bg-forest rounded-full transition-all duration-1000" style="width: 45%;"></div>
+</div>
+</div>
+<!-- HDPE #2 -->
+<div>
+<div class="flex justify-between items-center text-xs mb-1.5 font-mono">
+<span class="font-medium text-stone-800">Packaging (HDPE #2)</span>
+<span class="font-bold text-stone-900">30%</span>
+</div>
+<div class="w-full h-2.5 bg-stone-200/70 rounded-full overflow-hidden">
+<div class="h-full bg-forest-accent rounded-full transition-all duration-1000" style="width: 30%;"></div>
+</div>
+</div>
+<!-- PP #5 -->
+<div>
+<div class="flex justify-between items-center text-xs mb-1.5 font-mono">
+<span class="font-medium text-stone-800">Food Containers (PP #5)</span>
+<span class="font-bold text-stone-900">15%</span>
+</div>
+<div class="w-full h-2.5 bg-stone-200/70 rounded-full overflow-hidden">
+<div class="h-full bg-telemetry-cyan rounded-full transition-all duration-1000" style="width: 15%;"></div>
+</div>
+</div>
+<!-- Misc #7 -->
+<div>
+<div class="flex justify-between items-center text-xs mb-1.5 font-mono">
+<span class="font-medium text-stone-800">Other Plastics (#7)</span>
+<span class="font-bold text-stone-900">10%</span>
+</div>
+<div class="w-full h-2.5 bg-stone-200/70 rounded-full overflow-hidden">
+<div class="h-full bg-stone-400 rounded-full transition-all duration-1000" style="width: 10%;"></div>
+</div>
+</div></div>
+</div>
+<!-- Bottom Telemetry Integrity Footnote -->
+<div class="mt-8 pt-4 border-t border-stone-200/80 flex items-center justify-between text-stone-500 font-mono text-[11px]">
+<span class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              ISO 14044 VALIDATED
+            </span>
+<span class="">SPECTRA-SCAN v4</span>
+</div>
+</div>
+</section>
+<!-- END: TelemetryDetailedAnalysisSection -->
+</div>
+</main>
+<!-- END: MainContentArea -->
+<!-- BEGIN: InteractiveScripts -->
+<script data-purpose="tooltip-hover-handler">
+    document.addEventListener('DOMContentLoaded', () => {
+      // Setup subtle interaction for telemetry chart hover markers
+      const metricCards = document.querySelectorAll('[data-purpose="kpi-metrics"] > div');
+      metricCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.classList.add('border-forest/40');
+        });
+        card.addEventListener('mouseleave', () => {
+          card.classList.remove('border-forest/40');
+        });
+      });
+    });
+  </script>
+<!-- END: InteractiveScripts -->
+
+
+</body></html>
