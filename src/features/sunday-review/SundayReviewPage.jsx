@@ -17,6 +17,14 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { loadCampusDemoData, clearDemoData, isDemoDataActive } from '../../lib/demoData';
+import { 
+  kineticContainer, 
+  kineticCard, 
+  kineticChartCard, 
+  kineticBadge, 
+  kineticHover, 
+  kineticTap 
+} from '../../lib/motion';
 
 const TAILORED_CHALLENGES = [
   {
@@ -133,10 +141,19 @@ export default function SundayReviewPage() {
   const BadgeIcon = badgeIcon;
 
   return (
-    <div className="w-full max-w-[1800px] mx-auto space-y-6 font-body">
+    <motion.div 
+      variants={kineticContainer}
+      initial="hidden"
+      animate="visible"
+      className="w-full max-w-[1800px] mx-auto space-y-6 font-body"
+    >
       
       {/* Top Banner Ribbon */}
-      <section className="infra-card p-4 bg-white/50 backdrop-blur-xl border border-border flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+      <motion.section 
+        variants={kineticCard}
+        style={{ perspective: 1000, willChange: 'transform, opacity' }}
+        className="infra-card p-4 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl flex flex-wrap items-center justify-between gap-4 font-mono text-xs shadow-sm"
+      >
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -152,29 +169,40 @@ export default function SundayReviewPage() {
             {cleanDays}/{hasData ? weekData.length : 0} DAYS UNDER LIMIT
           </span>
         </div>
-      </section>
+      </motion.section>
 
       {/* Demo Benchmark Active Ribbon */}
       {isDemo && (
-        <div className="p-4 rounded-2xl bg-amber-500/15 border-2 border-amber-500/40 backdrop-blur-xl flex flex-wrap items-center justify-between gap-3 shadow-sm text-amber-950 font-mono text-xs sm:text-sm">
+        <motion.div 
+          variants={kineticCard}
+          style={{ perspective: 1000 }}
+          className="p-4 rounded-2xl bg-amber-500/15 border-2 border-amber-500/40 backdrop-blur-xl flex flex-wrap items-center justify-between gap-3 shadow-sm text-amber-950 font-mono text-xs sm:text-sm"
+        >
           <div className="flex items-center gap-2.5 font-bold">
             <Sparkles size={18} className="text-amber-700 shrink-0" />
             <span>DEMO BENCHMARK ACTIVE: 7-Day Campus Audit Data Loaded</span>
           </div>
-          <button
+          <motion.button
+            whileHover={kineticHover}
+            whileTap={kineticTap}
             onClick={() => clearDemoData()}
             type="button"
             className="px-3.5 py-1.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-black text-xs transition shadow-xs cursor-pointer"
           >
             Clear Demo Data
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       )}
 
       {/* 3 Summary Metric Cards + Badge */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Total Weekly Mass */}
-        <div className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border">
+        <motion.div 
+          variants={kineticCard}
+          whileHover={kineticHover}
+          style={{ perspective: 1000 }}
+          className="infra-card p-5 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl shadow-sm"
+        >
           <div className="flex justify-between items-center text-muted-foreground font-mono text-xs">
             <span>TOTAL 7-DAY MASS</span>
             <TrendingDown size={16} className="text-emerald-700" />
@@ -185,10 +213,15 @@ export default function SundayReviewPage() {
           <span className="font-mono text-[10px] text-stone-500 mt-1 block">
             {(totalWeeklyGrams / 1000).toFixed(2)} kg plastic logged
           </span>
-        </div>
+        </motion.div>
 
         {/* Daily Average */}
-        <div className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border">
+        <motion.div 
+          variants={kineticCard}
+          whileHover={kineticHover}
+          style={{ perspective: 1000 }}
+          className="infra-card p-5 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl shadow-sm"
+        >
           <div className="flex justify-between items-center text-muted-foreground font-mono text-xs">
             <span>DAILY AVERAGE</span>
             <ShieldCheck size={16} className="text-primary" />
@@ -199,10 +232,15 @@ export default function SundayReviewPage() {
           <span className="font-mono text-[10px] text-stone-500 mt-1 block">
             {avgDaily <= 33 ? "Below India's 33g baseline" : "Above national per capita"}
           </span>
-        </div>
+        </motion.div>
 
         {/* Goal Met */}
-        <div className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border">
+        <motion.div 
+          variants={kineticCard}
+          whileHover={kineticHover}
+          style={{ perspective: 1000 }}
+          className="infra-card p-5 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl shadow-sm"
+        >
           <div className="flex justify-between items-center text-muted-foreground font-mono text-xs">
             <span>TARGET COMPLIANCE</span>
             <Award size={16} className="text-amber-600" />
@@ -213,10 +251,15 @@ export default function SundayReviewPage() {
           <span className="font-mono text-[10px] text-stone-500 mt-1 block">
             Days under 40g limit
           </span>
-        </div>
+        </motion.div>
 
         {/* Dynamic Status Badge */}
-        <div className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border flex flex-col justify-between">
+        <motion.div 
+          variants={kineticCard}
+          whileHover={kineticHover}
+          style={{ perspective: 1000 }}
+          className="infra-card p-5 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl flex flex-col justify-between shadow-sm"
+        >
           <div className="flex justify-between items-center text-muted-foreground font-mono text-xs">
             <span>AUDIT STATUS BADGE</span>
             <BadgeIcon size={16} className="text-primary" />
@@ -229,11 +272,15 @@ export default function SundayReviewPage() {
               {badgeDescription}
             </p>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* 7-Day Bar Chart */}
-      <section className="infra-card p-6 bg-white/50 backdrop-blur-xl border border-border space-y-4">
+      <motion.section 
+        variants={kineticChartCard}
+        style={{ perspective: 1000, willChange: 'transform, opacity' }}
+        className="infra-card p-6 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl space-y-4 shadow-sm"
+      >
         <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-border">
           <div>
             <h3 className="text-lg font-bold font-heading text-foreground">
@@ -345,10 +392,14 @@ export default function SundayReviewPage() {
             </div>
           )}
         </div>
-      </section>
+      </motion.section>
 
       {/* Tailored Weekly Reduction Challenges */}
-      <section className="space-y-4">
+      <motion.section 
+        variants={kineticCard}
+        style={{ perspective: 1000, willChange: 'transform, opacity' }}
+        className="space-y-4"
+      >
         <div className="flex flex-wrap items-center justify-between gap-2 pb-1">
           <div>
             <div className="flex items-center gap-2 text-primary font-mono text-xs font-semibold tracking-wider uppercase">
@@ -361,11 +412,17 @@ export default function SundayReviewPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <motion.div 
+          variants={kineticContainer}
+          className="grid grid-cols-1 md:grid-cols-3 gap-5"
+        >
           {TAILORED_CHALLENGES.map((challenge, idx) => (
-            <div
+            <motion.div
               key={idx}
-              className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border flex flex-col justify-between space-y-4 hover:shadow-md transition-all"
+              variants={kineticCard}
+              whileHover={kineticHover}
+              style={{ perspective: 1000 }}
+              className="infra-card p-5 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl flex flex-col justify-between space-y-4 hover:shadow-md transition-all"
             >
               <div>
                 <div className="flex items-start justify-between">
@@ -385,17 +442,19 @@ export default function SundayReviewPage() {
                 </p>
               </div>
 
-              <Link
-                to={challenge.link}
-                className="w-full py-2.5 px-3 rounded-lg border border-border hover:bg-primary hover:text-white hover:border-primary text-foreground transition-all font-mono text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer group mt-4 shadow-2xs"
-              >
-                <span>{challenge.actionText}</span>
-                <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-            </div>
+              <motion.div whileHover={kineticHover} whileTap={kineticTap}>
+                <Link
+                  to={challenge.link}
+                  className="w-full py-2.5 px-3 rounded-xl border border-border hover:bg-primary hover:text-white hover:border-primary text-foreground transition-all font-mono text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer group mt-4 shadow-2xs"
+                >
+                  <span>{challenge.actionText}</span>
+                  <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </motion.div>
+            </motion.div>
           ))}
-        </div>
-      </section>
-    </div>
+        </motion.div>
+      </motion.section>
+    </motion.div>
   );
 }

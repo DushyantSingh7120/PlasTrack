@@ -13,6 +13,13 @@ import {
   Info
 } from 'lucide-react';
 import { STANDARDIZED_ITEMS, RESIN_CODES } from '../../lib/plasticData';
+import { 
+  kineticContainer, 
+  kineticCard, 
+  kineticBadge, 
+  kineticHover, 
+  kineticTap 
+} from '../../lib/motion';
 
 const TRACKER_PRESETS = [
   {
@@ -261,7 +268,12 @@ export default function DailyTrackerPage() {
   const persistenceYear = maxDecomposition > 0 ? currentYear + maxDecomposition : currentYear;
 
   return (
-    <div className="w-full max-w-[1800px] mx-auto space-y-6 font-body">
+    <motion.div 
+      variants={kineticContainer} 
+      initial="hidden" 
+      animate="visible" 
+      className="w-full max-w-[1800px] mx-auto space-y-6 font-body"
+    >
       <AnimatePresence>
         {notification && (
           <motion.div
@@ -288,7 +300,11 @@ export default function DailyTrackerPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* LEFT COLUMN: Quick-Add Catalog */}
-        <div className="lg:col-span-7 space-y-5">
+        <motion.div 
+          variants={kineticCard} 
+          style={{ perspective: 1000, willChange: 'transform, opacity' }}
+          className="lg:col-span-7 space-y-5"
+        >
           <div className="bg-white/35 backdrop-blur-2xl rounded-2xl border border-white/60 p-5 shadow-xs">
             <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-border/70">
               <div>
@@ -306,8 +322,10 @@ export default function DailyTrackerPage() {
               {CATEGORIES.map((cat) => {
                 const isActive = activeCategory === cat;
                 return (
-                  <button
+                  <motion.button
                     key={cat}
+                    whileHover={kineticHover}
+                    whileTap={kineticTap}
                     onClick={() => setActiveCategory(cat)}
                     type="button"
                     className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
@@ -318,7 +336,7 @@ export default function DailyTrackerPage() {
                   >
                     {isActive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>}
                     <span>{cat}</span>
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
@@ -332,8 +350,11 @@ export default function DailyTrackerPage() {
               const subtotalCost = qty * item.unitCostINR;
 
               return (
-                <div
+                <motion.div
                   key={item.id}
+                  variants={kineticCard}
+                  whileHover={kineticHover}
+                  style={{ perspective: 1000 }}
                   className="bg-white/35 backdrop-blur-xl rounded-2xl border border-white/60 p-5 shadow-xs hover:shadow-md hover:bg-white/50 transition-all flex flex-col justify-between"
                 >
                   <div>
@@ -394,7 +415,7 @@ export default function DailyTrackerPage() {
                       </span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -407,10 +428,14 @@ export default function DailyTrackerPage() {
               When opening milk packets, never snip off the small triangular corner completely. Keeping it attached prevents micro-scraps from escaping MRF sorting lines into ocean corridors!
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* RIGHT COLUMN: Live Calculation Summary */}
-        <div className="lg:col-span-5 bg-white/35 backdrop-blur-2xl rounded-2xl border border-white/60 p-6 shadow-xs flex flex-col justify-between space-y-6">
+        <motion.div 
+          variants={kineticCard}
+          style={{ perspective: 1000, willChange: 'transform, opacity' }}
+          className="lg:col-span-5 bg-white/35 backdrop-blur-2xl rounded-2xl border border-white/60 p-6 shadow-xs flex flex-col justify-between space-y-6"
+        >
           <div className="space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-border/70">
               <div className="flex items-center gap-2 text-primary font-mono text-xs font-semibold tracking-wider">
@@ -424,7 +449,10 @@ export default function DailyTrackerPage() {
 
             {/* Total Mass & Cost Cards */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="p-4 rounded-2xl bg-white/30 hover:bg-white/45 backdrop-blur-md border border-white/60 shadow-xs transition-all">
+              <motion.div 
+                whileHover={kineticHover}
+                className="p-4 rounded-2xl bg-white/30 hover:bg-white/45 backdrop-blur-md border border-white/60 shadow-xs transition-all"
+              >
                 <p className="text-[11px] font-bold text-stone-700 font-mono uppercase tracking-wider">
                   Total Mass
                 </p>
@@ -434,9 +462,12 @@ export default function DailyTrackerPage() {
                 <span className="font-mono text-[10px] text-stone-700 font-semibold mt-1 block">
                   {(totalGrams / 1000).toFixed(3)} kg logged
                 </span>
-              </div>
+              </motion.div>
 
-              <div className="p-4 rounded-2xl bg-white/30 hover:bg-white/45 backdrop-blur-md border border-white/60 shadow-xs transition-all">
+              <motion.div 
+                whileHover={kineticHover}
+                className="p-4 rounded-2xl bg-white/30 hover:bg-white/45 backdrop-blur-md border border-white/60 shadow-xs transition-all"
+              >
                 <p className="text-[11px] font-bold text-stone-700 font-mono uppercase tracking-wider">
                   Money Spent
                 </p>
@@ -446,11 +477,14 @@ export default function DailyTrackerPage() {
                 <span className="font-mono text-[10px] text-stone-700 font-semibold mt-1 block">
                   On disposable items
                 </span>
-              </div>
+              </motion.div>
             </div>
 
             {/* Decomposition Horizon Display */}
-            <div className="p-4 rounded-2xl bg-white/30 border border-white/60 backdrop-blur-md flex items-start gap-3">
+            <motion.div 
+              whileHover={kineticHover}
+              className="p-4 rounded-2xl bg-white/30 border border-white/60 backdrop-blur-md flex items-start gap-3"
+            >
               <Clock size={20} className="text-emerald-800 shrink-0 mt-0.5" />
               <div>
                 <span className="font-mono text-xs font-black text-stone-950 uppercase block">
@@ -460,7 +494,7 @@ export default function DailyTrackerPage() {
                   Items logged today will persist in landfills and waterways for up to <strong className="text-stone-950 font-black">{maxDecomposition || 0} years</strong> (until approximately <strong className="text-stone-950 font-black">{persistenceYear} AD</strong>).
                 </p>
               </div>
-            </div>
+            </motion.div>
 
             {/* Polymer Breakdown Bars */}
             <div>
@@ -539,27 +573,31 @@ export default function DailyTrackerPage() {
 
           {/* Action Buttons */}
           <div className="space-y-2 pt-4 border-t border-border">
-            <button
+            <motion.button
+              whileHover={kineticHover}
+              whileTap={kineticTap}
               onClick={handleLog}
               className="w-full py-3 px-4 rounded-xl bg-primary hover:bg-black text-white font-medium text-sm transition-all shadow-xs flex items-center justify-center gap-2 group cursor-pointer font-mono"
               type="button"
             >
               <Check className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
               <span>Save Today's Log</span>
-            </button>
+            </motion.button>
             <div className="flex gap-2 font-mono text-xs">
-              <button
+              <motion.button
+                whileHover={kineticHover}
+                whileTap={kineticTap}
                 onClick={handleReset}
                 className="w-full py-2 px-3 rounded-lg border border-border hover:bg-stone-100 text-stone-600 hover:text-foreground transition-colors cursor-pointer flex items-center justify-center gap-1.5"
                 type="button"
               >
                 <RotateCcw size={13} />
                 <span>Reset Counters</span>
-              </button>
+              </motion.button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

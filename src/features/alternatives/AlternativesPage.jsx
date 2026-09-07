@@ -14,6 +14,12 @@ import {
   HelpCircle
 } from 'lucide-react';
 import { ECO_ALTERNATIVES } from '../../lib/alternativesData';
+import { 
+  kineticContainer, 
+  kineticCard, 
+  kineticHover, 
+  kineticTap 
+} from '../../lib/motion';
 
 export default function AlternativesPage() {
   const [flippedCards, setFlippedCards] = useState({});
@@ -29,10 +35,19 @@ export default function AlternativesPage() {
   const totalAnnualRupees = ECO_ALTERNATIVES.reduce((sum, item) => sum + item.annualMoneySavedINR, 0);
 
   return (
-    <div className="w-full max-w-[1800px] mx-auto space-y-8 font-body">
+    <motion.div 
+      variants={kineticContainer}
+      initial="hidden"
+      animate="visible"
+      className="w-full max-w-[1800px] mx-auto space-y-8 font-body"
+    >
       
       {/* Top Header Banner */}
-      <div className="infra-card p-6 bg-white/50 backdrop-blur-xl border border-border flex flex-wrap items-center justify-between gap-4">
+      <motion.div 
+        variants={kineticCard}
+        style={{ perspective: 1000, willChange: 'transform, opacity' }}
+        className="infra-card p-6 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-sm"
+      >
         <div>
           <div className="flex items-center gap-2 font-mono text-xs text-primary font-semibold tracking-wider uppercase mb-1">
             <Sparkles size={16} className="text-emerald-700" />
@@ -53,7 +68,7 @@ export default function AlternativesPage() {
             Diverts: <strong className="text-foreground">{(totalAnnualGrams / 1000).toFixed(1)} kg plastic/yr</strong>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Instruction Tip */}
       <div className="flex items-center justify-between px-2 text-xs font-mono text-muted-foreground">
@@ -72,9 +87,13 @@ export default function AlternativesPage() {
           const isFlipped = !!flippedCards[item.id];
 
           return (
-            <div 
+            <motion.div 
               key={item.id} 
-              className="h-[430px] perspective-1000 cursor-pointer group select-none"
+              variants={kineticCard}
+              whileHover={kineticHover}
+              whileTap={kineticTap}
+              style={{ perspective: 1000, willChange: 'transform, opacity' }}
+              className="h-[430px] cursor-pointer group select-none"
               onClick={() => toggleFlip(item.id)}
             >
               <motion.div
@@ -197,11 +216,11 @@ export default function AlternativesPage() {
                   </div>
                 </div>
               </motion.div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
 
-    </div>
+    </motion.div>
   );
 }

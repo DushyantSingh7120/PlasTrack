@@ -17,6 +17,14 @@ import {
 } from 'lucide-react';
 import { FACTS_DATABASE } from '../../lib/factsDatabase';
 import { RESIN_CODES } from '../../lib/plasticData';
+import { 
+  kineticContainer, 
+  kineticDenseContainer, 
+  kineticCard, 
+  kineticBadge, 
+  kineticHover, 
+  kineticTap 
+} from '../../lib/motion';
 
 const POLICY_HIGHLIGHTS = [
   {
@@ -108,10 +116,19 @@ export default function DailyInsightsPage() {
   };
 
   return (
-    <div className="w-full max-w-[1800px] mx-auto space-y-8 font-body">
+    <motion.div 
+      variants={kineticContainer}
+      initial="hidden"
+      animate="visible"
+      className="w-full max-w-[1800px] mx-auto space-y-8 font-body"
+    >
       
       {/* Top Header Banner */}
-      <div className="infra-card p-6 bg-white/50 backdrop-blur-xl border border-border/80 flex flex-wrap items-center justify-between gap-4">
+      <motion.div 
+        variants={kineticCard}
+        style={{ perspective: 1000, willChange: 'transform, opacity' }}
+        className="infra-card p-6 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-sm"
+      >
         <div>
           <div className="flex items-center gap-2 font-mono text-xs text-primary font-semibold tracking-wider uppercase mb-1">
             <Sparkles size={16} />
@@ -132,10 +149,14 @@ export default function DailyInsightsPage() {
             NEJM 2024 Cited
           </span>
         </div>
-      </div>
+      </motion.div>
 
       {/* Interactive Fact Carousel Section */}
-      <section className="infra-card p-7 bg-white/60 backdrop-blur-xl border border-border relative overflow-hidden shadow-sm">
+      <motion.section 
+        variants={kineticCard}
+        style={{ perspective: 1000, willChange: 'transform, opacity' }}
+        className="infra-card p-7 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl relative overflow-hidden shadow-sm"
+      >
         <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-border/70">
           <div className="flex items-center gap-2 text-primary font-mono text-xs font-bold tracking-wider">
             <BookOpen size={17} />
@@ -208,7 +229,7 @@ export default function DailyInsightsPage() {
             </button>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Statutory Policy Framework of India */}
       <section className="space-y-4">
@@ -226,11 +247,17 @@ export default function DailyInsightsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <motion.div 
+          variants={kineticDenseContainer}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+        >
           {POLICY_HIGHLIGHTS.map((item, idx) => (
-            <div 
+            <motion.div 
               key={idx}
-              className="infra-card p-5 bg-white/35 backdrop-blur-xl border border-white/60 flex flex-col justify-between hover:shadow-md transition-all"
+              variants={kineticCard}
+              whileHover={kineticHover}
+              style={{ perspective: 1000 }}
+              className="infra-card p-5 bg-white/35 backdrop-blur-xl border border-white/60 rounded-2xl flex flex-col justify-between hover:shadow-md transition-all"
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
@@ -251,13 +278,13 @@ export default function DailyInsightsPage() {
                   {item.description}
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* Action Roadmap: What Each & Everybody Should Do */}
-      <section className="infra-card p-6 bg-white/35 backdrop-blur-2xl border border-white/60 shadow-sm">
+      <section className="infra-card p-6 bg-white/35 backdrop-blur-2xl border border-white/60 rounded-2xl shadow-sm">
         <div className="flex items-center justify-between pb-4 border-b border-border/70 mb-5">
           <div>
             <div className="flex items-center gap-2 text-primary font-mono text-xs font-semibold tracking-wider">
@@ -275,10 +302,16 @@ export default function DailyInsightsPage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <motion.div 
+          variants={kineticContainer}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        >
           {ACTION_STEPS.map((step) => (
-            <div 
+            <motion.div 
               key={step.id} 
+              variants={kineticCard}
+              whileHover={kineticHover}
+              style={{ perspective: 1000 }}
               className="p-5 rounded-2xl bg-white/35 hover:bg-white/50 backdrop-blur-xl border border-white/60 hover:border-white/90 shadow-xs transition-all flex flex-col justify-between"
             >
               <div>
@@ -297,9 +330,9 @@ export default function DailyInsightsPage() {
                   {step.why}
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* Resin Code Telemetry & Indian MRF Recycling Index */}
@@ -318,11 +351,17 @@ export default function DailyInsightsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <motion.div 
+          variants={kineticDenseContainer}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+        >
           {RESIN_CODES.map((resin) => (
-            <div
+            <motion.div
               key={resin.code}
-              className="infra-card p-5 bg-white/35 backdrop-blur-xl border border-white/60 flex flex-col justify-between hover:shadow-md transition-all group"
+              variants={kineticCard}
+              whileHover={kineticHover}
+              style={{ perspective: 1000 }}
+              className="infra-card p-5 bg-white/35 backdrop-blur-xl border border-white/60 rounded-2xl flex flex-col justify-between hover:shadow-md transition-all group"
             >
               <div>
                 <div className="flex items-start justify-between">
@@ -353,11 +392,11 @@ export default function DailyInsightsPage() {
                 <p className="font-medium text-stone-800 mb-1">Common items: {resin.commonItems.slice(0, 2).join(", ")}</p>
                 <p className="text-[11px] text-muted-foreground">{resin.chemicalNotes}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
-    </div>
+    </motion.div>
   );
 }

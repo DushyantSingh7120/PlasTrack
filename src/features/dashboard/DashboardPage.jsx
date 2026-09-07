@@ -17,19 +17,14 @@ import {
 import { Link } from 'react-router-dom';
 import { getFactOfTheDay } from '../../lib/factsDatabase';
 import { loadCampusDemoData, clearDemoData, isDemoDataActive } from '../../lib/demoData';
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08 }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 26 } }
-};
+import { 
+  kineticContainer, 
+  kineticCard, 
+  kineticChartCard, 
+  kineticBadge, 
+  kineticHover, 
+  kineticTap 
+} from '../../lib/motion';
 
 export default function DashboardPage() {
   const [history, setHistory] = useState([]);
@@ -87,7 +82,7 @@ export default function DashboardPage() {
 
   return (
     <motion.div 
-      variants={containerVariants}
+      variants={kineticContainer}
       initial="hidden"
       animate="show"
       className="w-full max-w-[1800px] mx-auto space-y-6 font-body"
@@ -95,7 +90,8 @@ export default function DashboardPage() {
       
       {/* Top Telemetry Status Ribbon */}
       <motion.div 
-        variants={itemVariants} 
+        variants={kineticCard} 
+        style={{ perspective: 1000, willChange: 'transform, opacity' }}
         className="p-4 sm:p-5 rounded-2xl bg-white/30 hover:bg-white/40 backdrop-blur-xl flex flex-wrap items-center justify-between gap-4 border border-white/60 shadow-sm transition-all"
       >
         <div className="flex items-center gap-3 sm:gap-4">
@@ -112,39 +108,46 @@ export default function DashboardPage() {
           <span className="text-xs sm:text-sm text-stone-800 font-medium">
             Cycle: <strong className="text-stone-950 font-bold">{hasData ? `${chartData.length}-Day Trajectory` : "No Active Data"}</strong>
           </span>
-          <Link 
-            to="/tracker" 
-            className="px-4 py-2 bg-emerald-800 hover:bg-emerald-950 text-white rounded-xl font-mono text-xs sm:text-sm font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
-          >
-            <span>+ Quick Log</span>
-            <ArrowRight size={14} />
-          </Link>
+          <motion.div whileHover={kineticHover} whileTap={kineticTap}>
+            <Link 
+              to="/tracker" 
+              className="px-4 py-2 bg-emerald-800 hover:bg-emerald-950 text-white rounded-xl font-mono text-xs sm:text-sm font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>+ Quick Log</span>
+              <ArrowRight size={14} />
+            </Link>
+          </motion.div>
         </div>
       </motion.div>
 
       {/* Demo Mode Active Banner (Only shown when Demo Data is active) */}
       {isDemo && (
         <motion.div
-          variants={itemVariants}
+          variants={kineticCard}
+          style={{ perspective: 1000 }}
           className="p-4 rounded-2xl bg-amber-500/15 border-2 border-amber-500/40 backdrop-blur-xl flex flex-wrap items-center justify-between gap-3 shadow-sm text-amber-950 font-mono text-xs sm:text-sm"
         >
           <div className="flex items-center gap-2.5 font-bold">
             <Sparkles size={18} className="text-amber-700 shrink-0" />
             <span>DEMO BENCHMARK ACTIVE: Displaying Calibrated 7-Day Indian Campus Student Audit</span>
           </div>
-          <button
+          <motion.button
+            whileHover={kineticHover}
+            whileTap={kineticTap}
             onClick={() => clearDemoData()}
             type="button"
             className="px-3.5 py-1.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-black text-xs transition shadow-xs cursor-pointer"
           >
             Clear Demo Data
-          </button>
+          </motion.button>
         </motion.div>
       )}
 
       {/* Fact of the Day Highlight Banner */}
       <motion.div 
-        variants={itemVariants}
+        variants={kineticCard}
+        whileHover={kineticHover}
+        style={{ perspective: 1000, willChange: 'transform, opacity' }}
         className="p-6 sm:p-7 rounded-2xl bg-white/35 hover:bg-white/45 backdrop-blur-xl border border-white/60 shadow-md relative overflow-hidden transition-all"
       >
         <div className="flex flex-wrap items-center justify-between gap-3 pb-3.5 border-b border-black/10">
@@ -221,7 +224,8 @@ export default function DashboardPage() {
         
         {/* Main Trend Area Chart */}
         <motion.div 
-          variants={itemVariants} 
+          variants={kineticChartCard} 
+          style={{ willChange: 'transform, opacity' }}
           className="lg:col-span-2 p-6 sm:p-7 rounded-2xl bg-white/35 hover:bg-white/40 backdrop-blur-xl border border-white/60 shadow-md transition-all"
         >
           <div className="flex flex-wrap items-center justify-between mb-6 pb-4 border-b border-black/10 gap-3">
@@ -234,78 +238,69 @@ export default function DashboardPage() {
                 7-Day Plastic Weight Trajectory
               </h3>
             </div>
-            <div className="font-mono text-xs sm:text-sm text-stone-900 flex items-center gap-4">
-              <span className="flex items-center gap-1.5 font-black">
-                <span className="w-3 h-3 rounded-full bg-emerald-900"></span>
-                <span>Your Logged Grams</span>
-              </span>
-              <span className="flex items-center gap-1.5 font-bold text-stone-600">
-                <span className="w-3 h-3 rounded-full bg-stone-400"></span>
-                <span>India Avg (33g)</span>
-              </span>
-            </div>
           </div>
           <div className="h-[310px] w-full">
             {hasData ? (
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
-                    <linearGradient id="colorPlastic" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#1b4332" stopOpacity={0.45}/>
-                      <stop offset="95%" stopColor="#1b4332" stopOpacity={0.05}/>
+                    <linearGradient id="plasticGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#064e3b" stopOpacity={0.6}/>
+                      <stop offset="95%" stopColor="#064e3b" stopOpacity={0.0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.06)" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.08)" />
                   <XAxis 
                     dataKey="name" 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fill: '#0e1e17', fontSize: 13, fontFamily: 'Geist Mono', fontWeight: 800 }} 
+                    tick={{ fill: '#1c1917', fontSize: 12, fontWeight: 700, fontFamily: 'monospace' }} 
                   />
                   <YAxis 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fill: '#0e1e17', fontSize: 13, fontFamily: 'Geist Mono', fontWeight: 800 }} 
-                    unit="g" 
+                    tick={{ fill: '#1c1917', fontSize: 12, fontWeight: 700, fontFamily: 'monospace' }} 
                   />
                   <Tooltip 
                     contentStyle={{ 
+                      backgroundColor: 'rgba(255, 255, 255, 0.92)', 
                       borderRadius: '12px', 
-                      border: '1px solid rgba(255, 255, 255, 0.8)', 
-                      backgroundColor: 'rgba(255, 255, 255, 0.92)',
-                      backdropFilter: 'blur(16px)',
-                      boxShadow: '0 12px 28px -4px rgba(0, 0, 0, 0.15)', 
-                      fontFamily: 'Inter',
-                      fontSize: '13px',
-                      fontWeight: 700,
-                      padding: '10px 14px'
-                    }}
-                    itemStyle={{ color: '#0e1e17', fontWeight: 800 }}
+                      border: '1px solid rgba(0,0,0,0.15)',
+                      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
+                      fontFamily: 'monospace',
+                      color: '#0c0a09',
+                      fontWeight: 'bold'
+                    }} 
                   />
-                  <Area type="monotone" dataKey="plastic" stroke="#1b4332" strokeWidth={3.5} fillOpacity={1} fill="url(#colorPlastic)" />
+                  <Area 
+                    type="monotone" 
+                    dataKey="plastic" 
+                    stroke="#064e3b" 
+                    strokeWidth={3} 
+                    fillOpacity={1} 
+                    fill="url(#plasticGradient)" 
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full w-full flex flex-col items-center justify-center text-center p-6 bg-white/20 backdrop-blur-md rounded-2xl border border-white/50">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-700/20 border border-emerald-600/40 flex items-center justify-center text-emerald-950 mb-3">
-                  <Activity size={24} />
-                </div>
-                <h4 className="text-lg font-black font-heading text-stone-950">No Plastic Waste Logged Yet</h4>
-                <p className="text-xs sm:text-sm text-stone-800 font-medium max-w-md mt-1 mb-4">
-                  Start logging your daily plastic items in the tracker, or load the pre-calibrated 7-day Campus Benchmark demo dataset to explore full live telemetry and trends.
+              <div className="h-full flex flex-col items-center justify-center text-center p-6 bg-white/10 rounded-xl border border-dashed border-stone-300">
+                <Trash2 size={36} className="text-stone-400 mb-3" />
+                <h4 className="text-base font-bold text-stone-800 font-heading">No Plastic Logs Found</h4>
+                <p className="text-xs sm:text-sm text-stone-600 max-w-sm mt-1">
+                  Start logging your daily plastic items to see your 7-day trajectory chart, or load sample campus benchmark data.
                 </p>
-                <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="mt-4 flex flex-wrap gap-2.5 justify-center">
                   <button
                     onClick={() => loadCampusDemoData()}
                     type="button"
-                    className="px-4 py-2 bg-emerald-800 hover:bg-emerald-950 text-white font-mono text-xs sm:text-sm font-bold rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer border border-emerald-400/50"
+                    className="px-3.5 py-1.5 bg-emerald-800 hover:bg-emerald-950 text-white rounded-lg font-mono text-xs font-bold transition shadow-xs cursor-pointer flex items-center gap-1.5"
                   >
-                    <Sparkles size={15} className="text-emerald-300" />
-                    <span>⚡ Load Campus Demo Data</span>
+                    <Sparkles size={13} className="text-emerald-300" />
+                    <span>Load Campus Demo</span>
                   </button>
                   <Link
                     to="/tracker"
-                    className="px-4 py-2 bg-white/70 hover:bg-white text-stone-950 border border-white/80 font-mono text-xs sm:text-sm font-bold rounded-xl shadow-xs transition cursor-pointer"
+                    className="px-3.5 py-1.5 bg-white/80 hover:bg-white text-stone-900 border border-stone-300 rounded-lg font-mono text-xs font-bold transition shadow-xs"
                   >
                     + Go to Daily Tracker
                   </Link>
@@ -317,7 +312,8 @@ export default function DashboardPage() {
 
         {/* National Benchmark & Polymer Breakdown */}
         <motion.div 
-          variants={itemVariants} 
+          variants={kineticCard} 
+          style={{ perspective: 1000, willChange: 'transform, opacity' }}
           className="p-6 sm:p-7 rounded-2xl bg-white/35 hover:bg-white/40 backdrop-blur-xl border border-white/60 shadow-md flex flex-col justify-between transition-all"
         >
           <div>
@@ -334,26 +330,12 @@ export default function DashboardPage() {
                 <span className="text-stone-800 font-bold">Your Daily Average:</span>
                 <span className="font-black text-stone-950 text-sm sm:text-base">{avgDailyGrams}g / day</span>
               </div>
-              <div className="flex justify-between items-center text-xs sm:text-sm mb-2.5">
-                <span className="text-stone-700 font-bold">India National Per Capita:</span>
-                <span className="font-black text-stone-800">{nationalAvgGrams}g / day</span>
-              </div>
-              <div className="w-full h-2.5 bg-black/10 rounded-full overflow-hidden relative">
-                <div 
-                  className={`h-full rounded-full transition-all duration-500 ${
-                    avgDailyGrams <= nationalAvgGrams ? 'bg-emerald-700' : 'bg-orange-600'
-                  }`}
-                  style={{ width: `${Math.min(100, Math.round((avgDailyGrams / (nationalAvgGrams * 1.5)) * 100))}%` }}
-                />
-              </div>
-              <div className="mt-2.5 text-xs text-stone-900 font-body font-bold leading-snug">
                 {hasData 
                   ? (avgDailyGrams <= nationalAvgGrams 
                       ? "✓ Great! You are consuming less plastic than India's national average."
                       : `⚠️ Notice: You are ${Math.abs(vsNationalPct)}% above India's national per capita average.`)
                   : "No consumption logged yet. Log items or load demo data to benchmark against national baseline."}
               </div>
-            </div>
 
             <h4 className="text-base font-black font-heading text-stone-950 mb-3.5">
               Polymer Sorting Telemetry
@@ -386,8 +368,10 @@ export default function DashboardPage() {
 function StatCard({ title, value, subValue, trend, icon, badgeClass }) {
   return (
     <motion.div 
-      variants={itemVariants}
-      whileHover={{ y: -4, transition: { duration: 0.18 } }}
+      variants={kineticCard}
+      whileHover={kineticHover}
+      whileTap={kineticTap}
+      style={{ perspective: 1000, willChange: 'transform, opacity' }}
       className="p-5 sm:p-6 rounded-2xl bg-white/35 hover:bg-white/45 backdrop-blur-xl border border-white/60 hover:border-white/90 flex flex-col justify-between group shadow-md hover:shadow-xl transition-all duration-200"
     >
       <div className="flex justify-between items-start mb-3.5">

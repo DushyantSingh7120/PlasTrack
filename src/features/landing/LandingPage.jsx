@@ -2,8 +2,15 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../../components/layout/Navbar';
-import { Activity, BookOpen, Sparkles, CheckCircle2, ArrowRight, Zap } from 'lucide-react';
+import { Activity, BookOpen, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
 import { loadCampusDemoData } from '../../lib/demoData';
+import { 
+  kineticContainer, 
+  kineticCard, 
+  kineticBadge, 
+  kineticHover, 
+  kineticTap 
+} from '../../lib/motion';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -12,6 +19,7 @@ export default function LandingPage() {
     loadCampusDemoData();
     navigate('/dashboard');
   };
+
   return (
     <div className="bg-transparent min-h-screen font-body text-foreground selection:bg-primary selection:text-white">
       <Navbar />
@@ -23,16 +31,20 @@ export default function LandingPage() {
             
             {/* Left Column */}
             <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              variants={kineticCard}
+              initial="hidden"
+              animate="visible"
+              style={{ perspective: 1000, willChange: 'transform, opacity' }}
               className="lg:col-span-7 space-y-6 sm:space-y-8 lg:space-y-10"
             >
               
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/70 backdrop-blur-md border border-border text-xs sm:text-sm font-mono tracking-wide text-foreground shadow-xs">
+              <motion.div 
+                variants={kineticBadge}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/70 backdrop-blur-md border border-border text-xs sm:text-sm font-mono tracking-wide text-foreground shadow-xs"
+              >
                 <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span>PERSONAL PLASTIC TRACKER</span>
-              </div>
+              </motion.div>
 
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[68px] xl:text-[76px] 2xl:text-[88px] font-bold font-heading tracking-tight text-foreground leading-[1.08]">
                 Track your plastic.<br />
@@ -46,27 +58,35 @@ export default function LandingPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
-                <Link 
-                  to="/dashboard" 
-                  className="px-6 py-3.5 sm:px-7 sm:py-4 rounded-xl bg-primary text-white font-mono text-sm sm:text-base font-semibold tracking-wider uppercase hover:bg-black transition-all shadow-md flex items-center justify-center gap-2.5 group cursor-pointer"
-                >
-                  <span>Start Tracking Free</span>
-                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link 
-                  to="/insights" 
-                  className="px-6 py-3.5 sm:px-7 sm:py-4 rounded-xl bg-white/70 backdrop-blur-md border border-white/60 text-foreground font-semibold text-sm sm:text-base hover:bg-white hover:border-foreground/30 transition-all text-center"
-                >
-                  Learn the Facts
-                </Link>
-                <button
+                <motion.div whileHover={kineticHover} whileTap={kineticTap}>
+                  <Link 
+                    to="/dashboard" 
+                    className="w-full sm:w-auto px-6 py-3.5 sm:px-7 sm:py-4 rounded-xl bg-primary text-white font-mono text-sm sm:text-base font-semibold tracking-wider uppercase hover:bg-black transition-all shadow-md flex items-center justify-center gap-2.5 group cursor-pointer"
+                  >
+                    <span>Start Tracking Free</span>
+                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </motion.div>
+
+                <motion.div whileHover={kineticHover} whileTap={kineticTap}>
+                  <Link 
+                    to="/insights" 
+                    className="w-full sm:w-auto px-6 py-3.5 sm:px-7 sm:py-4 rounded-xl bg-white/70 backdrop-blur-md border border-white/60 text-foreground font-semibold text-sm sm:text-base hover:bg-white hover:border-foreground/30 transition-all text-center flex items-center justify-center"
+                  >
+                    Learn the Facts
+                  </Link>
+                </motion.div>
+
+                <motion.button
+                  whileHover={kineticHover}
+                  whileTap={kineticTap}
                   onClick={handleLaunchDemo}
                   type="button"
-                  className="px-6 py-3.5 sm:px-7 sm:py-4 rounded-xl bg-emerald-800 hover:bg-emerald-950 text-white font-mono text-sm sm:text-base font-black transition-all shadow-md flex items-center justify-center gap-2 border border-emerald-400/50 cursor-pointer"
+                  className="w-full sm:w-auto px-6 py-3.5 sm:px-7 sm:py-4 rounded-xl bg-emerald-800 hover:bg-emerald-950 text-white font-mono text-sm sm:text-base font-black transition-all shadow-md flex items-center justify-center gap-2 border border-emerald-400/50 cursor-pointer"
                 >
                   <Sparkles size={17} className="text-emerald-300" />
                   <span>⚡ Load Campus Demo</span>
-                </button>
+                </motion.button>
               </div>
 
               <div className="pt-4 border-t border-border/80 flex flex-wrap gap-6 sm:gap-8 text-xs sm:text-sm font-mono text-muted-foreground">
@@ -86,17 +106,17 @@ export default function LandingPage() {
 
             </motion.div>
 
-            {/* Right Column: Friendly Weekly Summary Visual */}
+            {/* Right Column: Friendly Weekly Summary Visual with Kinetic Spring */}
             <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              variants={kineticCard}
+              initial="hidden"
+              animate="visible"
+              style={{ perspective: 1000, willChange: 'transform, opacity' }}
               className="lg:col-span-5 flex justify-center lg:justify-end w-full"
             >
               <motion.div 
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="w-full max-w-xl 2xl:max-w-2xl infra-card p-6 sm:p-8 lg:p-10 xl:p-12 bg-white/40 backdrop-blur-xl border border-border hover:border-black shadow-xl rounded-2xl relative transform -rotate-2 hover:rotate-0 transition-all duration-500"
+                whileHover={kineticHover}
+                className="w-full max-w-xl 2xl:max-w-2xl infra-card p-6 sm:p-8 lg:p-10 xl:p-12 bg-white/40 backdrop-blur-xl border border-border hover:border-black shadow-xl rounded-2xl relative transform -rotate-2 hover:rotate-0 transition-all duration-300"
               >
                 <div className="flex items-center justify-between pb-5 border-b border-border">
                   <div className="flex items-center gap-2.5 text-stone-900 font-bold font-heading text-base sm:text-lg xl:text-xl">
@@ -133,7 +153,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Features Section with Kinetic Staggered Wave */}
       <section id="features" className="py-20 xl:py-28 border-t border-border bg-white/10 backdrop-blur-md">
         <div className="w-full px-6 sm:px-10 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
           
@@ -146,7 +166,14 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 xl:gap-10">
+          <motion.div 
+            variants={kineticContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.15 }}
+            style={{ perspective: 1000 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 xl:gap-10"
+          >
             <ModuleCard 
               icon={<Activity size={28} className="text-primary" />}
               title="Log Daily Usage"
@@ -162,12 +189,12 @@ export default function LandingPage() {
               title="Actionable Tips"
               desc="Get a personalized Sunday Review with simple, real-world lifestyle swaps to lower your usage."
             />
-          </div>
+          </motion.div>
 
         </div>
       </section>
 
-      {/* How it Works Section */}
+      {/* How it Works Section with Kinetic Step Badges */}
       <section id="how-it-works" className="py-20 xl:py-28 border-t border-border bg-white/20 backdrop-blur-md">
         <div className="w-full px-6 sm:px-10 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 xl:gap-20 items-center">
@@ -180,46 +207,65 @@ export default function LandingPage() {
                 Start building better habits in three simple steps. No complicated setup required.
               </p>
 
-              <div className="mt-8 xl:mt-12 space-y-6 sm:space-y-8">
-                <div className="flex items-start gap-4 sm:gap-6">
-                  <div className="h-9 w-9 sm:h-11 sm:w-11 xl:h-12 xl:w-12 rounded-full bg-emerald-100 text-forest flex items-center justify-center font-bold text-sm sm:text-base xl:text-lg shrink-0">
+              <motion.div 
+                variants={kineticContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.15 }}
+                className="mt-8 xl:mt-12 space-y-6 sm:space-y-8"
+              >
+                <motion.div variants={kineticCard} className="flex items-start gap-4 sm:gap-6">
+                  <motion.div 
+                    variants={kineticBadge}
+                    className="h-9 w-9 sm:h-11 sm:w-11 xl:h-12 xl:w-12 rounded-full bg-emerald-100 text-forest flex items-center justify-center font-bold text-sm sm:text-base xl:text-lg shrink-0 shadow-2xs"
+                  >
                     1
-                  </div>
+                  </motion.div>
                   <div>
                     <span className="text-lg sm:text-xl xl:text-2xl font-bold font-heading text-foreground">Log your items</span>
                     <p className="text-sm sm:text-base xl:text-lg text-muted-foreground font-body mt-1">Add bottles, wrappers, and containers as you use them throughout the day.</p>
                   </div>
-                </div>
-                <div className="flex items-start gap-4 sm:gap-6">
-                  <div className="h-9 w-9 sm:h-11 sm:w-11 xl:h-12 xl:w-12 rounded-full bg-emerald-100 text-forest flex items-center justify-center font-bold text-sm sm:text-base xl:text-lg shrink-0">
+                </motion.div>
+
+                <motion.div variants={kineticCard} className="flex items-start gap-4 sm:gap-6">
+                  <motion.div 
+                    variants={kineticBadge}
+                    className="h-9 w-9 sm:h-11 sm:w-11 xl:h-12 xl:w-12 rounded-full bg-emerald-100 text-forest flex items-center justify-center font-bold text-sm sm:text-base xl:text-lg shrink-0 shadow-2xs"
+                  >
                     2
-                  </div>
+                  </motion.div>
                   <div>
                     <span className="text-lg sm:text-xl xl:text-2xl font-bold font-heading text-foreground">Review your week</span>
                     <p className="text-sm sm:text-base xl:text-lg text-muted-foreground font-body mt-1">Check the dashboard to see your trends against a healthy daily limit.</p>
                   </div>
-                </div>
-                <div className="flex items-start gap-4 sm:gap-6">
-                  <div className="h-9 w-9 sm:h-11 sm:w-11 xl:h-12 xl:w-12 rounded-full bg-emerald-100 text-forest flex items-center justify-center font-bold text-sm sm:text-base xl:text-lg shrink-0">
+                </motion.div>
+
+                <motion.div variants={kineticCard} className="flex items-start gap-4 sm:gap-6">
+                  <motion.div 
+                    variants={kineticBadge}
+                    className="h-9 w-9 sm:h-11 sm:w-11 xl:h-12 xl:w-12 rounded-full bg-emerald-100 text-forest flex items-center justify-center font-bold text-sm sm:text-base xl:text-lg shrink-0 shadow-2xs"
+                  >
                     3
-                  </div>
+                  </motion.div>
                   <div>
                     <span className="text-lg sm:text-xl xl:text-2xl font-bold font-heading text-foreground">Make simple swaps</span>
                     <p className="text-sm sm:text-base xl:text-lg text-muted-foreground font-body mt-1">Use our actionable playbook to find easy ways to bring your numbers down.</p>
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             </div>
 
-            {/* Simple Graphic */}
+            {/* Fact of the Day Card with Kinetic Spring */}
             <motion.div 
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
+              variants={kineticCard}
+              initial="hidden"
+              whileInView="visible"
+              whileHover={kineticHover}
+              viewport={{ once: true, amount: 0.15 }}
+              style={{ perspective: 1000, willChange: 'transform, opacity' }}
               className="lg:col-span-5 flex justify-center lg:justify-end w-full"
             >
-              <div className="w-full max-w-xl 2xl:max-w-2xl bg-white/40 backdrop-blur-xl rounded-2xl border border-border hover:border-black p-6 sm:p-8 lg:p-10 xl:p-12 shadow-lg transform -rotate-2 hover:rotate-0 hover:scale-[1.02] transition-all duration-500">
+              <div className="w-full max-w-xl 2xl:max-w-2xl bg-white/40 backdrop-blur-xl rounded-2xl border border-border hover:border-black p-6 sm:p-8 lg:p-10 xl:p-12 shadow-lg transform -rotate-2 hover:rotate-0 hover:scale-[1.02] transition-all duration-300">
                 <div className="flex items-center gap-2 text-forest font-mono text-xs sm:text-sm font-semibold tracking-wider mb-4">
                   <BookOpen size={18} />
                   <span>FACT OF THE DAY</span>
@@ -238,7 +284,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Dark Technical Footer Call to Action (Preserved dark theme, cleaned jargon) */}
+      {/* Dark Technical Footer Call to Action - EXPLICITLY PRESERVED STATIC (no entrance jumps) */}
       <section className="py-20 xl:py-28 bg-background-dark text-white border-t border-black/20 relative z-10">
         <div className="w-full px-6 sm:px-10 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
           <div className="grid md:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -291,7 +337,13 @@ export default function LandingPage() {
 
 function ModuleCard({ icon, title, desc }) {
   return (
-    <div className="bg-white/40 backdrop-blur-xl rounded-2xl border border-border hover:border-black hover:ring-1 hover:ring-black p-6 sm:p-8 lg:p-9 xl:p-11 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col justify-between group">
+    <motion.div 
+      variants={kineticCard}
+      whileHover={kineticHover}
+      whileTap={kineticTap}
+      style={{ perspective: 1000, willChange: 'transform, opacity' }}
+      className="bg-white/40 backdrop-blur-xl rounded-2xl border border-border hover:border-black hover:ring-1 hover:ring-black p-6 sm:p-8 lg:p-9 xl:p-11 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between group"
+    >
       <div>
         <div className="flex items-center justify-between mb-5 xl:mb-6">
           <div className="p-3.5 sm:p-4 rounded-xl bg-emerald-50 text-forest group-hover:scale-110 transition-transform">{icon}</div>
@@ -299,6 +351,6 @@ function ModuleCard({ icon, title, desc }) {
         <h3 className="text-xl sm:text-2xl xl:text-3xl font-bold font-heading text-stone-900 mb-3 xl:mb-4">{title}</h3>
         <p className="text-sm sm:text-base xl:text-lg text-stone-600 font-body leading-relaxed">{desc}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }
