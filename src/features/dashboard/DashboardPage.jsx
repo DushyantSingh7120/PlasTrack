@@ -11,42 +11,36 @@ import {
   Info, 
   Sparkles,
   ArrowRight,
-  TrendingUp,
-  ShieldCheck
+  FileText
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getFactOfTheDay } from '../../lib/factsDatabase';
 import { loadCampusDemoData, clearDemoData, isDemoDataActive } from '../../lib/demoData';
+import { getStoredHistory } from '../../lib/storage';
 import { 
   kineticContainer, 
   kineticCard, 
   kineticChartCard, 
-  kineticBadge, 
   kineticHover, 
   kineticTap 
 } from '../../lib/motion';
+import KineticTiltCard from '../../components/ui/KineticTiltCard';
+import AnimatedCounter from '../../components/ui/AnimatedCounter';
+import FrequentItemsShelf from '../../components/ui/FrequentItemsShelf';
+import AcademicAuditModal from '../../components/ui/AcademicAuditModal';
 
 export default function DashboardPage() {
-  const [history, setHistory] = useState([]);
-  const [isDemo, setIsDemo] = useState(false);
+  const [history, setHistory] = useState(() => getStoredHistory());
+  const [isDemo, setIsDemo] = useState(() => isDemoDataActive());
+  const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const factOfTheDay = useMemo(() => getFactOfTheDay(), []);
 
   const syncData = () => {
-    const saved = localStorage.getItem('plastitrack_history');
-    if (saved) {
-      try {
-        setHistory(JSON.parse(saved));
-      } catch (e) {
-        setHistory([]);
-      }
-    } else {
-      setHistory([]);
-    }
+    setHistory(getStoredHistory());
     setIsDemo(isDemoDataActive());
   };
 
   useEffect(() => {
-    syncData();
     window.addEventListener('plastitrack-data-updated', syncData);
     window.addEventListener('storage', syncData);
     return () => {
@@ -55,14 +49,18 @@ export default function DashboardPage() {
     };
   }, []);
 
-  // Compute 7-day chart data
+  // Compute 7-day chart data with timestamp and number sanitization
   const chartData = useMemo(() => {
-    if (history.length > 0) {
-      return history.slice(-7).map((entry) => ({
-        name: new Date(entry.timestamp).toLocaleDateString('en-US', { weekday: 'short' }),
-        plastic: entry.totalGrams || 0,
-        cost: entry.totalCostINR || Math.round((entry.totalGrams || 0) * 1.2)
-      }));
+    if (Array.isArray(history) && history.length > 0) {
+      return history.slice(-7).map((entry) => {
+        const d = entry?.timestamp ? new Date(entry.timestamp) : new Date();
+        const isValid = !isNaN(d.getTime());
+        return {
+          name: isValid ? d.toLocaleDateString('en-US', { weekday: 'short' }) : 'Day',
+          plastic: Number(entry?.totalGrams) || 0,
+          cost: Number(entry?.totalCostINR) || Math.round((Number(entry?.totalGrams) || 0) * 1.2)
+        };
+      });
     }
     return [];
   }, [history]);
@@ -108,17 +106,34 @@ export default function DashboardPage() {
           <span className="text-xs sm:text-sm text-stone-800 font-medium">
             Cycle: <strong className="text-stone-950 font-bold">{hasData ? `${chartData.length}-Day Trajectory` : "No Active Data"}</strong>
           </span>
+
+          <motion.button
+            whileHover={kineticHover}
+            whileTap={kineticTap}
+            onClick={() => setIsAuditModalOpen(true)}
+            type="button"
+            className="px-3 py-2 bg-white/70 hover:bg-white text-stone-900 border border-stone-300/80 rounded-xl font-mono text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer"
+            title="Generate Official CPCB Academic Environmental Audit Report (Print / PDF)"
+          >
+            <FileText size={14} className="text-emerald-700" />
+            <span className="hidden sm:inline">Academic CPCB Audit</span>
+            <span className="sm:hidden">Audit</span>
+          </motion.button>
+
           <motion.div whileHover={kineticHover} whileTap={kineticTap}>
             <Link 
               to="/tracker" 
               className="px-4 py-2 bg-emerald-800 hover:bg-emerald-950 text-white rounded-xl font-mono text-xs sm:text-sm font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
             >
-              <span>+ Quick Log</span>
+              <span>+ Full Tracker</span>
               <ArrowRight size={14} />
             </Link>
           </motion.div>
         </div>
       </motion.div>
+
+      {/* 1-Click Campus Quick-Log Shelf with Expanded Hit Targets */}
+      <FrequentItemsShelf />
 
       {/* Demo Mode Active Banner (Only shown when Demo Data is active) */}
       {isDemo && (
@@ -143,13 +158,16 @@ export default function DashboardPage() {
         </motion.div>
       )}
 
-      {/* Fact of the Day Highlight Banner */}
+      {/* Fact of the Day Highlight Banner with 3D Magnetic Tilt */}
       <motion.div 
         variants={kineticCard}
-        whileHover={kineticHover}
         style={{ perspective: 1000, willChange: 'transform, opacity' }}
-        className="p-6 sm:p-7 rounded-2xl bg-white/35 hover:bg-white/45 backdrop-blur-xl border border-white/60 shadow-md relative overflow-hidden transition-all"
       >
+        <KineticTiltCard
+          tiltDegree={6}
+          scaleOnHover={1.018}
+          className="p-6 sm:p-7 rounded-2xl bg-white/35 hover:bg-white/45 backdrop-blur-xl border border-white/60 shadow-md relative overflow-hidden transition-[background-color,border-color] duration-200"
+        >
         <div className="flex flex-wrap items-center justify-between gap-3 pb-3.5 border-b border-black/10">
           <div className="flex items-center gap-2 font-mono text-xs sm:text-sm text-emerald-950 font-black tracking-wider uppercase">
             <BookOpen size={18} className="text-emerald-800 shrink-0" />
@@ -181,6 +199,7 @@ export default function DashboardPage() {
             <ArrowRight size={15} />
           </Link>
         </div>
+        </KineticTiltCard>
       </motion.div>
 
       {/* 4 Telemetry Metric Cards */}
@@ -361,6 +380,20 @@ export default function DashboardPage() {
         </motion.div>
 
       </div>
+
+      {/* Academic CPCB Environmental Audit Report Modal */}
+      <AcademicAuditModal
+        isOpen={isAuditModalOpen}
+        onClose={() => setIsAuditModalOpen(false)}
+        auditData={{
+          totalGrams,
+          avgDailyGrams,
+          nationalAvgGrams,
+          totalCostINR: totalCost,
+          cycleDays: chartData.length || 7,
+          chartData
+        }}
+      />
     </motion.div>
   );
 }
@@ -369,24 +402,29 @@ function StatCard({ title, value, subValue, trend, icon, badgeClass }) {
   return (
     <motion.div 
       variants={kineticCard}
-      whileHover={kineticHover}
-      whileTap={kineticTap}
       style={{ perspective: 1000, willChange: 'transform, opacity' }}
-      className="p-5 sm:p-6 rounded-2xl bg-white/35 hover:bg-white/45 backdrop-blur-xl border border-white/60 hover:border-white/90 flex flex-col justify-between group shadow-md hover:shadow-xl transition-all duration-200"
+      className="h-full"
     >
-      <div className="flex justify-between items-start mb-3.5">
-        <div className="p-3 rounded-xl bg-white/60 border border-white/70 shadow-2xs group-hover:scale-105 transition-transform duration-200">
-          {icon}
+      <KineticTiltCard
+        tiltDegree={8}
+        className="h-full p-5 sm:p-6 rounded-2xl bg-white/35 hover:bg-white/45 backdrop-blur-xl border border-white/60 hover:border-white/90 flex flex-col justify-between group shadow-md hover:shadow-xl transition-all duration-200"
+      >
+        <div className="flex justify-between items-start mb-3.5">
+          <div className="p-3 rounded-xl bg-white/60 border border-white/70 shadow-2xs group-hover:scale-105 transition-transform duration-200">
+            {icon}
+          </div>
+          <span className={`text-xs font-mono font-black px-2.5 py-1 rounded-md border shadow-2xs ${badgeClass}`}>
+            {trend}
+          </span>
         </div>
-        <span className={`text-xs font-mono font-black px-2.5 py-1 rounded-md border shadow-2xs ${badgeClass}`}>
-          {trend}
-        </span>
-      </div>
-      <div>
-        <h4 className="text-xs sm:text-sm font-black text-stone-900 tracking-wide font-mono uppercase mb-1">{title}</h4>
-        <div className="text-3xl sm:text-4xl font-black text-stone-950 font-mono tracking-tight mb-1">{value}</div>
-        <div className="text-xs sm:text-sm font-bold text-stone-800">{subValue}</div>
-      </div>
+        <div>
+          <h4 className="text-xs sm:text-sm font-black text-stone-900 tracking-wide font-mono uppercase mb-1">{title}</h4>
+          <div className="text-3xl sm:text-4xl font-black text-stone-950 font-mono tracking-tight mb-1">
+            <AnimatedCounter value={value} />
+          </div>
+          <div className="text-xs sm:text-sm font-bold text-stone-800">{subValue}</div>
+        </div>
+      </KineticTiltCard>
     </motion.div>
   );
 }

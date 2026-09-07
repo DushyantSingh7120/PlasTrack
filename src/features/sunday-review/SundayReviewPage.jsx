@@ -3,31 +3,28 @@ import { motion } from 'framer-motion';
 import { 
   Award, 
   TrendingDown, 
-  CheckCircle, 
   AlertCircle, 
   Sparkles, 
-  ArrowRight,
-  ShieldCheck,
-  Coffee,
-  ShoppingBag,
-  UtensilsCrossed,
-  Flame,
-  Zap,
-  Leaf
+  ArrowRight, 
+  ShieldCheck, 
+  Zap, 
+  FileText 
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { loadCampusDemoData, clearDemoData, isDemoDataActive } from '../../lib/demoData';
+import { getStoredHistory } from '../../lib/storage';
+import { TRACKER_PRESETS } from '../tracker/DailyTrackerPage';
+import AcademicAuditModal from '../../components/ui/AcademicAuditModal';
 import { 
   kineticContainer, 
   kineticCard, 
   kineticChartCard, 
-  kineticBadge, 
   kineticHover, 
   kineticTap 
 } from '../../lib/motion';
 
-const TAILORED_CHALLENGES = [
-  {
+const ALL_CHALLENGES = {
+  'Beverages': {
     category: 'Beverages',
     title: 'The 7-Day Campus Flask Challenge',
     impact: 'Save ~₹140 & 84g Plastic this week',
@@ -36,7 +33,7 @@ const TAILORED_CHALLENGES = [
     actionText: 'View Steel Flask in Catalog',
     link: '/alternatives'
   },
-  {
+  'Packaging': {
     category: 'Packaging',
     title: 'The Bulk Snack Swap Challenge',
     impact: 'Cut 100% Non-Recyclable MLP',
@@ -45,7 +42,7 @@ const TAILORED_CHALLENGES = [
     actionText: 'View Bulk Storage Swap',
     link: '/alternatives'
   },
-  {
+  'Films': {
     category: 'Films',
     title: 'The 2-Tote Pocket Habit',
     impact: 'Protect Urban Livestock',
@@ -53,30 +50,32 @@ const TAILORED_CHALLENGES = [
     badge: 'Animal Welfare',
     actionText: 'View Jute Tote Swap',
     link: '/alternatives'
+  },
+  'Foodware': {
+    category: 'Foodware',
+    title: 'The Steel Cutlery Carry',
+    impact: 'Dodge PS #6 Toxins',
+    description: 'Plastic cutlery and takeout boxes were frequent this week. Carry a reusable steel spork to avoid leaching polystyrene toxins into hot food.',
+    badge: 'Health First',
+    actionText: 'View Cutlery Sets',
+    link: '/alternatives'
   }
-];
+};
+
+const DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
 export default function SundayReviewPage() {
-  const [history, setHistory] = useState([]);
-  const [isDemo, setIsDemo] = useState(false);
+  const [history, setHistory] = useState(() => getStoredHistory());
+  const [isDemo, setIsDemo] = useState(() => isDemoDataActive());
+  const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const ceilingGrams = 40; // Target daily limit
 
   const syncData = () => {
-    const saved = localStorage.getItem('plastitrack_history');
-    if (saved) {
-      try {
-        setHistory(JSON.parse(saved));
-      } catch (e) {
-        setHistory([]);
-      }
-    } else {
-      setHistory([]);
-    }
+    setHistory(getStoredHistory());
     setIsDemo(isDemoDataActive());
   };
 
   useEffect(() => {
-    syncData();
     window.addEventListener('plastitrack-data-updated', syncData);
     window.addEventListener('storage', syncData);
     return () => {
@@ -85,16 +84,16 @@ export default function SundayReviewPage() {
     };
   }, []);
 
-  const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-  
   const weekData = useMemo(() => {
-    if (history.length > 0) {
+    if (Array.isArray(history) && history.length > 0) {
       const last7 = history.slice(-7);
       const mapped = last7.map((entry) => {
-        const date = new Date(entry.timestamp);
+        const date = entry?.timestamp ? new Date(entry.timestamp) : new Date();
+        const dayIdx = !isNaN(date.getTime()) ? date.getDay() : 0;
         return {
-          day: days[date.getDay()],
-          grams: entry.totalGrams || 0,
+          day: DAYS[dayIdx],
+          grams: Number(entry?.totalGrams) || 0,
+          cost: Number(entry?.totalCostINR) || Math.round((Number(entry?.totalGrams) || 0) * 1.2),
           isBest: false
         };
       });
@@ -115,6 +114,7 @@ export default function SundayReviewPage() {
 
   const hasData = weekData.length > 0;
   const totalWeeklyGrams = hasData ? weekData.reduce((acc, d) => acc + d.grams, 0) : 0;
+  const totalWeeklyCost = hasData ? weekData.reduce((acc, d) => acc + (d.cost || 0), 0) : 0;
   const avgDaily = hasData ? Math.round(totalWeeklyGrams / weekData.length) : 0;
   const cleanDays = hasData ? weekData.filter((d) => d.grams <= ceilingGrams).length : 0;
 
@@ -137,6 +137,40 @@ export default function SundayReviewPage() {
       badgeDescription = "Exceeding metropolitan average. Adopt weekly swaps below.";
     }
   }
+
+  const dynamicChallenges = useMemo(() => {
+    if (!hasData || !history || history.length === 0) {
+      return Object.values(ALL_CHALLENGES).slice(0, 3);
+    }
+
+    const last7 = history.slice(-7);
+    const categoryMass = {
+      'Beverages': 0,
+      'Packaging': 0,
+      'Films': 0,
+      'Foodware': 0
+    };
+
+    last7.forEach(entry => {
+      if (entry.counts) {
+        Object.entries(entry.counts).forEach(([itemId, qty]) => {
+          if (qty > 0) {
+            const preset = TRACKER_PRESETS.find(p => p.id === itemId);
+            if (preset && categoryMass[preset.category] !== undefined) {
+              categoryMass[preset.category] += (qty * preset.unitWeight);
+            }
+          }
+        });
+      }
+    });
+
+    const sortedCategories = Object.entries(categoryMass)
+      .sort((a, b) => b[1] - a[1]) // Sort descending by mass
+      .map(([cat]) => cat);
+
+    const topCategories = sortedCategories.slice(0, 3);
+    return topCategories.map(cat => ALL_CHALLENGES[cat]);
+  }, [hasData, history]);
 
   const BadgeIcon = badgeIcon;
 
@@ -164,10 +198,21 @@ export default function SundayReviewPage() {
           <span className="text-border hidden sm:inline">|</span>
           <span className="hidden sm:inline text-muted-foreground">National Benchmark: <strong className="text-foreground">33g / day</strong></span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold font-mono text-xs">
             {cleanDays}/{hasData ? weekData.length : 0} DAYS UNDER LIMIT
           </span>
+          <motion.button
+            whileHover={kineticHover}
+            whileTap={kineticTap}
+            onClick={() => setIsAuditModalOpen(true)}
+            type="button"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-stone-900 hover:bg-black text-white font-mono text-xs font-bold transition shadow-sm cursor-pointer"
+            title="Export Statutory CPCB Environmental Audit Report"
+          >
+            <FileText size={13} className="text-emerald-400" />
+            <span>Export Audit Dossier</span>
+          </motion.button>
         </div>
       </motion.section>
 
@@ -416,7 +461,7 @@ export default function SundayReviewPage() {
           variants={kineticContainer}
           className="grid grid-cols-1 md:grid-cols-3 gap-5"
         >
-          {TAILORED_CHALLENGES.map((challenge, idx) => (
+          {dynamicChallenges.map((challenge, idx) => (
             <motion.div
               key={idx}
               variants={kineticCard}
@@ -445,16 +490,30 @@ export default function SundayReviewPage() {
               <motion.div whileHover={kineticHover} whileTap={kineticTap}>
                 <Link
                   to={challenge.link}
-                  className="w-full py-2.5 px-3 rounded-xl border border-border hover:bg-primary hover:text-white hover:border-primary text-foreground transition-all font-mono text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer group mt-4 shadow-2xs"
+                  className="w-full py-2.5 px-3 rounded-xl border border-border lg:hover:bg-primary lg:hover:text-white lg:hover:border-primary text-foreground transition-all font-mono text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer group mt-4 shadow-2xs"
                 >
                   <span>{challenge.actionText}</span>
-                  <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+                  <ArrowRight size={13} className="lg:group-hover:translate-x-0.5 transition-transform" />
                 </Link>
               </motion.div>
             </motion.div>
           ))}
         </motion.div>
       </motion.section>
+
+      {/* Academic Statutory Environmental Audit Modal */}
+      <AcademicAuditModal
+        isOpen={isAuditModalOpen}
+        onClose={() => setIsAuditModalOpen(false)}
+        auditData={{
+          totalGrams: totalWeeklyGrams,
+          avgDailyGrams: avgDaily,
+          nationalAvgGrams: 33,
+          totalCostINR: totalWeeklyCost,
+          cycleDays: 7,
+          chartData: weekData
+        }}
+      />
     </motion.div>
   );
 }

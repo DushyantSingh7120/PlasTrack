@@ -74,6 +74,7 @@ export const CAMPUS_DEMO_HISTORY = [
 export const DEMO_STORAGE_KEY = 'plastitrack_history';
 export const DEMO_FLAG_KEY = 'plastitrack_is_demo';
 export const DEMO_EVENT_NAME = 'plastitrack-data-updated';
+const TRACKER_COUNTS_KEY = 'plastitrack_tracker_counts';
 
 /**
  * Loads calibrated campus benchmark demo data into localStorage
@@ -82,6 +83,8 @@ export function loadCampusDemoData() {
   try {
     localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(CAMPUS_DEMO_HISTORY));
     localStorage.setItem(DEMO_FLAG_KEY, 'true');
+    // Also populate the daily tracker with the latest day's counts
+    localStorage.setItem(TRACKER_COUNTS_KEY, JSON.stringify(CAMPUS_DEMO_HISTORY[CAMPUS_DEMO_HISTORY.length - 1].counts));
     window.dispatchEvent(new Event(DEMO_EVENT_NAME));
     window.dispatchEvent(new Event('storage'));
     return true;
@@ -98,6 +101,7 @@ export function clearDemoData() {
   try {
     localStorage.removeItem(DEMO_STORAGE_KEY);
     localStorage.removeItem(DEMO_FLAG_KEY);
+    localStorage.removeItem(TRACKER_COUNTS_KEY);
     window.dispatchEvent(new Event(DEMO_EVENT_NAME));
     window.dispatchEvent(new Event('storage'));
     return true;
@@ -113,7 +117,7 @@ export function clearDemoData() {
 export function isDemoDataActive() {
   try {
     return localStorage.getItem(DEMO_FLAG_KEY) === 'true';
-  } catch (e) {
+  } catch {
     return false;
   }
 }

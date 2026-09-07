@@ -3,25 +3,28 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Check, 
   RotateCcw, 
-  Save, 
   Zap,
   Clock,
-  IndianRupee,
-  AlertTriangle,
   Lightbulb,
-  ShieldAlert,
-  Info
+  Trash2,
+  History as HistoryIcon
 } from 'lucide-react';
-import { STANDARDIZED_ITEMS, RESIN_CODES } from '../../lib/plasticData';
 import { 
   kineticContainer, 
   kineticCard, 
-  kineticBadge, 
   kineticHover, 
   kineticTap 
 } from '../../lib/motion';
+import { 
+  getTrackerCounts, 
+  setTrackerCounts, 
+  syncTodayHistoryWithCounts, 
+  getStoredHistory,
+  removeHistoryEntryByIndex,
+  dispatchDataUpdate 
+} from '../../lib/storage';
 
-const TRACKER_PRESETS = [
+export const TRACKER_PRESETS = [
   {
     id: 'pet_bottle_500',
     name: '500ml Water Bottle',
@@ -67,11 +70,35 @@ const TRACKER_PRESETS = [
     iconBg: 'border-emerald-200 bg-emerald-50/70 text-forest',
   },
   {
+    id: 'chai_cup',
+    name: 'Chai / Coffee Cup',
+    resin: 'Paper/PE #7',
+    resinCode: 7,
+    unitWeight: 8,
+    unitCostINR: 10,
+    degradationYears: 30,
+    category: 'Beverages',
+    polymerGroup: 'PS #6 & Multi',
+    mrfRate: 'Low Recyclability (PE Lining)',
+    isRecyclable: false,
+    tip: 'Disposable paper hot cups have an inner polyethylene plastic lining that prevents standard paper recycling.',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+        <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+        <line x1="6" y1="1" x2="6" y2="4" />
+        <line x1="10" y1="1" x2="10" y2="4" />
+        <line x1="14" y1="1" x2="14" y2="4" />
+      </svg>
+    ),
+    iconBg: 'border-amber-200 bg-amber-50/70 text-amber-700',
+  },
+  {
     id: 'ldpe_bag',
     name: 'Carry Bag (>120μm)',
     resin: 'LDPE #4',
     resinCode: 4,
-    unitWeight: 5,
+    unitWeight: 6,
     unitCostINR: 5,
     degradationYears: 100,
     category: 'Films',
@@ -115,7 +142,7 @@ const TRACKER_PRESETS = [
     resin: 'PP #5',
     resinCode: 5,
     unitWeight: 20,
-    unitCostINR: 10,
+    unitCostINR: 15,
     degradationYears: 450,
     category: 'Foodware',
     polymerGroup: 'PP #5',
@@ -156,33 +183,94 @@ const TRACKER_PRESETS = [
 
 const CATEGORIES = ['All Items', 'Beverages', 'Packaging', 'Foodware', 'Films'];
 
+const ITEM_NAMES = {
+  pet_bottle_500: '500ml Water Bottle',
+  pet_bottle_1000: '1000ml (1L) Bottle',
+  chai_cup: 'Chai / Coffee Cup',
+  ldpe_bag: 'Carry Bag (>120μm)',
+  multi_pouch: 'Chip / Snack Pouch (MLP)',
+  takeout_box: 'Food Delivery Container',
+  ps_cutlery: 'Plastic Cutlery / Straw',
+  pet_bottle: '500ml Water Bottle',
+  carry_bag: 'Carry Bag (>120μm)'
+};
+
 export default function DailyTrackerPage() {
   const [counts, setCounts] = useState(() => {
-    const saved = localStorage.getItem('plastitrack_tracker_counts');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        // fallback
-      }
-    }
+    const saved = getTrackerCounts();
+    if (saved && Object.keys(saved).length > 0) return saved;
     const initial = {};
     TRACKER_PRESETS.forEach(item => initial[item.id] = 0);
     return initial;
   });
 
+  const [history, setHistory] = useState(() => getStoredHistory());
   const [activeCategory, setActiveCategory] = useState('All Items');
   const [notification, setNotification] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem('plastitrack_tracker_counts', JSON.stringify(counts));
-  }, [counts]);
+    const syncCountsAndHistory = () => {
+      const saved = getTrackerCounts();
+      if (saved && Object.keys(saved).length > 0) {
+        setCounts(saved);
+      } else {
+        const initial = {};
+        TRACKER_PRESETS.forEach(item => initial[item.id] = 0);
+        setCounts(initial);
+      }
+      setHistory(getStoredHistory());
+    };
+
+    window.addEventListener('storage', syncCountsAndHistory);
+    window.addEventListener('plastitrack-data-updated', syncCountsAndHistory);
+
+    return () => {
+      window.removeEventListener('storage', syncCountsAndHistory);
+      window.removeEventListener('plastitrack-data-updated', syncCountsAndHistory);
+    };
+  }, []);
+
+  const handleDeleteEntry = (index) => {
+    removeHistoryEntryByIndex(index);
+    const updatedHistory = getStoredHistory();
+    setHistory(updatedHistory);
+    const zeroed = {};
+    TRACKER_PRESETS.forEach((item) => (zeroed[item.id] = 0));
+    setCounts(zeroed);
+    showNotice('Entry removed and counters zeroed.');
+  };
+
+  const handleClearAllLogs = () => {
+    localStorage.removeItem('plastitrack_history');
+    localStorage.removeItem('plastitrack_tracker_counts');
+    setHistory([]);
+    const zeroed = {};
+    TRACKER_PRESETS.forEach((item) => (zeroed[item.id] = 0));
+    setCounts(zeroed);
+    dispatchDataUpdate();
+    showNotice('All logged data cleared successfully.');
+  };
+
+  const handleLoadEntryIntoTracker = (entry) => {
+    if (entry && entry.counts) {
+      const initial = {};
+      TRACKER_PRESETS.forEach(item => initial[item.id] = 0);
+      const loaded = { ...initial, ...entry.counts };
+      setCounts(loaded);
+      setTrackerCounts(loaded);
+      showNotice('Loaded entry items into logger counters.');
+    }
+  };
 
   const updateCount = (id, delta) => {
     setCounts((prev) => {
       const current = prev[id] || 0;
       const next = Math.max(0, current + delta);
-      return { ...prev, [id]: next };
+      const updated = { ...prev, [id]: next };
+      setTrackerCounts(updated);
+      syncTodayHistoryWithCounts(updated);
+      dispatchDataUpdate();
+      return updated;
     });
   };
 
@@ -190,10 +278,13 @@ export default function DailyTrackerPage() {
     const zeroed = {};
     TRACKER_PRESETS.forEach((item) => (zeroed[item.id] = 0));
     setCounts(zeroed);
-    showNotice('Counters reset to zero');
+    setTrackerCounts(zeroed);
+    syncTodayHistoryWithCounts(zeroed);
+    dispatchDataUpdate();
+    showNotice("Counters reset and today's log cleared.");
   };
 
-  const { totalGrams, totalCostINR, maxDecomposition, polymerTotals, recyclableGrams, nonRecyclableGrams } = useMemo(() => {
+  const { totalGrams, totalCostINR, maxDecomposition, polymerTotals, recyclableGrams } = useMemo(() => {
     let grams = 0;
     let cost = 0;
     let maxYears = 0;
@@ -239,20 +330,13 @@ export default function DailyTrackerPage() {
   }, [counts]);
 
   const handleLog = () => {
-    const logEntry = {
-      timestamp: new Date().toISOString(),
-      date: new Date().toLocaleDateString(),
-      counts,
-      totalGrams,
-      totalCostINR,
-      maxDecomposition
-    };
-    const history = JSON.parse(localStorage.getItem('plastitrack_history') || '[]');
-    history.push(logEntry);
-    localStorage.setItem('plastitrack_history', JSON.stringify(history));
-    window.dispatchEvent(new Event('plastitrack-data-updated'));
-    window.dispatchEvent(new Event('storage'));
-    showNotice(`Logged ${totalGrams}g (₹${totalCostINR}) to your daily history!`);
+    setTrackerCounts(counts);
+    syncTodayHistoryWithCounts(counts);
+    dispatchDataUpdate();
+    showNotice(totalGrams > 0 
+      ? `✓ Saved today's log: ${totalGrams}g (₹${totalCostINR})!`
+      : 'Counters saved at zero.'
+    );
   };
 
   const showNotice = (msg) => {
@@ -428,6 +512,83 @@ export default function DailyTrackerPage() {
               When opening milk packets, never snip off the small triangular corner completely. Keeping it attached prevents micro-scraps from escaping MRF sorting lines into ocean corridors!
             </div>
           </div>
+
+          {/* Logged Activity & Accidental Entry Management */}
+          <div className="p-5 rounded-2xl bg-white/35 backdrop-blur-xl border border-white/60 shadow-xs space-y-3">
+            <div className="flex items-center justify-between pb-3 border-b border-border/70">
+              <div className="flex items-center gap-2 font-mono text-xs font-bold text-stone-900 uppercase">
+                <HistoryIcon size={15} className="text-emerald-700" />
+                <span>SAVED SESSIONS & LOGGED ACTIVITY ({history.length})</span>
+              </div>
+              {history.length > 0 && (
+                <button
+                  onClick={handleClearAllLogs}
+                  className="text-[11px] font-mono text-red-600 hover:text-red-800 font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                  type="button"
+                >
+                  <Trash2 size={13} />
+                  <span>Clear All Logs</span>
+                </button>
+              )}
+            </div>
+
+            {history.length === 0 ? (
+              <p className="text-xs text-stone-500 font-mono py-2 text-center">
+                No plastic entries logged yet. Tap items above or use the Quick-Shelf on the Dashboard.
+              </p>
+            ) : (
+              <div className="space-y-2.5">
+                {history.map((entry, idx) => {
+                  const d = entry?.timestamp ? new Date(entry.timestamp) : null;
+                  const dateFormatted = d && !isNaN(d.getTime()) ? d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : (entry.date || 'Saved Log');
+                  const entryItems = entry.counts ? Object.entries(entry.counts).filter(([_, q]) => q > 0) : [];
+
+                  return (
+                    <div 
+                      key={idx} 
+                      className="p-3.5 rounded-xl bg-white/55 border border-white/80 flex flex-wrap items-center justify-between gap-3 font-mono text-xs shadow-2xs"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-stone-900">{dateFormatted}</span>
+                          <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-black text-[10px]">
+                            {entry.totalGrams || 0}g · ₹{entry.totalCostINR || 0}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-stone-600">
+                          {entryItems.length > 0 ? (
+                            entryItems.map(([id, q]) => `${q}× ${ITEM_NAMES[id] || id}`).join(', ')
+                          ) : (
+                            `${entry.totalGrams || 0}g plastic recorded`
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleLoadEntryIntoTracker(entry)}
+                          className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-[11px] font-bold cursor-pointer transition-colors"
+                          type="button"
+                          title="Load items into +/- counters above"
+                        >
+                          Edit in Counters
+                        </button>
+                        <button
+                          onClick={() => handleDeleteEntry(idx)}
+                          className="px-2.5 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                          type="button"
+                          title="Delete this entry"
+                        >
+                          <Trash2 size={13} />
+                          <span>Remove Entry</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </motion.div>
 
         {/* RIGHT COLUMN: Live Calculation Summary */}
@@ -592,7 +753,7 @@ export default function DailyTrackerPage() {
                 type="button"
               >
                 <RotateCcw size={13} />
-                <span>Reset Counters</span>
+                <span>Reset Counters / Clear Today's Log</span>
               </motion.button>
             </div>
           </div>

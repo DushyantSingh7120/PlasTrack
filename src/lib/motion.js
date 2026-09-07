@@ -132,3 +132,40 @@ export const kineticTap = {
   scale: 0.96,
   transition: { duration: 0.08 }
 };
+
+// Continuous Post-Entrance Physics Tokens (Option B + Option C)
+
+export const tiltSpringConfig = {
+  stiffness: 400,
+  damping: 25,
+  mass: 0.5
+};
+
+export const scrollSpringConfig = {
+  stiffness: 450,
+  damping: 32,
+  mass: 0.2
+};
+
+// Ambient subtle breathing micro-animation for live chips & telemetry
+export const kineticAmbientBreathe = {
+  scale: [1, 1.025, 1],
+  opacity: [0.94, 1, 0.94],
+  transition: {
+    duration: 3.2,
+    repeat: Infinity,
+    ease: "easeInOut"
+  }
+};
+
+// Radar pulse beacon for active streams and live sensors
+export const kineticRadarPulse = {
+  scale: [1, 1.8, 2.2],
+  opacity: [0.8, 0.2, 0],
+  transition: {
+    duration: 2.4,
+    repeat: Infinity,
+    ease: "easeOut"
+  }
+};
+

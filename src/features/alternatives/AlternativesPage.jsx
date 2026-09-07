@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Sparkles, 
   RotateCw, 
-  IndianRupee, 
-  Trash2, 
   CheckCircle2, 
   Clock, 
-  ShieldAlert, 
-  Leaf, 
-  TrendingUp,
   ArrowRight,
-  HelpCircle
+  BookOpen
 } from 'lucide-react';
 import { ECO_ALTERNATIVES } from '../../lib/alternativesData';
 import { 
@@ -60,12 +56,20 @@ export default function AlternativesPage() {
             Tap any card to flip between the disposable single-use hazard and its permanent, certified sustainable replacement.
           </p>
         </div>
-        <div className="flex items-center gap-3 font-mono text-xs">
+        <div className="flex flex-wrap items-center gap-3 font-mono text-xs">
+          <Link
+            to="/docs"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0e241b] hover:bg-black text-white font-mono text-xs font-bold transition shadow-sm border border-emerald-500/40"
+          >
+            <BookOpen size={14} className="text-emerald-400" />
+            <span>Research Dossier</span>
+            <ArrowRight size={13} />
+          </Link>
           <div className="px-3 py-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold shadow-2xs">
             Cumulative Savings: <strong className="text-foreground">₹{totalAnnualRupees.toLocaleString('en-IN')}/yr</strong>
           </div>
-          <div className="px-3 py-2 rounded-xl bg-primary/10 text-primary border border-primary/20 font-semibold shadow-2xs">
-            Diverts: <strong className="text-foreground">{(totalAnnualGrams / 1000).toFixed(1)} kg plastic/yr</strong>
+          <div className="hidden sm:inline-block px-3 py-2 rounded-xl bg-primary/10 text-primary border border-primary/20 font-semibold shadow-2xs">
+            Diverts: <strong className="text-foreground">{(totalAnnualGrams / 1000).toFixed(1)} kg/yr</strong>
           </div>
         </div>
       </motion.div>
@@ -104,7 +108,7 @@ export default function AlternativesPage() {
               >
                 {/* FRONT OF CARD: The Disposable Plastic Problem */}
                 <div 
-                  className="absolute inset-0 w-full h-full p-6 bg-white/35 hover:bg-white/45 backdrop-blur-xl border border-white/60 hover:border-white/90 flex flex-col justify-between rounded-2xl shadow-md transition-all"
+                  className="absolute inset-0 w-full h-full p-6 bg-white/35 lg:hover:bg-white/45 backdrop-blur-xl border border-white/60 lg:hover:border-white/90 flex flex-col justify-between rounded-2xl shadow-md transition-all"
                   style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
                 >
                   <div>
@@ -154,13 +158,13 @@ export default function AlternativesPage() {
                       <RotateCw size={13} />
                       <span>Tap to view sustainable swap</span>
                     </span>
-                    <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight size={14} className="lg:group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
 
                 {/* BACK OF CARD: The Sustainable Green Alternative */}
                 <div 
-                  className="absolute inset-0 w-full h-full p-6 bg-white/45 hover:bg-white/55 backdrop-blur-xl border-2 border-emerald-500/80 flex flex-col justify-between rounded-2xl shadow-lg transition-all"
+                  className="absolute inset-0 w-full h-full p-6 bg-white/45 lg:hover:bg-white/55 backdrop-blur-xl border-2 border-emerald-500/80 flex flex-col justify-between rounded-2xl shadow-lg transition-all"
                   style={{ 
                     transform: 'rotateY(180deg)', 
                     WebkitTransform: 'rotateY(180deg)',

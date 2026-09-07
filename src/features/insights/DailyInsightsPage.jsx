@@ -1,19 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, 
   Layers, 
   Info, 
-  ShieldCheck, 
   Scale, 
-  HeartPulse, 
   ArrowRight, 
   CheckCircle2, 
   Sparkles, 
-  FileText,
   ChevronLeft,
-  ChevronRight,
-  Filter
+  ChevronRight
 } from 'lucide-react';
 import { FACTS_DATABASE } from '../../lib/factsDatabase';
 import { RESIN_CODES } from '../../lib/plasticData';
@@ -21,9 +18,7 @@ import {
   kineticContainer, 
   kineticDenseContainer, 
   kineticCard, 
-  kineticBadge, 
-  kineticHover, 
-  kineticTap 
+  kineticHover 
 } from '../../lib/motion';
 
 const POLICY_HIGHLIGHTS = [
@@ -100,19 +95,31 @@ export default function DailyInsightsPage() {
 
   const categories = ["All", "CPCB & Indian Policy", "Medical & Health", "Breakthrough Solutions", "Polymer Chemistry", "Food Safety"];
 
-  const filteredFacts = activeCategory === "All" 
-    ? FACTS_DATABASE 
-    : FACTS_DATABASE.filter(f => f.category === activeCategory);
+  const filteredFacts = useMemo(() => {
+    return activeCategory === "All" 
+      ? FACTS_DATABASE 
+      : FACTS_DATABASE.filter(f => f.category === activeCategory);
+  }, [activeCategory]);
 
-  const safeIndex = currentFactIndex % filteredFacts.length;
-  const activeFact = filteredFacts[safeIndex] || FACTS_DATABASE[0];
+  const factsLength = filteredFacts.length;
+  const safeIndex = factsLength > 0 ? (currentFactIndex % factsLength + factsLength) % factsLength : 0;
+  const activeFact = factsLength > 0 ? filteredFacts[safeIndex] : (FACTS_DATABASE[0] || {});
+
+  const handleCategoryChange = (cat) => {
+    setActiveCategory(cat);
+    setCurrentFactIndex(0);
+  };
 
   const handleNextFact = () => {
-    setCurrentFactIndex(prev => (prev + 1) % filteredFacts.length);
+    if (factsLength > 0) {
+      setCurrentFactIndex(prev => (prev + 1) % factsLength);
+    }
   };
 
   const handlePrevFact = () => {
-    setCurrentFactIndex(prev => (prev - 1 + filteredFacts.length) % filteredFacts.length);
+    if (factsLength > 0) {
+      setCurrentFactIndex(prev => (prev - 1 + factsLength) % factsLength);
+    }
   };
 
   return (
@@ -141,11 +148,19 @@ export default function DailyInsightsPage() {
             Sourced directly from CPCB Annual Reports, MoEFCC Gazette Notifications, NITI Aayog Monographs, NEJM (March 2024), and Nature (Sept 2024).
           </p>
         </div>
-        <div className="flex items-center gap-2 font-mono text-xs">
-          <span className="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+        <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+          <Link
+            to="/docs"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0e241b] hover:bg-black text-white font-mono text-xs font-bold transition shadow-sm border border-emerald-500/40"
+          >
+            <BookOpen size={14} className="text-emerald-400" />
+            <span>View Full 8-Part Dossier</span>
+            <ArrowRight size={13} />
+          </Link>
+          <span className="hidden sm:inline-flex px-3 py-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
             CPCB Verified 2023-24
           </span>
-          <span className="px-3 py-1.5 rounded-lg bg-stone-100 text-stone-700 border border-stone-200 font-medium">
+          <span className="hidden md:inline-flex px-3 py-2 rounded-xl bg-stone-100 text-stone-700 border border-stone-200 font-medium">
             NEJM 2024 Cited
           </span>
         </div>
@@ -168,7 +183,7 @@ export default function DailyInsightsPage() {
             {categories.map(cat => (
               <button
                 key={cat}
-                onClick={() => { setActiveCategory(cat); setCurrentFactIndex(0); }}
+                onClick={() => handleCategoryChange(cat)}
                 className={`text-[11px] font-mono px-2.5 py-1 rounded-md transition-all ${
                   activeCategory === cat 
                     ? "bg-primary text-white font-semibold shadow-xs" 
@@ -183,7 +198,7 @@ export default function DailyInsightsPage() {
 
         <AnimatePresence mode="wait">
           <motion.div 
-            key={activeFact.id}
+            key={activeFact.id || `fact-${safeIndex}`}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -366,7 +381,7 @@ export default function DailyInsightsPage() {
               <div>
                 <div className="flex items-start justify-between">
                   <div className="w-11 h-11 rounded-xl border border-white/60 bg-white/40 backdrop-blur-md flex items-center justify-center font-mono font-black text-xl text-stone-950 group-hover:border-emerald-600 transition-colors shadow-2xs">
-                    {resin.symbol} {resin.code}
+                    {resin.symbol}
                   </div>
                   <span className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded border ${
                     resin.recyclable 

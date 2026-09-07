@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import ClickRippleProvider from './components/ui/ClickRippleProvider';
+import ErrorBoundary from './components/ui/ErrorBoundary';
 import DashboardLayout from './components/layout/DashboardLayout';
 import DashboardPage from './features/dashboard/DashboardPage';
 import DailyTrackerPage from './features/tracker/DailyTrackerPage';
@@ -8,10 +10,22 @@ import DailyInsightsPage from './features/insights/DailyInsightsPage';
 import SundayReviewPage from './features/sunday-review/SundayReviewPage';
 import AlternativesPage from './features/alternatives/AlternativesPage';
 import LandingPage from './features/landing/LandingPage';
+import ResearchDocumentationPage from './features/docs/ResearchDocumentationPage';
+import { auth, debouncedSyncLocalToFirestore } from './lib/firebase';
 
 function App() {
+  React.useEffect(() => {
+    const handleDataUpdate = () => {
+      if (auth.currentUser) {
+        debouncedSyncLocalToFirestore(auth.currentUser);
+      }
+    };
+    window.addEventListener('plastitrack-data-updated', handleDataUpdate);
+    return () => window.removeEventListener('plastitrack-data-updated', handleDataUpdate);
+  }, []);
   return (
-    <>
+    <ErrorBoundary>
+      <ClickRippleProvider>
       {/* Global 3D Environmental Background */}
       <motion.div 
         className="fixed inset-0 w-full h-full bg-cover bg-center -z-10 pointer-events-none"
@@ -70,10 +84,19 @@ function App() {
               </DashboardLayout>
             } 
           />
+          <Route 
+            path="/docs" 
+            element={<ResearchDocumentationPage />} 
+          />
+          <Route 
+            path="/research" 
+            element={<Navigate to="/docs" replace />} 
+          />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </BrowserRouter>
-    </>
+    </ClickRippleProvider>
+    </ErrorBoundary>
   );
 }
 

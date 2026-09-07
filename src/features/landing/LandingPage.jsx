@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../../components/layout/Navbar';
 import { Activity, BookOpen, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
 import { loadCampusDemoData } from '../../lib/demoData';
+import { getStoredHistory } from '../../lib/storage';
+import KineticTiltCard from '../../components/ui/KineticTiltCard';
+import AnimatedCounter from '../../components/ui/AnimatedCounter';
+import FooterLegalModal from '../../components/ui/FooterLegalModal';
 import { 
   kineticContainer, 
   kineticCard, 
@@ -14,15 +18,73 @@ import {
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const landingScrollRef = useRef(null);
+  const [legalModalType, setLegalModalType] = useState(null);
 
   const handleLaunchDemo = () => {
     loadCampusDemoData();
     navigate('/dashboard');
   };
 
+  const [history, setHistory] = React.useState(() => getStoredHistory() || []);
+
+  React.useEffect(() => {
+    const handleUpdate = () => setHistory(getStoredHistory() || []);
+    window.addEventListener('storage', handleUpdate);
+    window.addEventListener('plastitrack-data-updated', handleUpdate);
+    return () => {
+      window.removeEventListener('storage', handleUpdate);
+      window.removeEventListener('plastitrack-data-updated', handleUpdate);
+    };
+  }, []);
+  
+  const { totalWeeklyGrams, avgDailyGrams, primaryItem } = React.useMemo(() => {
+    if (!history || history.length === 0) return { totalWeeklyGrams: 0, avgDailyGrams: 0, primaryItem: 'None yet' };
+    
+    const sorted = [...history].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    const last7Days = sorted.slice(0, 7);
+    const total = last7Days.reduce((acc, entry) => acc + (entry.totalGrams || 0), 0);
+    const avg = last7Days.length > 0 ? Math.round(total / last7Days.length) : 0;
+
+    const itemTotals = {};
+    last7Days.forEach(entry => {
+      if (entry.counts) {
+        Object.entries(entry.counts).forEach(([id, count]) => {
+          const qty = Number(count) || 0;
+          itemTotals[id] = (itemTotals[id] || 0) + qty;
+        });
+      }
+    });
+
+    let topId = null;
+    let maxCount = 0;
+    Object.entries(itemTotals).forEach(([id, qty]) => {
+      if (qty > maxCount) {
+        maxCount = qty;
+        topId = id;
+      }
+    });
+
+    const itemNames = {
+      pet_bottle: 'PET Water Bottles',
+      pet_bottle_500: 'PET Water Bottles',
+      pet_bottle_1000: '1L PET Bottles',
+      chai_cup: 'Chai / Coffee Cups',
+      ldpe_bag: 'Carry Bags',
+      carry_bag: 'Carry Bags',
+      multi_pouch: 'Snack Pouches',
+      takeout_box: 'Food Containers',
+      ps_cutlery: 'Plastic Cutlery'
+    };
+
+    const primary = total === 0 ? 'None yet' : (itemNames[topId] || 'PET Water Bottles');
+    
+    return { totalWeeklyGrams: total, avgDailyGrams: avg, primaryItem: primary };
+  }, [history]);
+
   return (
-    <div className="bg-transparent min-h-screen font-body text-foreground selection:bg-primary selection:text-white">
-      <Navbar />
+    <div ref={landingScrollRef} className="h-screen overflow-y-auto overflow-x-hidden custom-scrollbar bg-transparent font-body text-foreground selection:bg-primary selection:text-white">
+      <Navbar containerRef={landingScrollRef} />
       
       {/* Hero Section */}
       <section className="relative pt-28 sm:pt-32 md:pt-36 lg:pt-40 pb-20 md:pb-28 xl:pb-36 overflow-hidden">
@@ -114,9 +176,9 @@ export default function LandingPage() {
               style={{ perspective: 1000, willChange: 'transform, opacity' }}
               className="lg:col-span-5 flex justify-center lg:justify-end w-full"
             >
-              <motion.div 
-                whileHover={kineticHover}
-                className="w-full max-w-xl 2xl:max-w-2xl infra-card p-6 sm:p-8 lg:p-10 xl:p-12 bg-white/40 backdrop-blur-xl border border-border hover:border-black shadow-xl rounded-2xl relative transform -rotate-2 hover:rotate-0 transition-all duration-300"
+              <KineticTiltCard 
+                tiltDegree={8}
+                className="w-full max-w-xl 2xl:max-w-2xl infra-card p-6 sm:p-8 lg:p-10 xl:p-12 bg-white/40 backdrop-blur-xl border border-border hover:border-black shadow-xl rounded-2xl relative transition-all duration-300"
               >
                 <div className="flex items-center justify-between pb-5 border-b border-border">
                   <div className="flex items-center gap-2.5 text-stone-900 font-bold font-heading text-base sm:text-lg xl:text-xl">
@@ -129,24 +191,27 @@ export default function LandingPage() {
                 </div>
                 
                 <div className="py-8 xl:py-10 text-center space-y-2">
-                  <h3 className="text-6xl sm:text-7xl xl:text-8xl font-bold font-mono tracking-tighter text-stone-900">182<span className="text-2xl sm:text-3xl xl:text-4xl text-stone-500 font-normal">g</span></h3>
+                  <h3 className="text-6xl sm:text-7xl xl:text-8xl font-bold font-mono tracking-tighter text-stone-900">
+                    <AnimatedCounter value={totalWeeklyGrams} />
+                    <span className="text-2xl sm:text-3xl xl:text-4xl text-stone-500 font-normal">g</span>
+                  </h3>
                   <p className="text-sm sm:text-base xl:text-lg font-medium text-stone-600">Total plastic logged</p>
                   <p className="text-xs sm:text-sm font-mono text-emerald-700 mt-2 px-3.5 py-1 bg-emerald-50 rounded-full inline-block">
-                    ★ 5 Days under limit
+                    ★ {totalWeeklyGrams > 0 ? 'Tracking Active' : 'Start tracking today'}
                   </p>
                 </div>
 
                 <div className="space-y-4 pt-5 border-t border-border">
                   <div className="flex justify-between items-center font-mono text-xs sm:text-sm xl:text-base">
                     <span className="text-stone-600">Daily Average</span>
-                    <span className="font-bold text-stone-900">26g</span>
+                    <span className="font-bold text-stone-900"><AnimatedCounter value={avgDailyGrams} suffix="g" /></span>
                   </div>
                   <div className="flex justify-between items-center font-mono text-xs sm:text-sm xl:text-base">
                     <span className="text-stone-600">Primary Item</span>
-                    <span className="font-bold text-stone-900">PET Water Bottles</span>
+                    <span className="font-bold text-stone-900">{primaryItem}</span>
                   </div>
                 </div>
-              </motion.div>
+              </KineticTiltCard>
             </motion.div>
 
           </div>
@@ -255,17 +320,19 @@ export default function LandingPage() {
               </motion.div>
             </div>
 
-            {/* Fact of the Day Card with Kinetic Spring */}
+            {/* Fact of the Day Card with Kinetic Spring & 3D Tilt */}
             <motion.div 
               variants={kineticCard}
               initial="hidden"
               whileInView="visible"
-              whileHover={kineticHover}
               viewport={{ once: true, amount: 0.15 }}
               style={{ perspective: 1000, willChange: 'transform, opacity' }}
               className="lg:col-span-5 flex justify-center lg:justify-end w-full"
             >
-              <div className="w-full max-w-xl 2xl:max-w-2xl bg-white/40 backdrop-blur-xl rounded-2xl border border-border hover:border-black p-6 sm:p-8 lg:p-10 xl:p-12 shadow-lg transform -rotate-2 hover:rotate-0 hover:scale-[1.02] transition-all duration-300">
+              <KineticTiltCard 
+                tiltDegree={8}
+                className="w-full max-w-xl 2xl:max-w-2xl bg-white/40 backdrop-blur-xl rounded-2xl border border-border hover:border-black p-6 sm:p-8 lg:p-10 xl:p-12 shadow-lg transition-all duration-300"
+              >
                 <div className="flex items-center gap-2 text-forest font-mono text-xs sm:text-sm font-semibold tracking-wider mb-4">
                   <BookOpen size={18} />
                   <span>FACT OF THE DAY</span>
@@ -277,7 +344,7 @@ export default function LandingPage() {
                 <div className="mt-4 pt-3 border-t border-stone-200/60 flex items-center gap-2">
                   <span className="px-2.5 py-1 bg-white/60 text-stone-700 rounded text-[11px] sm:text-xs font-mono font-semibold">RECYCLING REALITY</span>
                 </div>
-              </div>
+              </KineticTiltCard>
             </motion.div>
 
           </div>
@@ -318,18 +385,56 @@ export default function LandingPage() {
 
           </div>
 
-          <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs sm:text-sm font-mono text-white/50">
+          <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs sm:text-sm font-mono text-white/60">
             <div>&copy; 2026 PlastiTrack. Built for positive environmental change.</div>
-            <div className="flex gap-6">
-              <span className="hover:text-white transition-colors cursor-pointer">PRIVACY</span>
-              <span className="hover:text-white transition-colors cursor-pointer">TERMS</span>
-              <span className="hover:text-white transition-colors cursor-pointer">METHODOLOGY</span>
-              <span className="hover:text-white transition-colors cursor-pointer">RESOURCES</span>
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+              <Link 
+                to="/docs" 
+                className="text-emerald-400 hover:text-emerald-300 font-bold transition-colors flex items-center gap-1.5"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>RESEARCH DOSSIER</span>
+              </Link>
+              <button 
+                onClick={() => setLegalModalType('privacy')}
+                type="button"
+                className="hover:text-white transition-colors cursor-pointer"
+              >
+                PRIVACY
+              </button>
+              <button 
+                onClick={() => setLegalModalType('terms')}
+                type="button"
+                className="hover:text-white transition-colors cursor-pointer"
+              >
+                TERMS
+              </button>
+              <button 
+                onClick={() => setLegalModalType('methodology')}
+                type="button"
+                className="hover:text-white transition-colors cursor-pointer"
+              >
+                METHODOLOGY
+              </button>
+              <button 
+                onClick={() => setLegalModalType('resources')}
+                type="button"
+                className="hover:text-white transition-colors cursor-pointer"
+              >
+                RESOURCES
+              </button>
             </div>
           </div>
 
         </div>
       </section>
+
+      {/* Interactive Footer Legal / Academic Modal */}
+      <FooterLegalModal 
+        isOpen={!!legalModalType} 
+        onClose={() => setLegalModalType(null)} 
+        modalType={legalModalType} 
+      />
 
     </div>
   );
@@ -339,18 +444,40 @@ function ModuleCard({ icon, title, desc }) {
   return (
     <motion.div 
       variants={kineticCard}
-      whileHover={kineticHover}
-      whileTap={kineticTap}
-      style={{ perspective: 1000, willChange: 'transform, opacity' }}
-      className="bg-white/40 backdrop-blur-xl rounded-2xl border border-border hover:border-black hover:ring-1 hover:ring-black p-6 sm:p-8 lg:p-9 xl:p-11 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between group"
+      style={{ perspective: 1200, willChange: 'transform, opacity' }}
+      className="h-full"
     >
-      <div>
-        <div className="flex items-center justify-between mb-5 xl:mb-6">
-          <div className="p-3.5 sm:p-4 rounded-xl bg-emerald-50 text-forest group-hover:scale-110 transition-transform">{icon}</div>
+      <KineticTiltCard
+        tiltDegree={16}
+        className="h-full bg-white/45 hover:bg-white/60 backdrop-blur-xl rounded-2xl border border-border hover:border-emerald-600 hover:ring-2 hover:ring-emerald-500/25 p-6 sm:p-8 lg:p-9 xl:p-11 cursor-pointer flex flex-col justify-between transition-[border-color,ring,background-color] duration-200"
+      >
+        <div style={{ transform: 'translateZ(26px)', transformStyle: 'preserve-3d' }}>
+          <div className="flex items-center justify-between mb-5 xl:mb-6">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-emerald-50 text-forest group-hover:scale-110 group-hover:bg-emerald-100 transition-all duration-200 shadow-2xs">
+              {icon}
+            </div>
+            <span className="text-[10px] font-mono font-bold text-stone-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-2 py-0.5 rounded bg-black/5">
+              ACTIVE
+            </span>
+          </div>
+          <h3 className="text-xl sm:text-2xl xl:text-3xl font-bold font-heading text-stone-900 mb-3 xl:mb-4 tracking-tight">
+            {title}
+          </h3>
+          <p className="text-sm sm:text-base xl:text-lg text-stone-600 font-body leading-relaxed">
+            {desc}
+          </p>
         </div>
-        <h3 className="text-xl sm:text-2xl xl:text-3xl font-bold font-heading text-stone-900 mb-3 xl:mb-4">{title}</h3>
-        <p className="text-sm sm:text-base xl:text-lg text-stone-600 font-body leading-relaxed">{desc}</p>
-      </div>
+
+        <div className="mt-5 pt-3 border-t border-black/5 flex items-center justify-between text-xs font-mono font-bold text-emerald-800">
+          <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1.5">
+            <span>Explore Feature</span>
+            <ArrowRight size={13} />
+          </span>
+          <span className="text-[10px] text-stone-600 font-mono tracking-wider">
+            3D KINETIC
+          </span>
+        </div>
+      </KineticTiltCard>
     </motion.div>
   );
 }

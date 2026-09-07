@@ -48,9 +48,11 @@ html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden;
   background-color: transparent;
   color: var(--color-foreground);
   font-family: var(--font-body);
+  font-size: 85%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -256,4 +258,80 @@ h1, h2, h3, h4 {
   .rotate-y-180 {
     transform: rotateY(180deg);
   }
+}
+
+/* ==========================================================================
+   Custom Floating Glassmorphic Scrollbar (Replaces Clunky OS Scrollbars)
+   ========================================================================== */
+
+/* WebKit & Chromium Engines (Chrome, Edge, Safari, Brave, Opera) */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(27, 67, 50, 0.2);
+  border-radius: 9999px;
+  transition: background-color 0.25s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(27, 67, 50, 0.55);
+}
+
+/* Ensure no OS stepper arrows or background boxes appear */
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent !important;
+}
+
+/* Scoped Utility for Inner Scroll Containers */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(27, 67, 50, 0.15);
+  border-radius: 9999px;
+  transition: background-color 0.3s ease;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(27, 67, 50, 0.4);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(27, 67, 50, 0.7);
+}
+
+/* Firefox-only fallback: only applied if browser does not support ::-webkit-scrollbar */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(27, 67, 50, 0.25) transparent;
+  }
+}
+
+/* Zero-scrollbar utility (still scrollable via wheel/touch, but invisible) */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
