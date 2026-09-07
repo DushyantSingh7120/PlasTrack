@@ -335,3 +335,35 @@ h1, h2, h3, h4 {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+/* Print optimization for legal dossiers and statutory modals */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .print\:hidden {
+    display: none !important;
+  }
+  .print\:static {
+    position: static !important;
+  }
+  .print\:p-0 {
+    padding: 0 !important;
+  }
+  .print\:bg-white {
+    background-color: #ffffff !important;
+  }
+  .print\:border-none {
+    border: none !important;
+  }
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+  .print\:rounded-none {
+    border-radius: 0 !important;
+  }
+  .print\:overflow-visible {
+    overflow: visible !important;
+  }
+}

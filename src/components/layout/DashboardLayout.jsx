@@ -16,13 +16,15 @@ import {
   CalendarCheck,
   Leaf,
   Sparkles,
-  FileText
+  FileText,
+  ShieldCheck
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { loadCampusDemoData, clearDemoData, isDemoDataActive } from '../../lib/demoData';
 import SettingsModal from '../ui/SettingsModal';
 import NotificationsModal from '../ui/NotificationsModal';
 import CloudSyncModal from '../ui/CloudSyncModal';
+import FooterLegalModal from '../ui/FooterLegalModal';
 import { subscribeToAuth } from '../../lib/firebase';
 
 export default function DashboardLayout({ children }) {
@@ -32,6 +34,7 @@ export default function DashboardLayout({ children }) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isCloudSyncOpen, setIsCloudSyncOpen] = useState(false);
+  const [legalModalType, setLegalModalType] = useState(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const mainScrollRef = useRef(null);
 
@@ -236,6 +239,14 @@ export default function DashboardLayout({ children }) {
           <Settings size={16} className="text-stone-800" />
           <span>System Settings</span>
         </button>
+        <button
+          onClick={() => setLegalModalType('privacy')}
+          type="button"
+          className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-white/40 rounded-lg cursor-pointer transition-colors text-stone-900 hover:text-black text-xs font-mono font-bold text-left"
+        >
+          <ShieldCheck size={16} className="text-stone-800" />
+          <span>Privacy &amp; Terms</span>
+        </button>
       </div>
     </div>
   );
@@ -380,6 +391,10 @@ export default function DashboardLayout({ children }) {
       <SettingsModal 
         isOpen={isSettingsOpen} 
         onClose={() => setIsSettingsOpen(false)} 
+        onOpenLegal={(type) => {
+          setIsSettingsOpen(false);
+          setLegalModalType(type || 'privacy');
+        }}
       />
 
       <NotificationsModal 
@@ -390,6 +405,12 @@ export default function DashboardLayout({ children }) {
       <CloudSyncModal 
         isOpen={isCloudSyncOpen} 
         onClose={() => setIsCloudSyncOpen(false)} 
+      />
+
+      <FooterLegalModal
+        isOpen={!!legalModalType}
+        onClose={() => setLegalModalType(null)}
+        modalType={legalModalType}
       />
     </div>
   );

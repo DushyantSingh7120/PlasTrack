@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, Trash2, Download, Check, Database } from 'lucide-react';
+import { X, Settings, Trash2, Download, Check, Database, ShieldCheck, Scale, FileText } from 'lucide-react';
 import { 
   getStoredTargetGrams, 
   setStoredTargetGrams, 
@@ -10,12 +10,12 @@ import {
   getFullBackupData 
 } from '../../lib/storage';
 
-export default function SettingsModal({ isOpen, onClose }) {
+export default function SettingsModal({ isOpen, onClose, onOpenLegal }) {
   if (!isOpen) return null;
-  return <SettingsModalDialog onClose={onClose} />;
+  return <SettingsModalDialog onClose={onClose} onOpenLegal={onOpenLegal} />;
 }
 
-function SettingsModalDialog({ onClose }) {
+function SettingsModalDialog({ onClose, onOpenLegal }) {
   const [targetGrams, setTargetGrams] = useState(() => getStoredTargetGrams());
   const [institution, setInstitution] = useState(() => getStoredInstitution());
   const [resetConfirm, setResetConfirm] = useState(false);
@@ -140,6 +140,48 @@ function SettingsModalDialog({ onClose }) {
               <p className="text-xs text-stone-600 font-mono leading-relaxed">
                 Logs are cached locally on this device via high-speed WebStorage with zero latency and complete student privacy.
               </p>
+            </div>
+
+            {/* Statutory Compliance & Policies */}
+            <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-stone-900 flex items-center gap-1.5">
+                  <ShieldCheck size={14} className="text-emerald-700" />
+                  Statutory &amp; Data Compliance
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-stone-200 text-stone-700 font-bold">
+                  DPDP ACT 2023
+                </span>
+              </div>
+              <p className="text-xs text-stone-600 font-mono leading-relaxed">
+                Review data protection rights under the Digital Personal Data Protection Act 2023, MIT academic terms, and CPCB mathematical derivations.
+              </p>
+              <div className="flex flex-wrap gap-2 pt-1">
+                <button
+                  onClick={() => onOpenLegal && onOpenLegal('privacy')}
+                  type="button"
+                  className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-emerald-50 text-emerald-950 border border-stone-300 hover:border-emerald-300 text-[11px] font-mono font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                >
+                  <ShieldCheck size={13} className="text-emerald-700" />
+                  <span>Privacy Policy</span>
+                </button>
+                <button
+                  onClick={() => onOpenLegal && onOpenLegal('terms')}
+                  type="button"
+                  className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-amber-50 text-amber-950 border border-stone-300 hover:border-amber-300 text-[11px] font-mono font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                >
+                  <Scale size={13} className="text-amber-700" />
+                  <span>Terms of Use</span>
+                </button>
+                <button
+                  onClick={() => onOpenLegal && onOpenLegal('methodology')}
+                  type="button"
+                  className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-teal-50 text-teal-950 border border-stone-300 hover:border-teal-300 text-[11px] font-mono font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                >
+                  <FileText size={13} className="text-teal-700" />
+                  <span>Methodology</span>
+                </button>
+              </div>
             </div>
 
             {/* Backup & Reset Actions */}
