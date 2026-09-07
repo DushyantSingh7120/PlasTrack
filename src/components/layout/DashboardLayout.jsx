@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Activity, 
@@ -11,12 +11,26 @@ import {
   LayoutGrid,
   BookOpen,
   CalendarCheck,
-  Leaf
+  Leaf,
+  Sparkles
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { loadCampusDemoData, clearDemoData, isDemoDataActive } from '../../lib/demoData';
 
 export default function DashboardLayout({ children }) {
   const location = useLocation();
+  const [isDemo, setIsDemo] = useState(false);
+
+  useEffect(() => {
+    const checkDemo = () => setIsDemo(isDemoDataActive());
+    checkDemo();
+    window.addEventListener('plastitrack-data-updated', checkDemo);
+    window.addEventListener('storage', checkDemo);
+    return () => {
+      window.removeEventListener('plastitrack-data-updated', checkDemo);
+      window.removeEventListener('storage', checkDemo);
+    };
+  }, []);
 
   const navItems = [
     { 
@@ -220,20 +234,46 @@ export default function DashboardLayout({ children }) {
             </div>
           </div>
           
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#cfcdc1] bg-white/80 font-mono text-xs text-stone-800 font-medium shadow-xs">
+          <div className="flex items-center gap-2.5 shrink-0">
+            {/* Demo Mode Toggle Button / Badge */}
+            {isDemo ? (
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-500/50 bg-amber-500/20 backdrop-blur-md font-mono text-xs text-amber-950 font-bold shadow-2xs">
+                <Sparkles size={13} className="text-amber-700" />
+                <span>DEMO ACTIVE</span>
+                <button
+                  onClick={() => clearDemoData()}
+                  type="button"
+                  className="ml-1 underline hover:text-amber-800 font-black cursor-pointer"
+                  title="Clear Demo Data"
+                >
+                  Clear
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => loadCampusDemoData()}
+                type="button"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-500/50 bg-emerald-600/20 hover:bg-emerald-600/30 backdrop-blur-md font-mono text-xs text-emerald-950 font-black shadow-2xs transition cursor-pointer"
+                title="Load 7-Day Campus Benchmark Demo Data"
+              >
+                <Sparkles size={13} className="text-emerald-700" />
+                <span>⚡ Demo Data</span>
+              </button>
+            )}
+
+            <div className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/60 bg-white/40 backdrop-blur-md font-mono text-xs text-stone-900 font-bold shadow-xs">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               <span>{headerMeta.badgeText}</span>
             </div>
-            <button className="p-2 text-stone-600 hover:text-stone-900 hover:bg-white/60 rounded-lg transition-colors relative">
+            <button className="p-2 text-stone-700 hover:text-stone-950 hover:bg-white/50 rounded-xl transition-colors relative cursor-pointer">
               <Bell size={18} />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-500 rounded-full ring-2 ring-[#e5e4d8]"></span>
             </button>
-            <div className="w-8 h-8 rounded-full bg-stone-300 border border-stone-400/60 flex items-center justify-center font-mono text-xs text-stone-700 font-semibold shadow-inner">
-              <User size={16} className="text-stone-600" />
+            <div className="w-8 h-8 rounded-full bg-stone-300/80 border border-stone-400/60 flex items-center justify-center font-mono text-xs text-stone-800 font-bold shadow-inner">
+              <User size={16} className="text-stone-700" />
             </div>
           </div>
         </header>

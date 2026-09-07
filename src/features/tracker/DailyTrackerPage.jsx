@@ -243,6 +243,8 @@ export default function DailyTrackerPage() {
     const history = JSON.parse(localStorage.getItem('plastitrack_history') || '[]');
     history.push(logEntry);
     localStorage.setItem('plastitrack_history', JSON.stringify(history));
+    window.dispatchEvent(new Event('plastitrack-data-updated'));
+    window.dispatchEvent(new Event('storage'));
     showNotice(`Logged ${totalGrams}g (₹${totalCostINR}) to your daily history!`);
   };
 
@@ -287,14 +289,14 @@ export default function DailyTrackerPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* LEFT COLUMN: Quick-Add Catalog */}
         <div className="lg:col-span-7 space-y-5">
-          <div className="bg-white/50 backdrop-blur-xl rounded-2xl border border-border p-5 shadow-xs">
+          <div className="bg-white/35 backdrop-blur-2xl rounded-2xl border border-white/60 p-5 shadow-xs">
             <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-border/70">
               <div>
                 <div className="flex items-center gap-2 text-primary font-mono text-xs font-semibold tracking-wider uppercase">
                   <Zap size={14} className="text-emerald-600" />
                   <span>1-TAP CONSUMPTION LOGGER (CPCB & BIS CALIBRATED)</span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-stone-700 font-medium mt-1">
                   Tap to add single-use items. Standardized gram weights and retail prices are pre-calibrated.
                 </p>
               </div>
@@ -311,7 +313,7 @@ export default function DailyTrackerPage() {
                     className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
                       isActive
                         ? 'bg-[#0f2c1f] text-white font-extrabold shadow-sm border-2 border-emerald-500/80 ring-2 ring-emerald-500/20'
-                        : 'bg-white/90 hover:bg-white text-stone-900 font-bold border border-stone-300 shadow-2xs hover:border-stone-400'
+                        : 'bg-white/30 hover:bg-white/50 text-stone-950 font-bold border border-white/60 shadow-2xs'
                     }`}
                   >
                     {isActive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>}
@@ -332,7 +334,7 @@ export default function DailyTrackerPage() {
               return (
                 <div
                   key={item.id}
-                  className="bg-white/50 backdrop-blur-xl rounded-2xl border border-border p-5 shadow-xs hover:shadow-md hover:bg-white/70 transition-all flex flex-col justify-between"
+                  className="bg-white/35 backdrop-blur-xl rounded-2xl border border-white/60 p-5 shadow-xs hover:shadow-md hover:bg-white/50 transition-all flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-start justify-between">
@@ -408,7 +410,7 @@ export default function DailyTrackerPage() {
         </div>
 
         {/* RIGHT COLUMN: Live Calculation Summary */}
-        <div className="lg:col-span-5 bg-white/50 backdrop-blur-xl rounded-2xl border border-border p-6 shadow-xs flex flex-col justify-between space-y-6">
+        <div className="lg:col-span-5 bg-white/35 backdrop-blur-2xl rounded-2xl border border-white/60 p-6 shadow-xs flex flex-col justify-between space-y-6">
           <div className="space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-border/70">
               <div className="flex items-center gap-2 text-primary font-mono text-xs font-semibold tracking-wider">
@@ -422,40 +424,40 @@ export default function DailyTrackerPage() {
 
             {/* Total Mass & Cost Cards */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="p-4 rounded-xl bg-stone-50 border border-border">
-                <p className="text-[11px] font-medium text-muted-foreground font-mono uppercase tracking-wider">
+              <div className="p-4 rounded-2xl bg-white/30 hover:bg-white/45 backdrop-blur-md border border-white/60 shadow-xs transition-all">
+                <p className="text-[11px] font-bold text-stone-700 font-mono uppercase tracking-wider">
                   Total Mass
                 </p>
-                <p className="font-mono text-3xl font-bold text-foreground tracking-tight mt-1">
-                  {totalGrams} <span className="text-sm font-normal text-muted-foreground">g</span>
+                <p className="font-mono text-3xl font-black text-stone-950 tracking-tight mt-1">
+                  {totalGrams} <span className="text-sm font-normal text-stone-600">g</span>
                 </p>
-                <span className="font-mono text-[10px] text-stone-600 mt-1 block">
+                <span className="font-mono text-[10px] text-stone-700 font-semibold mt-1 block">
                   {(totalGrams / 1000).toFixed(3)} kg logged
                 </span>
               </div>
 
-              <div className="p-4 rounded-xl bg-stone-50 border border-border">
-                <p className="text-[11px] font-medium text-muted-foreground font-mono uppercase tracking-wider">
+              <div className="p-4 rounded-2xl bg-white/30 hover:bg-white/45 backdrop-blur-md border border-white/60 shadow-xs transition-all">
+                <p className="text-[11px] font-bold text-stone-700 font-mono uppercase tracking-wider">
                   Money Spent
                 </p>
-                <p className="font-mono text-3xl font-bold text-foreground tracking-tight mt-1">
+                <p className="font-mono text-3xl font-black text-stone-950 tracking-tight mt-1">
                   ₹{totalCostINR}
                 </p>
-                <span className="font-mono text-[10px] text-stone-600 mt-1 block">
+                <span className="font-mono text-[10px] text-stone-700 font-semibold mt-1 block">
                   On disposable items
                 </span>
               </div>
             </div>
 
             {/* Decomposition Horizon Display */}
-            <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 flex items-start gap-3">
-              <Clock size={20} className="text-primary shrink-0 mt-0.5" />
+            <div className="p-4 rounded-2xl bg-white/30 border border-white/60 backdrop-blur-md flex items-start gap-3">
+              <Clock size={20} className="text-emerald-800 shrink-0 mt-0.5" />
               <div>
-                <span className="font-mono text-xs font-bold text-primary uppercase block">
+                <span className="font-mono text-xs font-black text-stone-950 uppercase block">
                   Decomposition Horizon
                 </span>
-                <p className="text-xs text-stone-700 mt-1 leading-relaxed">
-                  Items logged today will persist in landfills and waterways for up to <strong>{maxDecomposition || 0} years</strong> (until approximately <strong>{persistenceYear} AD</strong>).
+                <p className="text-xs text-stone-800 mt-1 leading-relaxed font-medium">
+                  Items logged today will persist in landfills and waterways for up to <strong className="text-stone-950 font-black">{maxDecomposition || 0} years</strong> (until approximately <strong className="text-stone-950 font-black">{persistenceYear} AD</strong>).
                 </p>
               </div>
             </div>

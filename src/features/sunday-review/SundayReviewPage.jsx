@@ -16,6 +16,7 @@ import {
   Leaf
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { loadCampusDemoData, clearDemoData, isDemoDataActive } from '../../lib/demoData';
 
 const TAILORED_CHALLENGES = [
   {
@@ -49,17 +50,31 @@ const TAILORED_CHALLENGES = [
 
 export default function SundayReviewPage() {
   const [history, setHistory] = useState([]);
+  const [isDemo, setIsDemo] = useState(false);
   const ceilingGrams = 40; // Target daily limit
 
-  useEffect(() => {
+  const syncData = () => {
     const saved = localStorage.getItem('plastitrack_history');
     if (saved) {
       try {
         setHistory(JSON.parse(saved));
       } catch (e) {
-        console.error("Failed to parse history");
+        setHistory([]);
       }
+    } else {
+      setHistory([]);
     }
+    setIsDemo(isDemoDataActive());
+  };
+
+  useEffect(() => {
+    syncData();
+    window.addEventListener('plastitrack-data-updated', syncData);
+    window.addEventListener('storage', syncData);
+    return () => {
+      window.removeEventListener('plastitrack-data-updated', syncData);
+      window.removeEventListener('storage', syncData);
+    };
   }, []);
 
   const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
@@ -67,7 +82,7 @@ export default function SundayReviewPage() {
   const weekData = useMemo(() => {
     if (history.length > 0) {
       const last7 = history.slice(-7);
-      return last7.map((entry) => {
+      const mapped = last7.map((entry) => {
         const date = new Date(entry.timestamp);
         return {
           day: days[date.getDay()],
@@ -75,49 +90,44 @@ export default function SundayReviewPage() {
           isBest: false
         };
       });
+
+      if (mapped.length > 0) {
+        let bestIdx = 0;
+        for (let i = 1; i < mapped.length; i++) {
+          if (mapped[i].grams < mapped[bestIdx].grams) {
+            bestIdx = i;
+          }
+        }
+        mapped[bestIdx].isBest = true;
+      }
+      return mapped;
     }
-    return [
-      { day: 'MON', grams: 38, isBest: false },
-      { day: 'TUE', grams: 42, isBest: false },
-      { day: 'WED', grams: 12, isBest: false },
-      { day: 'THU', grams: 35, isBest: false },
-      { day: 'FRI', grams: 48, isBest: false },
-      { day: 'SAT', grams: 52, isBest: false },
-      { day: 'SUN', grams: 25, isBest: false }
-    ];
+    return [];
   }, [history]);
 
-  // Find lowest consumption day
-  if (weekData.length > 0) {
-    let bestIdx = 0;
-    for (let i = 1; i < weekData.length; i++) {
-      if (weekData[i].grams < weekData[bestIdx].grams) {
-        bestIdx = i;
-      }
-    }
-    weekData[bestIdx].isBest = true;
-  }
-
-  const totalWeeklyGrams = weekData.reduce((acc, d) => acc + d.grams, 0);
-  const avgDaily = weekData.length > 0 ? Math.round(totalWeeklyGrams / weekData.length) : 0;
-  const cleanDays = weekData.filter((d) => d.grams <= ceilingGrams).length;
+  const hasData = weekData.length > 0;
+  const totalWeeklyGrams = hasData ? weekData.reduce((acc, d) => acc + d.grams, 0) : 0;
+  const avgDaily = hasData ? Math.round(totalWeeklyGrams / weekData.length) : 0;
+  const cleanDays = hasData ? weekData.filter((d) => d.grams <= ceilingGrams).length : 0;
 
   // Compute Impact Badge
-  let badgeName = "Conscious Reducer";
-  let badgeColor = "bg-emerald-50 text-emerald-800 border-emerald-300";
+  let badgeName = hasData ? "Conscious Reducer" : "Awaiting Entries";
+  let badgeColor = hasData ? "bg-emerald-50 text-emerald-800 border-emerald-300" : "bg-stone-100 text-stone-700 border-stone-300";
   let badgeIcon = ShieldCheck;
-  let badgeDescription = "Maintaining solid personal consumption control.";
+  let badgeDescription = hasData ? "Maintaining solid personal consumption control." : "Log daily items or load campus demo data to generate your Sunday badge.";
 
-  if (avgDaily < 25) {
-    badgeName = "Eco-Guardian";
-    badgeColor = "bg-forest text-white border-forest";
-    badgeIcon = Sparkles;
-    badgeDescription = "Exceptional! Well below India's 33g/day national average.";
-  } else if (avgDaily > 45) {
-    badgeName = "High Footprint Alert";
-    badgeColor = "bg-red-50 text-red-700 border-red-300";
-    badgeIcon = AlertCircle;
-    badgeDescription = "Exceeding metropolitan average. Adopt weekly swaps below.";
+  if (hasData) {
+    if (avgDaily < 25) {
+      badgeName = "Eco-Guardian";
+      badgeColor = "bg-forest text-white border-forest";
+      badgeIcon = Sparkles;
+      badgeDescription = "Exceptional! Well below India's 33g/day national average.";
+    } else if (avgDaily > 45) {
+      badgeName = "High Footprint Alert";
+      badgeColor = "bg-red-50 text-red-700 border-red-300";
+      badgeIcon = AlertCircle;
+      badgeDescription = "Exceeding metropolitan average. Adopt weekly swaps below.";
+    }
   }
 
   const BadgeIcon = badgeIcon;
@@ -139,10 +149,27 @@ export default function SundayReviewPage() {
         </div>
         <div className="flex items-center gap-2">
           <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
-            {cleanDays}/{weekData.length || 7} DAYS UNDER LIMIT
+            {cleanDays}/{hasData ? weekData.length : 0} DAYS UNDER LIMIT
           </span>
         </div>
       </section>
+
+      {/* Demo Benchmark Active Ribbon */}
+      {isDemo && (
+        <div className="p-4 rounded-2xl bg-amber-500/15 border-2 border-amber-500/40 backdrop-blur-xl flex flex-wrap items-center justify-between gap-3 shadow-sm text-amber-950 font-mono text-xs sm:text-sm">
+          <div className="flex items-center gap-2.5 font-bold">
+            <Sparkles size={18} className="text-amber-700 shrink-0" />
+            <span>DEMO BENCHMARK ACTIVE: 7-Day Campus Audit Data Loaded</span>
+          </div>
+          <button
+            onClick={() => clearDemoData()}
+            type="button"
+            className="px-3.5 py-1.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-black text-xs transition shadow-xs cursor-pointer"
+          >
+            Clear Demo Data
+          </button>
+        </div>
+      )}
 
       {/* 3 Summary Metric Cards + Badge */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -225,68 +252,98 @@ export default function SundayReviewPage() {
           </div>
         </div>
 
-        {/* The Bar Chart Canvas Container */}
-        <div className="relative w-full h-72 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-2xl p-4 border border-white/50 overflow-hidden shadow-inner transition-all">
-          {/* Y-Axis Gridlines */}
-          <div className="absolute inset-x-10 top-6 bottom-10 flex flex-col justify-between pointer-events-none text-stone-700 font-mono text-[10px] font-bold">
-            {[100, 80, 60, 40, 20, 0].map((val) => (
-              <div key={val} className="w-full flex items-center gap-2">
-                <span className="w-7 text-right">{val}g</span>
-                <div className="flex-1 h-px bg-black/10"></div>
-              </div>
-            ))}
-          </div>
-
-          {/* Ceiling Overlay Line (40g) */}
-          <div className="absolute inset-x-16 bottom-[125px] pointer-events-none flex items-center z-20">
-            <div className="w-full h-0 border-t-2 border-dashed border-amber-600/90"></div>
-            <span className="absolute right-0 -top-3.5 bg-amber-100/90 text-amber-950 font-mono text-[10px] px-2.5 py-0.5 rounded-full uppercase font-black border border-amber-300/80 shadow-2xs backdrop-blur-xs">
-              TARGET: 40g
-            </span>
-          </div>
-
-          {/* 7 Daily Bars */}
-          <div className="relative h-full pl-10 pr-6 pb-6 pt-4 grid grid-cols-7 gap-3 sm:gap-6 items-end z-10">
-            {weekData.map((item, idx) => {
-              const heightPct = `${Math.min(100, item.grams)}%`;
-              const isOver = item.grams > ceilingGrams;
-              return (
-                <div
-                  key={`${item.day}-${idx}`}
-                  className="group flex flex-col items-center justify-end h-full relative cursor-pointer"
-                >
-                  {item.isBest && (
-                    <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-950 font-mono text-[9px] rounded-full font-black mb-1 border border-emerald-400/60 shadow-2xs backdrop-blur-xs">
-                      ★ LOWEST
-                    </span>
-                  )}
-
-                  <div className={`font-mono text-xs font-black mb-1 group-hover:scale-110 transition-transform ${
-                    item.isBest ? 'text-emerald-950' : isOver ? 'text-amber-900' : 'text-stone-900'
-                  }`}>
-                    {item.grams}g
+        {/* Chart Canvas Area */}
+        <div className="h-64 sm:h-72 w-full relative bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-2xl border border-white/50 p-4 transition-all duration-300">
+          {hasData ? (
+            <>
+              {/* Y-Axis Gridlines */}
+              <div className="absolute inset-x-10 top-6 bottom-10 flex flex-col justify-between pointer-events-none text-stone-700 font-mono text-[10px] font-bold">
+                {[100, 80, 60, 40, 20, 0].map((val) => (
+                  <div key={val} className="w-full flex items-center gap-2">
+                    <span className="w-7 text-right">{val}g</span>
+                    <div className="flex-1 h-px bg-black/10"></div>
                   </div>
+                ))}
+              </div>
 
-                  <div
-                    className={`w-full max-w-[48px] rounded-t-xl transition-all duration-300 shadow-xs ${
-                      item.isBest
-                        ? 'bg-emerald-700'
-                        : isOver
-                        ? 'bg-amber-600'
-                        : 'bg-[#1b4332]'
-                    }`}
-                    style={{ height: heightPct }}
-                  ></div>
+              {/* Ceiling Overlay Line (40g) */}
+              <div className="absolute inset-x-16 bottom-[125px] pointer-events-none flex items-center z-20">
+                <div className="w-full h-0 border-t-2 border-dashed border-amber-600/90"></div>
+                <span className="absolute right-0 -top-3.5 bg-amber-100/90 text-amber-950 font-mono text-[10px] px-2.5 py-0.5 rounded-full uppercase font-black border border-amber-300/80 shadow-2xs backdrop-blur-xs">
+                  TARGET: 40g
+                </span>
+              </div>
 
-                  <span className={`font-mono text-xs uppercase mt-2 font-black ${
-                    item.isBest ? 'text-emerald-950' : 'text-stone-900'
-                  }`}>
-                    {item.day}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+              {/* 7 Daily Bars */}
+              <div className="relative h-full pl-10 pr-6 pb-6 pt-4 grid grid-cols-7 gap-3 sm:gap-6 items-end z-10">
+                {weekData.map((item, idx) => {
+                  const heightPct = `${Math.min(100, item.grams)}%`;
+                  const isOver = item.grams > ceilingGrams;
+                  return (
+                    <div
+                      key={`${item.day}-${idx}`}
+                      className="group flex flex-col items-center justify-end h-full relative cursor-pointer"
+                    >
+                      {item.isBest && (
+                        <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-950 font-mono text-[9px] rounded-full font-black mb-1 border border-emerald-400/60 shadow-2xs backdrop-blur-xs">
+                          ★ LOWEST
+                        </span>
+                      )}
+
+                      <div className={`font-mono text-xs font-black mb-1 group-hover:scale-110 transition-transform ${
+                        item.isBest ? 'text-emerald-950' : isOver ? 'text-amber-900' : 'text-stone-900'
+                      }`}>
+                        {item.grams}g
+                      </div>
+
+                      <div
+                        className={`w-full max-w-[48px] rounded-t-xl transition-all duration-300 shadow-xs ${
+                          item.isBest
+                            ? 'bg-emerald-700'
+                            : isOver
+                            ? 'bg-amber-600'
+                            : 'bg-[#1b4332]'
+                        }`}
+                        style={{ height: heightPct }}
+                      ></div>
+
+                      <span className={`font-mono text-xs uppercase mt-2 font-black ${
+                        item.isBest ? 'text-emerald-950' : 'text-stone-900'
+                      }`}>
+                        {item.day}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <div className="h-full w-full flex flex-col items-center justify-center text-center p-6">
+              <div className="w-11 h-11 rounded-2xl bg-emerald-700/20 border border-emerald-600/40 flex items-center justify-center text-emerald-950 mb-2">
+                <Award size={22} />
+              </div>
+              <h4 className="text-base font-black font-heading text-stone-950">No Weekly Audit Data Found</h4>
+              <p className="text-xs text-stone-800 font-medium max-w-sm mt-0.5 mb-3">
+                Log daily entries or load the Campus Benchmark demo dataset to generate your Sunday Habit breakdown and lowest-impact day.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button
+                  onClick={() => loadCampusDemoData()}
+                  type="button"
+                  className="px-3.5 py-1.5 bg-emerald-800 hover:bg-emerald-950 text-white font-mono text-xs font-bold rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer border border-emerald-400/50"
+                >
+                  <Sparkles size={14} className="text-emerald-300" />
+                  <span>⚡ Load Campus Demo Data</span>
+                </button>
+                <Link
+                  to="/tracker"
+                  className="px-3.5 py-1.5 bg-white/70 hover:bg-white text-stone-950 border border-white/80 font-mono text-xs font-bold rounded-xl shadow-xs transition cursor-pointer"
+                >
+                  + Go to Daily Tracker
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

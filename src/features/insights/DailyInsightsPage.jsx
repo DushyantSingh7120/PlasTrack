@@ -179,9 +179,9 @@ export default function DailyInsightsPage() {
             <p className="text-base sm:text-lg text-stone-700 leading-relaxed font-body">
               {activeFact.content}
             </p>
-            <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground font-mono bg-stone-50/80 p-2.5 rounded-lg border border-border/60 inline-flex">
-              <Info size={14} className="text-primary shrink-0" />
-              <span>Verified Citation: <strong>{activeFact.source}</strong></span>
+            <div className="mt-5 flex items-center gap-2 text-xs text-stone-800 font-mono bg-white/30 backdrop-blur-md p-2.5 rounded-xl border border-white/60 inline-flex shadow-2xs">
+              <Info size={14} className="text-emerald-800 shrink-0" />
+              <span>Verified Citation: <strong className="text-stone-950 font-bold">{activeFact.source}</strong></span>
             </div>
           </motion.div>
         </AnimatePresence>
@@ -230,7 +230,7 @@ export default function DailyInsightsPage() {
           {POLICY_HIGHLIGHTS.map((item, idx) => (
             <div 
               key={idx}
-              className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border flex flex-col justify-between hover:shadow-md transition-all"
+              className="infra-card p-5 bg-white/35 backdrop-blur-xl border border-white/60 flex flex-col justify-between hover:shadow-md transition-all"
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
@@ -257,7 +257,7 @@ export default function DailyInsightsPage() {
       </section>
 
       {/* Action Roadmap: What Each & Everybody Should Do */}
-      <section className="infra-card p-6 bg-white/50 backdrop-blur-xl border border-border">
+      <section className="infra-card p-6 bg-white/35 backdrop-blur-2xl border border-white/60 shadow-sm">
         <div className="flex items-center justify-between pb-4 border-b border-border/70 mb-5">
           <div>
             <div className="flex items-center gap-2 text-primary font-mono text-xs font-semibold tracking-wider">
@@ -279,21 +279,21 @@ export default function DailyInsightsPage() {
           {ACTION_STEPS.map((step) => (
             <div 
               key={step.id} 
-              className="p-4 rounded-xl bg-white/80 border border-border/70 hover:border-emerald-600 transition-all flex flex-col justify-between"
+              className="p-5 rounded-2xl bg-white/35 hover:bg-white/50 backdrop-blur-xl border border-white/60 hover:border-white/90 shadow-xs transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-[11px] font-bold text-primary">
-                    {step.id.toUpperCase()}
+                  <span className="font-mono text-[11px] font-black text-emerald-800 uppercase">
+                    {step.id}
                   </span>
-                  <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-100/70 text-emerald-800 font-semibold">
+                  <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-100/70 text-emerald-950 font-bold border border-emerald-300">
                     {step.impact}
                   </span>
                 </div>
-                <h4 className="text-sm font-bold font-heading text-foreground">
+                <h4 className="text-base font-black font-heading text-stone-950">
                   {step.action}
                 </h4>
-                <p className="text-xs text-stone-600 leading-relaxed mt-2">
+                <p className="text-xs text-stone-800 leading-relaxed font-medium mt-2">
                   {step.why}
                 </p>
               </div>
@@ -322,11 +322,11 @@ export default function DailyInsightsPage() {
           {RESIN_CODES.map((resin) => (
             <div
               key={resin.code}
-              className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border flex flex-col justify-between hover:shadow-md transition-all group"
+              className="infra-card p-5 bg-white/35 backdrop-blur-xl border border-white/60 flex flex-col justify-between hover:shadow-md transition-all group"
             >
               <div>
                 <div className="flex items-start justify-between">
-                  <div className="w-11 h-11 rounded-xl border border-border bg-stone-50 flex items-center justify-center font-mono font-bold text-xl text-foreground group-hover:border-primary transition-colors">
+                  <div className="w-11 h-11 rounded-xl border border-white/60 bg-white/40 backdrop-blur-md flex items-center justify-center font-mono font-black text-xl text-stone-950 group-hover:border-emerald-600 transition-colors shadow-2xs">
                     {resin.symbol} {resin.code}
                   </div>
                   <span className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded border ${

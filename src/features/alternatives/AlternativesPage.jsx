@@ -169,13 +169,13 @@ export default function AlternativesPage() {
                     </div>
 
                     <div className="mt-4 grid grid-cols-2 gap-2 font-mono text-center">
-                      <div className="p-2.5 rounded-xl bg-white/90 border border-emerald-200 shadow-2xs">
-                        <span className="text-[10px] text-muted-foreground block uppercase">Saves Money</span>
-                        <span className="text-base font-bold text-emerald-800">₹{item.annualMoneySavedINR}/yr</span>
+                      <div className="p-2.5 rounded-xl bg-white/40 backdrop-blur-md border border-white/60 shadow-2xs">
+                        <span className="text-[10px] text-stone-700 font-bold block uppercase">Saves Money</span>
+                        <span className="text-base font-black text-emerald-900">₹{item.annualMoneySavedINR}/yr</span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-white/90 border border-emerald-200 shadow-2xs">
-                        <span className="text-[10px] text-muted-foreground block uppercase">Diverts Plastic</span>
-                        <span className="text-base font-bold text-primary">{(item.annualPlasticSavedGrams / 1000).toFixed(1)} kg/yr</span>
+                      <div className="p-2.5 rounded-xl bg-white/40 backdrop-blur-md border border-white/60 shadow-2xs">
+                        <span className="text-[10px] text-stone-700 font-bold block uppercase">Diverts Plastic</span>
+                        <span className="text-base font-black text-emerald-950">{(item.annualPlasticSavedGrams / 1000).toFixed(1)} kg/yr</span>
                       </div>
                     </div>
 

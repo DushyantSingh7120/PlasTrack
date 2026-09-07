@@ -1,10 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../../components/layout/Navbar';
-import { Activity, BookOpen, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Activity, BookOpen, Sparkles, CheckCircle2, ArrowRight, Zap } from 'lucide-react';
+import { loadCampusDemoData } from '../../lib/demoData';
 
 export default function LandingPage() {
+  const navigate = useNavigate();
+
+  const handleLaunchDemo = () => {
+    loadCampusDemoData();
+    navigate('/dashboard');
+  };
   return (
     <div className="bg-transparent min-h-screen font-body text-foreground selection:bg-primary selection:text-white">
       <Navbar />
@@ -38,20 +45,28 @@ export default function LandingPage() {
                 A simple, user-friendly tracker to help you understand your daily plastic usage and discover easy ways to reduce it.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                 <Link 
                   to="/dashboard" 
-                  className="px-7 py-3.5 sm:px-8 sm:py-4 rounded-xl bg-primary text-white font-mono text-sm sm:text-base font-semibold tracking-wider uppercase hover:bg-black transition-all shadow-md flex items-center justify-center gap-2.5 group"
+                  className="px-6 py-3.5 sm:px-7 sm:py-4 rounded-xl bg-primary text-white font-mono text-sm sm:text-base font-semibold tracking-wider uppercase hover:bg-black transition-all shadow-md flex items-center justify-center gap-2.5 group cursor-pointer"
                 >
                   <span>Start Tracking Free</span>
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link 
                   to="/insights" 
-                  className="px-6 py-3.5 sm:px-8 sm:py-4 rounded-xl bg-white/70 backdrop-blur-md border border-border text-foreground font-medium text-sm sm:text-base hover:bg-white hover:border-foreground/30 transition-all text-center"
+                  className="px-6 py-3.5 sm:px-7 sm:py-4 rounded-xl bg-white/70 backdrop-blur-md border border-white/60 text-foreground font-semibold text-sm sm:text-base hover:bg-white hover:border-foreground/30 transition-all text-center"
                 >
                   Learn the Facts
                 </Link>
+                <button
+                  onClick={handleLaunchDemo}
+                  type="button"
+                  className="px-6 py-3.5 sm:px-7 sm:py-4 rounded-xl bg-emerald-800 hover:bg-emerald-950 text-white font-mono text-sm sm:text-base font-black transition-all shadow-md flex items-center justify-center gap-2 border border-emerald-400/50 cursor-pointer"
+                >
+                  <Sparkles size={17} className="text-emerald-300" />
+                  <span>⚡ Load Campus Demo</span>
+                </button>
               </div>
 
               <div className="pt-4 border-t border-border/80 flex flex-wrap gap-6 sm:gap-8 text-xs sm:text-sm font-mono text-muted-foreground">
