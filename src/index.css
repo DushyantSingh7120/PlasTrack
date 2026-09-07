@@ -5,6 +5,7 @@
 @theme {
   /* New Relic & EcoTrack Infrastructure Palette */
   --color-primary: #1b4332;
+  --color-forest: #1b4332;
   --color-on-primary: #FFFFFF;
   
   --color-leaf: #228b22;
@@ -110,22 +111,27 @@ h1, h2, h3, h4 {
   }
 
   .infra-card {
-    background: #ffffff;
-    border: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 16px;
     box-shadow: 0 4px 20px -2px rgba(14, 30, 23, 0.05);
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .infra-card:hover {
-    border-color: #1b4332;
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(255, 255, 255, 0.9);
     transform: translateY(-2px);
     box-shadow: 0 12px 30px -4px rgba(14, 30, 23, 0.1);
   }
 
   .organic-card {
-    background: #fff;
-    border: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 24px;
     transition: all 0.3s ease;
   }
@@ -136,8 +142,10 @@ h1, h2, h3, h4 {
   }
 
   .leaf-card {
-    background: #fff;
-    border: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 60px 20px;
     padding: 32px;
     transition: all 0.3s ease;
@@ -235,5 +243,17 @@ h1, h2, h3, h4 {
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.5);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  }
+
+  /* 3D Flip Card Utilities */
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+  }
+  .rotate-y-180 {
+    transform: rotateY(180deg);
   }
 }

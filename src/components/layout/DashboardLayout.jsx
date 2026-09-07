@@ -10,7 +10,8 @@ import {
   ArrowLeft,
   LayoutGrid,
   BookOpen,
-  CalendarCheck
+  CalendarCheck,
+  Leaf
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -31,9 +32,15 @@ export default function DashboardLayout({ children }) {
       icon: Activity 
     },
     { 
+      name: 'Eco-Alternatives', 
+      path: '/alternatives', 
+      tag: '3D SWAPS', 
+      icon: Leaf 
+    },
+    { 
       name: 'Daily Insights', 
       path: '/insights', 
-      tag: 'CHE110', 
+      tag: 'RESEARCH', 
       icon: BookOpen 
     },
     { 
@@ -53,10 +60,17 @@ export default function DashboardLayout({ children }) {
           badgeText: 'TRACKER: ACTIVE',
           badgeColor: 'text-emerald-700',
         };
+      case '/alternatives':
+        return {
+          title: 'Eco-Alternatives & Circular Payback Catalog',
+          subtitle: '3D_CATALOG // VERIFIED SUSTAINABLE SWAPS & ANNUAL SAVINGS',
+          badgeText: 'SWAPS: VERIFIED',
+          badgeColor: 'text-emerald-700',
+        };
       case '/insights':
         return {
-          title: 'Daily Scientific Insights & Polymer Chemistry',
-          subtitle: 'RESEARCH_NODE // POLYMER DEGRADATION DYNAMICS & CIRCULAR BIO-ALTERNATIVES',
+          title: 'Scientific Research Dossier & Statutory Architecture',
+          subtitle: 'RESEARCH_NODE // CPCB & NEJM BENCHMARKED DATA ARCHITECTURE',
           badgeText: 'LAB_KNOWLEDGE: SYNCED',
           badgeColor: 'text-emerald-700',
         };
@@ -88,18 +102,18 @@ export default function DashboardLayout({ children }) {
         initial={{ x: -300 }}
         animate={{ x: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="z-10 w-64 lg:w-72 h-full flex flex-col border-r border-[#cfcdc1]/60 bg-white/40 backdrop-blur-2xl shadow-xs shrink-0"
+        className="z-10 w-64 lg:w-72 h-full flex flex-col border-r border-white/60 bg-white/35 backdrop-blur-2xl shadow-sm shrink-0"
       >
-        <div className="p-5 border-b border-[#cfcdc1]/60 flex items-center justify-between">
+        <div className="p-5 border-b border-white/50 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="bg-forest text-white p-2 rounded-xl group-hover:scale-105 transition-transform shadow-sm">
+            <div className="bg-[#1b4332] text-white p-2 rounded-xl group-hover:scale-105 transition-transform shadow-sm">
               <Activity size={20} className="text-emerald-400" />
             </div>
             <div>
-              <h1 className="text-lg font-bold font-heading tracking-tight text-forest leading-none">
+              <h1 className="text-lg font-black font-heading tracking-tight text-[#1b4332] leading-none">
                 PlastiTrack
               </h1>
-              <span className="text-[10px] font-mono text-stone-500 uppercase tracking-wider block mt-0.5">
+              <span className="text-[10px] font-mono text-stone-800 font-black uppercase tracking-wider block mt-0.5">
                 CONSOLE v2.4
               </span>
             </div>
@@ -107,21 +121,28 @@ export default function DashboardLayout({ children }) {
         </div>
 
         {/* Cluster Telemetry Status Ribbon */}
-        <div className="px-5 py-2.5 bg-black/[0.02] border-b border-[#cfcdc1]/60 flex items-center justify-between font-mono text-[11px] text-stone-700">
+        <div className="px-5 py-2.5 bg-black/[0.03] border-b border-white/50 flex items-center justify-between font-mono text-[11px] text-stone-950">
           <span className="flex items-center gap-2">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
             </span>
-            <span className="font-semibold tracking-wide">CLUSTER_OK</span>
+            <span className="font-black tracking-wide text-stone-950">CLUSTER_OK</span>
           </span>
-          <span className="text-[10px] bg-white px-2 py-0.5 rounded border border-[#cfcdc1] font-semibold text-stone-600">
+          <span className="text-[10px] bg-white/70 px-2 py-0.5 rounded border border-white/80 font-black text-stone-950 shadow-2xs backdrop-blur-xs">
             PROD
           </span>
         </div>
 
         {/* Navigation Tabs */}
-        <nav className="flex-1 p-3.5 space-y-1.5 overflow-y-auto">
+        <nav className="flex-1 p-3.5 space-y-2 overflow-y-auto">
+          <div className="px-3 pt-1 pb-1 flex items-center justify-between text-[10px] font-mono font-black tracking-widest text-stone-700 uppercase">
+            <span>Navigation Tabs</span>
+            <span className="text-[9px] text-emerald-900 bg-white/70 px-1.5 py-0.2 rounded border border-emerald-300/80 font-black">
+              CONSOLE
+            </span>
+          </div>
+
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
@@ -129,24 +150,31 @@ export default function DashboardLayout({ children }) {
               <Link
                 key={item.name}
                 to={item.path}
-                className={`px-3.5 py-2.5 rounded-xl flex items-center justify-between cursor-pointer transition-all ${
+                className={`px-3 py-2.5 rounded-xl flex items-center justify-between cursor-pointer transition-all group ${
                   isActive 
-                    ? 'bg-forest text-white font-medium shadow-sm font-heading' 
-                    : 'hover:bg-[#d8d7cb] text-stone-700 hover:text-stone-950 font-body text-sm'
+                    ? 'bg-[#0f2c1f] text-white shadow-md border-2 border-emerald-500/80 ring-1 ring-emerald-400/30' 
+                    : 'bg-white/25 hover:bg-white/55 text-stone-950 border border-white/50 hover:border-white/80 backdrop-blur-md shadow-2xs hover:shadow-xs'
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
+                  {isActive ? (
+                    <span className="w-2 h-5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)] shrink-0"></span>
+                  ) : (
+                    <span className="w-2 h-5 rounded-full bg-transparent shrink-0"></span>
+                  )}
                   <Icon 
-                    size={18} 
-                    className={isActive ? 'text-emerald-400' : 'text-stone-500'} 
+                    size={19} 
+                    className={isActive ? 'text-emerald-300 stroke-[2.3] shrink-0' : 'text-stone-800 group-hover:text-black stroke-[2.2] shrink-0'} 
                   />
-                  <span>{item.name}</span>
+                  <span className={isActive ? 'font-black tracking-tight text-white text-sm' : 'font-extrabold text-stone-950 group-hover:text-black text-sm'}>
+                    {item.name}
+                  </span>
                 </div>
                 {item.tag && (
-                  <span className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full tracking-wider ${
+                  <span className={`text-[10px] font-mono font-black px-2 py-0.5 rounded-full tracking-wider ${
                     isActive 
-                      ? 'bg-emerald-800/80 text-emerald-200 border border-emerald-600/40' 
-                      : 'bg-stone-200 text-stone-600'
+                      ? 'bg-emerald-950 text-emerald-300 border border-emerald-400/60' 
+                      : 'bg-white/60 text-stone-950 border border-white/80 group-hover:bg-white/90'
                   }`}>
                     {item.tag}
                   </span>
@@ -157,16 +185,16 @@ export default function DashboardLayout({ children }) {
         </nav>
 
         {/* Bottom Sidebar Footer */}
-        <div className="p-4 border-t border-[#cfcdc1]/70 space-y-1">
+        <div className="p-4 border-t border-white/50 space-y-1">
           <Link 
             to="/" 
-            className="flex items-center gap-2.5 px-3 py-2 hover:bg-[#dcdbd0] rounded-lg cursor-pointer transition-colors text-stone-600 hover:text-stone-900 text-xs font-mono"
+            className="flex items-center gap-2.5 px-3 py-2 hover:bg-white/40 rounded-lg cursor-pointer transition-colors text-stone-900 hover:text-black text-xs font-mono font-bold"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={16} className="text-stone-800" />
             <span>Return to Landing</span>
           </Link>
-          <div className="flex items-center gap-2.5 px-3 py-2 hover:bg-[#dcdbd0] rounded-lg cursor-pointer transition-colors text-stone-600 hover:text-stone-900 text-xs font-mono">
-            <Settings size={16} />
+          <div className="flex items-center gap-2.5 px-3 py-2 hover:bg-white/40 rounded-lg cursor-pointer transition-colors text-stone-900 hover:text-black text-xs font-mono font-bold">
+            <Settings size={16} className="text-stone-800" />
             <span>System Settings</span>
           </div>
         </div>
@@ -175,7 +203,7 @@ export default function DashboardLayout({ children }) {
       {/* Main Content Area */}
       <main className="z-10 flex-1 flex flex-col h-full overflow-hidden min-w-0">
         {/* Header */}
-        <header className="h-16 border-b border-[#cfcdc1]/60 flex items-center justify-between px-8 bg-white/40 backdrop-blur-2xl shrink-0">
+        <header className="h-16 border-b border-white/50 flex items-center justify-between px-8 bg-white/35 backdrop-blur-2xl shrink-0">
           <div className="flex items-center gap-4 min-w-0">
             <button className="lg:hidden p-2 text-stone-600 hover:bg-black/5 rounded-lg">
               <Menu size={20} />

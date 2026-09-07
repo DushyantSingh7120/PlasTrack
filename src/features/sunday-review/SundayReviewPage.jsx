@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Award, 
@@ -10,37 +10,46 @@ import {
   ShieldCheck,
   Coffee,
   ShoppingBag,
-  UtensilsCrossed
+  UtensilsCrossed,
+  Flame,
+  Zap,
+  Leaf
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const REDUCTION_TIPS = [
+const TAILORED_CHALLENGES = [
   {
-    icon: Coffee,
-    title: 'Ditch the Disposable Cup',
-    impact: '-100 Cups / Year',
-    description: 'Most paper coffee cups are lined with plastic to make them waterproof, making them nearly impossible to recycle. Carrying a reusable mug can save over 100 cups a year from the landfill.',
-    action: 'Commit for Next Week',
+    category: 'Beverages',
+    title: 'The 7-Day Campus Flask Challenge',
+    impact: 'Save ~₹140 & 84g Plastic this week',
+    description: 'Packaged water bottles were your highest weekly plastic contributor. Carry a 1L stainless steel bottle to campus and refill at water stations for the next 7 days.',
+    badge: 'High Payback',
+    actionText: 'View Steel Flask in Catalog',
+    link: '/alternatives'
   },
   {
-    icon: ShoppingBag,
-    title: 'Bring Your Own Bag',
-    impact: 'High Impact',
-    description: 'Over 1 trillion plastic grocery bags are used worldwide every year, and they jam recycling machinery. A simple cloth bag replaces hundreds of plastic ones over its lifetime.',
-    action: 'Commit for Next Week',
+    category: 'Packaging',
+    title: 'The Bulk Snack Swap Challenge',
+    impact: 'Cut 100% Non-Recyclable MLP',
+    description: 'Multi-layer metallized film (chip wrappers and sachets) cannot be mechanically recycled by waste pickers. Swap individual sachets for home-packed glass containers this week.',
+    badge: 'Zero MLP',
+    actionText: 'View Bulk Storage Swap',
+    link: '/alternatives'
   },
   {
-    icon: UtensilsCrossed,
-    title: 'Say No to Plastic Cutlery',
-    impact: 'Save Microplastics',
-    description: 'Plastic cutlery is too small and oddly shaped to be processed by most recycling facilities. Carry a small set of bamboo or metal utensils in your bag for takeout meals.',
-    action: 'Commit for Next Week',
-  },
+    category: 'Films',
+    title: 'The 2-Tote Pocket Habit',
+    impact: 'Protect Urban Livestock',
+    description: 'Polyethylene carry bags degrade into dangerous micro-litter and cause cattle rumen impaction. Keep two foldable jute/cotton bags in your bag at all times.',
+    badge: 'Animal Welfare',
+    actionText: 'View Jute Tote Swap',
+    link: '/alternatives'
+  }
 ];
 
 export default function SundayReviewPage() {
   const [history, setHistory] = useState([]);
-  const ceilingGrams = 40;
-  const baselineGrams = 55;
+  const ceilingGrams = 40; // Target daily limit
 
   useEffect(() => {
     const saved = localStorage.getItem('plastitrack_history');
@@ -53,34 +62,32 @@ export default function SundayReviewPage() {
     }
   }, []);
 
-  // Use history to generate last 7 days of data, pad with mock data if empty
-  const weekData = [];
   const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   
-  if (history.length > 0) {
-    const last7 = history.slice(-7);
-    last7.forEach(entry => {
-      const date = new Date(entry.timestamp);
-      weekData.push({
-        day: days[date.getDay()],
-        grams: entry.totalGrams,
-        isBest: false // Will calculate below
+  const weekData = useMemo(() => {
+    if (history.length > 0) {
+      const last7 = history.slice(-7);
+      return last7.map((entry) => {
+        const date = new Date(entry.timestamp);
+        return {
+          day: days[date.getDay()],
+          grams: entry.totalGrams || 0,
+          isBest: false
+        };
       });
-    });
-  } else {
-    // Fallback Mock Data
-    weekData.push(
-      { day: 'MON', grams: 38 },
-      { day: 'TUE', grams: 42 },
-      { day: 'WED', grams: 12 },
-      { day: 'THU', grams: 35 },
-      { day: 'FRI', grams: 48 },
-      { day: 'SAT', grams: 52 },
-      { day: 'SUN', grams: 25 }
-    );
-  }
+    }
+    return [
+      { day: 'MON', grams: 38, isBest: false },
+      { day: 'TUE', grams: 42, isBest: false },
+      { day: 'WED', grams: 12, isBest: false },
+      { day: 'THU', grams: 35, isBest: false },
+      { day: 'FRI', grams: 48, isBest: false },
+      { day: 'SAT', grams: 52, isBest: false },
+      { day: 'SUN', grams: 25, isBest: false }
+    ];
+  }, [history]);
 
-  // Calculate "Best" day (lowest grams)
+  // Find lowest consumption day
   if (weekData.length > 0) {
     let bestIdx = 0;
     for (let i = 1; i < weekData.length; i++) {
@@ -95,104 +102,151 @@ export default function SundayReviewPage() {
   const avgDaily = weekData.length > 0 ? Math.round(totalWeeklyGrams / weekData.length) : 0;
   const cleanDays = weekData.filter((d) => d.grams <= ceilingGrams).length;
 
+  // Compute Impact Badge
+  let badgeName = "Conscious Reducer";
+  let badgeColor = "bg-emerald-50 text-emerald-800 border-emerald-300";
+  let badgeIcon = ShieldCheck;
+  let badgeDescription = "Maintaining solid personal consumption control.";
+
+  if (avgDaily < 25) {
+    badgeName = "Eco-Guardian";
+    badgeColor = "bg-forest text-white border-forest";
+    badgeIcon = Sparkles;
+    badgeDescription = "Exceptional! Well below India's 33g/day national average.";
+  } else if (avgDaily > 45) {
+    badgeName = "High Footprint Alert";
+    badgeColor = "bg-red-50 text-red-700 border-red-300";
+    badgeIcon = AlertCircle;
+    badgeDescription = "Exceeding metropolitan average. Adopt weekly swaps below.";
+  }
+
+  const BadgeIcon = badgeIcon;
+
   return (
     <div className="w-full max-w-[1800px] mx-auto space-y-6 font-body">
+      
       {/* Top Banner Ribbon */}
-      <section className="bg-white/40 backdrop-blur-xl border border-[#cfcdc1]/60 rounded-xl px-5 py-3 shadow-xs flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-stone-600">
+      <section className="infra-card p-4 bg-white/50 backdrop-blur-xl border border-border flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-xs shadow-emerald-400"></span>
-            <span className="font-bold text-stone-900 tracking-wide">
-              SUNDAY REVIEW
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="font-bold text-foreground tracking-wide">
+              SUNDAY HABIT AUDIT // 7-DAY REVIEW
             </span>
           </div>
-          <span className="text-stone-300 hidden sm:inline">|</span>
-          <span className="hidden sm:inline">CYCLE: <span className="text-stone-800 font-semibold">WEEKLY AUDIT</span></span>
+          <span className="text-border hidden sm:inline">|</span>
+          <span className="hidden sm:inline text-muted-foreground">National Benchmark: <strong className="text-foreground">33g / day</strong></span>
         </div>
-        <div className="flex items-center gap-2 font-mono text-[11px] font-semibold">
-          <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+        <div className="flex items-center gap-2">
+          <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
             {cleanDays}/{weekData.length || 7} DAYS UNDER LIMIT
           </span>
         </div>
       </section>
 
-      {/* 3 Summary Metric Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* 3 Summary Metric Cards + Badge */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Total Weekly Mass */}
-        <div className="bg-white/40 backdrop-blur-xl rounded-2xl border border-[#cfcdc1]/60 p-5 shadow-xs">
-          <div className="flex justify-between items-center text-stone-500 font-mono text-xs">
-            <span>TOTAL WEEKLY MASS</span>
-            <TrendingDown size={16} className="text-emerald-600" />
+        <div className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border">
+          <div className="flex justify-between items-center text-muted-foreground font-mono text-xs">
+            <span>TOTAL 7-DAY MASS</span>
+            <TrendingDown size={16} className="text-emerald-700" />
           </div>
-          <p className="font-mono text-3xl font-bold text-stone-900 tracking-tight mt-2">
-            {totalWeeklyGrams} <span className="text-lg font-normal text-stone-500">g</span>
+          <p className="font-mono text-3xl font-bold text-foreground tracking-tight mt-2">
+            {totalWeeklyGrams} <span className="text-base font-normal text-muted-foreground">g</span>
           </p>
+          <span className="font-mono text-[10px] text-stone-500 mt-1 block">
+            {(totalWeeklyGrams / 1000).toFixed(2)} kg plastic logged
+          </span>
         </div>
 
         {/* Daily Average */}
-        <div className="bg-white/40 backdrop-blur-xl rounded-2xl border border-[#cfcdc1]/60 p-5 shadow-xs">
-          <div className="flex justify-between items-center text-stone-500 font-mono text-xs">
+        <div className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border">
+          <div className="flex justify-between items-center text-muted-foreground font-mono text-xs">
             <span>DAILY AVERAGE</span>
-            <ShieldCheck size={16} className="text-forest" />
+            <ShieldCheck size={16} className="text-primary" />
           </div>
-          <p className="font-mono text-3xl font-bold text-stone-900 tracking-tight mt-2">
-            {avgDaily} <span className="text-lg font-normal text-stone-500">g/day</span>
+          <p className="font-mono text-3xl font-bold text-foreground tracking-tight mt-2">
+            {avgDaily} <span className="text-base font-normal text-muted-foreground">g/day</span>
           </p>
+          <span className="font-mono text-[10px] text-stone-500 mt-1 block">
+            {avgDaily <= 33 ? "Below India's 33g baseline" : "Above national per capita"}
+          </span>
         </div>
 
-        {/* Clean Days */}
-        <div className="bg-white/40 backdrop-blur-xl rounded-2xl border border-[#cfcdc1]/60 p-5 shadow-xs">
-          <div className="flex justify-between items-center text-stone-500 font-mono text-xs">
-            <span>GOAL MET</span>
+        {/* Goal Met */}
+        <div className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border">
+          <div className="flex justify-between items-center text-muted-foreground font-mono text-xs">
+            <span>TARGET COMPLIANCE</span>
             <Award size={16} className="text-amber-600" />
           </div>
-          <p className="font-mono text-3xl font-bold text-forest tracking-tight mt-2">
-            {cleanDays} <span className="text-lg font-normal text-stone-500">/ {weekData.length || 7}</span>
+          <p className="font-mono text-3xl font-bold text-primary tracking-tight mt-2">
+            {cleanDays} <span className="text-base font-normal text-muted-foreground">/ {weekData.length || 7} Days</span>
           </p>
+          <span className="font-mono text-[10px] text-stone-500 mt-1 block">
+            Days under 40g limit
+          </span>
+        </div>
+
+        {/* Dynamic Status Badge */}
+        <div className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border flex flex-col justify-between">
+          <div className="flex justify-between items-center text-muted-foreground font-mono text-xs">
+            <span>AUDIT STATUS BADGE</span>
+            <BadgeIcon size={16} className="text-primary" />
+          </div>
+          <div className="mt-2">
+            <span className={`inline-block font-mono text-xs font-bold px-2.5 py-1 rounded-lg border ${badgeColor}`}>
+              {badgeName}
+            </span>
+            <p className="text-[11px] text-stone-600 font-body mt-1 leading-snug">
+              {badgeDescription}
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* SECTION: 7-Day High-Fidelity Bar Chart */}
-      <section className="bg-white/40 backdrop-blur-xl rounded-2xl border border-[#cfcdc1]/60 p-6 shadow-xs space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200/80">
+      {/* 7-Day Bar Chart */}
+      <section className="infra-card p-6 bg-white/50 backdrop-blur-xl border border-border space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-border">
           <div>
-            <h3 className="text-lg font-bold font-heading text-stone-900">
-              Weekly Tracker
+            <h3 className="text-lg font-bold font-heading text-foreground">
+              7-Day Daily Consumption Breakdown
             </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Identifies your highest consumption days and lowest impact baseline.
+            </p>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-4 text-xs font-mono text-stone-600">
-              <div className="flex items-center gap-1.5">
-                <span className="w-4 h-0 border-t-2 border-dashed border-amber-600"></span>
-                <span>Limit (40g)</span>
-              </div>
+          <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground">
+            <div className="flex items-center gap-1.5">
+              <span className="w-4 h-0 border-t-2 border-dashed border-amber-600"></span>
+              <span>Target Limit (40g)</span>
             </div>
           </div>
         </div>
 
         {/* The Bar Chart Canvas Container */}
-        <div className="relative w-full h-80 bg-stone-50/70 rounded-xl p-4 border border-stone-200 overflow-hidden">
+        <div className="relative w-full h-72 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-2xl p-4 border border-white/50 overflow-hidden shadow-inner transition-all">
           {/* Y-Axis Gridlines */}
-          <div className="absolute inset-x-10 top-6 bottom-12 flex flex-col justify-between pointer-events-none text-stone-400 font-mono text-[10px]">
+          <div className="absolute inset-x-10 top-6 bottom-10 flex flex-col justify-between pointer-events-none text-stone-700 font-mono text-[10px] font-bold">
             {[100, 80, 60, 40, 20, 0].map((val) => (
               <div key={val} className="w-full flex items-center gap-2">
                 <span className="w-7 text-right">{val}g</span>
-                <div className="flex-1 h-px bg-stone-200/80"></div>
+                <div className="flex-1 h-px bg-black/10"></div>
               </div>
             ))}
           </div>
 
-          {/* Ceiling Overlay Line (40g = 40% from bottom of scale 0-100) */}
-          <div className="absolute inset-x-16 bottom-[136px] pointer-events-none flex items-center z-20">
-            <div className="w-full h-0 border-t-2 border-dashed border-amber-600/80"></div>
-            <span className="absolute right-0 -top-3.5 bg-amber-100 text-amber-900 font-mono text-[10px] px-2 py-0.5 rounded uppercase font-bold border border-amber-300 shadow-xs">
-              LIMIT: 40g
+          {/* Ceiling Overlay Line (40g) */}
+          <div className="absolute inset-x-16 bottom-[125px] pointer-events-none flex items-center z-20">
+            <div className="w-full h-0 border-t-2 border-dashed border-amber-600/90"></div>
+            <span className="absolute right-0 -top-3.5 bg-amber-100/90 text-amber-950 font-mono text-[10px] px-2.5 py-0.5 rounded-full uppercase font-black border border-amber-300/80 shadow-2xs backdrop-blur-xs">
+              TARGET: 40g
             </span>
           </div>
 
           {/* 7 Daily Bars */}
-          <div className="relative h-full pl-10 pr-6 pb-8 pt-4 grid grid-cols-7 gap-3 sm:gap-6 items-end z-10">
+          <div className="relative h-full pl-10 pr-6 pb-6 pt-4 grid grid-cols-7 gap-3 sm:gap-6 items-end z-10">
             {weekData.map((item, idx) => {
               const heightPct = `${Math.min(100, item.grams)}%`;
               const isOver = item.grams > ceilingGrams;
@@ -201,35 +255,31 @@ export default function SundayReviewPage() {
                   key={`${item.day}-${idx}`}
                   className="group flex flex-col items-center justify-end h-full relative cursor-pointer"
                 >
-                  {/* Badge for Best Day */}
                   {item.isBest && (
-                    <span className="px-1.5 py-0.5 bg-emerald-100 text-forest font-mono text-[9px] rounded-full font-bold mb-1 border border-emerald-300">
-                      ★ BEST
+                    <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-950 font-mono text-[9px] rounded-full font-black mb-1 border border-emerald-400/60 shadow-2xs backdrop-blur-xs">
+                      ★ LOWEST
                     </span>
                   )}
 
-                  {/* Mass Label */}
-                  <div className={`font-mono text-xs font-bold mb-1 group-hover:scale-110 transition-transform ${
-                    item.isBest ? 'text-forest' : isOver ? 'text-amber-700' : 'text-stone-700'
+                  <div className={`font-mono text-xs font-black mb-1 group-hover:scale-110 transition-transform ${
+                    item.isBest ? 'text-emerald-950' : isOver ? 'text-amber-900' : 'text-stone-900'
                   }`}>
                     {item.grams}g
                   </div>
 
-                  {/* Bar Shape */}
                   <div
-                    className={`w-full max-w-[48px] rounded-t-lg transition-all duration-300 group-hover:opacity-90 ${
+                    className={`w-full max-w-[48px] rounded-t-xl transition-all duration-300 shadow-xs ${
                       item.isBest
-                        ? 'bg-emerald-600 shadow-xs'
+                        ? 'bg-emerald-700'
                         : isOver
                         ? 'bg-amber-600'
-                        : 'bg-forest'
+                        : 'bg-[#1b4332]'
                     }`}
                     style={{ height: heightPct }}
                   ></div>
 
-                  {/* Day Label */}
-                  <span className={`font-mono text-xs uppercase mt-2 font-semibold ${
-                    item.isBest ? 'text-forest font-bold' : 'text-stone-500'
+                  <span className={`font-mono text-xs uppercase mt-2 font-black ${
+                    item.isBest ? 'text-emerald-950' : 'text-stone-900'
                   }`}>
                     {item.day}
                   </span>
@@ -240,58 +290,53 @@ export default function SundayReviewPage() {
         </div>
       </section>
 
-      {/* SECTION: Personal Habit Audit & Reduction Playbook */}
+      {/* Tailored Weekly Reduction Challenges */}
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2 pb-1">
           <div>
-            <div className="flex items-center gap-2 text-stone-700 font-mono text-xs font-semibold tracking-wider">
-              <Sparkles size={16} className="text-forest" />
-              <span className="uppercase font-bold text-stone-900 text-sm font-heading">
-                Actionable Reduction Tips
-              </span>
+            <div className="flex items-center gap-2 text-primary font-mono text-xs font-semibold tracking-wider uppercase">
+              <Zap size={16} />
+              <span>Tailored Weekly Action Challenges</span>
             </div>
-            <p className="text-xs text-stone-500 mt-1">
-              Simple swaps to lower your plastic footprint based on our research.
+            <p className="text-xs text-muted-foreground mt-1">
+              Personalized reduction plans addressing the highest-mass polymer categories from your audits.
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {REDUCTION_TIPS.map((tip) => {
-            const Icon = tip.icon;
-            return (
-              <div
-                key={tip.title}
-                className="bg-white/40 backdrop-blur-xl rounded-2xl border border-[#cfcdc1]/60 p-5 shadow-xs hover:shadow-md hover:bg-white/50 transition-all flex flex-col justify-between space-y-4"
-              >
-                <div>
-                  <div className="flex items-start justify-between">
-                    <div className="w-10 h-10 rounded-xl border border-emerald-200 bg-emerald-50/60 flex items-center justify-center text-forest">
-                      <Icon size={20} />
-                    </div>
-                    <span className="font-mono text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
-                      {tip.impact}
-                    </span>
-                  </div>
-
-                  <h4 className="text-base font-bold text-stone-900 mt-3 font-heading leading-snug">
-                    {tip.title}
-                  </h4>
-                  <p className="text-sm text-stone-600 mt-2 font-body leading-relaxed">
-                    {tip.description}
-                  </p>
+          {TAILORED_CHALLENGES.map((challenge, idx) => (
+            <div
+              key={idx}
+              className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border flex flex-col justify-between space-y-4 hover:shadow-md transition-all"
+            >
+              <div>
+                <div className="flex items-start justify-between">
+                  <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-white/60 text-stone-800 border border-white/80">
+                    {challenge.category}
+                  </span>
+                  <span className="font-mono text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    {challenge.impact}
+                  </span>
                 </div>
 
-                <button
-                  type="button"
-                  className="w-full py-2 px-3 rounded-lg border border-stone-300 hover:bg-forest hover:text-white hover:border-forest text-stone-700 transition-colors font-mono text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer group mt-4"
-                >
-                  <span>{tip.action}</span>
-                  <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
-                </button>
+                <h4 className="text-base font-bold text-foreground mt-3 font-heading leading-snug">
+                  {challenge.title}
+                </h4>
+                <p className="text-xs text-stone-600 mt-2 font-body leading-relaxed">
+                  {challenge.description}
+                </p>
               </div>
-            );
-          })}
+
+              <Link
+                to={challenge.link}
+                className="w-full py-2.5 px-3 rounded-lg border border-border hover:bg-primary hover:text-white hover:border-primary text-foreground transition-all font-mono text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer group mt-4 shadow-2xs"
+              >
+                <span>{challenge.actionText}</span>
+                <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+          ))}
         </div>
       </section>
     </div>

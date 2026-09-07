@@ -30,14 +30,17 @@ export default function Navbar() {
             <Link to="/" className="text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors cursor-pointer font-medium">
               Home
             </Link>
-            <Link to="/insights" className="text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors cursor-pointer font-medium">
-              Insights
-            </Link>
             <Link to="/dashboard" className="text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors cursor-pointer font-medium">
               Dashboard
             </Link>
             <Link to="/tracker" className="text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors cursor-pointer font-medium">
               Tracker
+            </Link>
+            <Link to="/alternatives" className="text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors cursor-pointer font-medium">
+              Eco-Swaps
+            </Link>
+            <Link to="/insights" className="text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors cursor-pointer font-medium">
+              Insights
             </Link>
             <Link to="/sunday-review" className="text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors cursor-pointer font-medium">
               Sunday Review

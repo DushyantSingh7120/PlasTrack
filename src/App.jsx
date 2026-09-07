@@ -6,6 +6,7 @@ import DashboardPage from './features/dashboard/DashboardPage';
 import DailyTrackerPage from './features/tracker/DailyTrackerPage';
 import DailyInsightsPage from './features/insights/DailyInsightsPage';
 import SundayReviewPage from './features/sunday-review/SundayReviewPage';
+import AlternativesPage from './features/alternatives/AlternativesPage';
 import LandingPage from './features/landing/LandingPage';
 
 function App() {
@@ -16,8 +17,8 @@ function App() {
         className="fixed inset-0 w-full h-full bg-cover bg-center -z-10 pointer-events-none"
         style={{ backgroundImage: "url('/backgrounds/hero_water_caustics.jpg')" }}
         animate={{
-          scale: [1, 1.05, 1],
-          opacity: [0.8, 0.9, 0.8]
+          scale: [1, 1.04, 1],
+          opacity: 1
         }}
         transition={{
           duration: 20,
@@ -42,6 +43,14 @@ function App() {
             element={
               <DashboardLayout>
                 <DailyTrackerPage />
+              </DashboardLayout>
+            } 
+          />
+          <Route 
+            path="/alternatives" 
+            element={
+              <DashboardLayout>
+                <AlternativesPage />
               </DashboardLayout>
             } 
           />

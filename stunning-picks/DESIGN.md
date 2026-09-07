@@ -9,7 +9,7 @@ You can drop these themes, backgrounds, or components into any project or sub-pa
 ## Catalog of Themes
 
 | Folder | Theme Name | Mood / Genre | Best Suited For |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `01-topographic-cartography/` | **Eco-Cartography Contours** | Technical, Scientific, Earthy | GIS, Environmental Dashboards, Research Platforms |
 | `02-floating-flora-dandelion/` | **Living Flora & Floating Seeds** | Organic, Ethereal, Dynamic | Consumer Eco Apps, Habit Trackers, Wellness |
 | `02A-ocean-shore-sea-glass/` | **Ocean Shoreline & Sea Glass** | Aquatic, Tactile, Calming | Ocean Plastic Initiatives, Marine Conservation |
@@ -19,6 +19,7 @@ You can drop these themes, backgrounds, or components into any project or sub-pa
 ---
 
 ## 1. Topographic Cartography (`01-topographic-cartography/`)
+
 * **Palette:**
   * Base Sand: `#e5e4d8`
   * Contour Primary: `#1b4332` (20% - 40% opacity)
@@ -35,6 +36,7 @@ You can drop these themes, backgrounds, or components into any project or sub-pa
 ---
 
 ## 2. Living Flora & Floating Seeds (`02-floating-flora-dandelion/`)
+
 * **Palette:**
   * Background Stone: `#eeebe3`
   * Leaf Emerald: `#2d5a27`
@@ -48,6 +50,7 @@ You can drop these themes, backgrounds, or components into any project or sub-pa
 ---
 
 ## 3. Ocean Shoreline & Sea Glass (`02A-ocean-shore-sea-glass/`)
+
 * **Palette:**
   * Wet Sand: `#dedacb`
   * Sea Glass Jade: `#3a7d65`
@@ -60,6 +63,7 @@ You can drop these themes, backgrounds, or components into any project or sub-pa
 ---
 
 ## 4. Botanical Growth & Morning Dew (`02B-botanical-eucalyptus-dew/`)
+
 * **Palette:**
   * Pure Paper Cream: `#f5f3ec`
   * Eucalyptus Silver-Green: `#5c7c69`
@@ -72,6 +76,7 @@ You can drop these themes, backgrounds, or components into any project or sub-pa
 ---
 
 ## 5. Ambient Aura Glow (`03-ambient-aura-glow/`)
+
 * **Palette:**
   * Ambient Peach: `rgba(247, 191, 163, 0.45)`
   * Ambient Mint: `rgba(163, 230, 200, 0.4)`

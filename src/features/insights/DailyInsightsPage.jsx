@@ -1,184 +1,363 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { BookOpen, Layers, Info } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  BookOpen, 
+  Layers, 
+  Info, 
+  ShieldCheck, 
+  Scale, 
+  HeartPulse, 
+  ArrowRight, 
+  CheckCircle2, 
+  Sparkles, 
+  FileText,
+  ChevronLeft,
+  ChevronRight,
+  Filter
+} from 'lucide-react';
+import { FACTS_DATABASE } from '../../lib/factsDatabase';
+import { RESIN_CODES } from '../../lib/plasticData';
 
-const DAILY_FACTS = [
+const POLICY_HIGHLIGHTS = [
   {
-    id: "fact-001",
-    category: "Microplastics",
-    title: "The Hidden Diet",
-    content: "Studies indicate that the average human consumes up to 5 grams of microplastics a week through water, seafood, and even salt. That's the equivalent weight of a credit card.",
-    source: "Open Academic Journals"
+    title: "19 Banned Single-Use Plastics",
+    authority: "MoEFCC / Central Pollution Control Board",
+    date: "Enforced July 1, 2022",
+    description: "Prohibited manufacture, stocking, sale, and use of 19 items with high littering potential (plastic straws, cutlery, ear bud sticks, thermocol decoration, and wrapping films).",
+    badge: "Statutory Law",
+    badgeColor: "bg-red-50 text-red-700 border-red-200"
   },
   {
-    id: "fact-002",
-    category: "Ocean Impacts",
-    title: "The Great Pacific Garbage Patch",
-    content: "The largest accumulation of ocean plastic covers an estimated surface area of 1.6 million square kilometers, an area twice the size of Texas or three times the size of France.",
-    source: "Marine Environment Data"
+    title: "120-Micron Minimum Thickness",
+    authority: "Plastic Waste Management Rules",
+    date: "Enforced Dec 31, 2022",
+    description: "Escalated carry bag thickness from 50μm to 75μm, and finally to 120μm, ensuring bags can be economically collected, washed, and mechanically recycled by waste pickers.",
+    badge: "Carry Bag Mandate",
+    badgeColor: "bg-amber-50 text-amber-700 border-amber-200"
   },
   {
-    id: "fact-003",
-    category: "Polymer Chemistry",
-    title: "Why Doesn't It Degrade?",
-    content: "Plastics like PET and PVC are composed of long, tightly bound polymer chains containing carbon-carbon bonds. These synthetic bonds do not exist in nature, meaning natural bacteria and enzymes cannot easily break them apart.",
-    source: "Chemistry Open Data"
+    title: "Centralized EPR Digital Portal",
+    authority: "CPCB Guidelines",
+    date: "Operational Since Feb 2022",
+    description: "Mandates Producers, Importers, and Brand Owners (PIBOs) to meet rigorous statutory recycling targets across rigid, flexible, multi-layer (MLP), and compostable plastics.",
+    badge: "Producer Compliance",
+    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200"
   },
   {
-    id: "fact-004",
-    category: "Recycling Reality",
-    title: "The 9% Problem",
-    content: "Of the 9 billion metric tons of plastic produced since the 1950s, only about 9% has been successfully recycled. The vast majority ends up in landfills or the natural environment.",
-    source: "Global Waste Statistics"
+    title: "IRC:SP:98 Plastic Roads Standard",
+    authority: "Indian Roads Congress & MoRTH",
+    date: "Over 100,000 km Laid",
+    description: "Patented by Prof. Rajagopalan Vasudevan ('Plastic Man of India'). Post-consumer shredded plastic coats aggregate at 165°C, preventing potholes and saving 1T bitumen/km.",
+    badge: "National Infrastructure",
+    badgeColor: "bg-teal-50 text-teal-700 border-teal-200"
   }
 ];
 
-const RESIN_CODES = [
+const ACTION_STEPS = [
   {
-    code: '1',
-    symbol: '♳',
-    name: 'PET (Polyethylene Terephthalate)',
-    status: 'Recyclable',
-    statusBadge: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-    borderColor: 'border-emerald-200 bg-emerald-50/50 text-forest',
-    uses: 'Water and soda bottles. Recyclable, but degrades in quality with each cycle.',
+    id: "step-1",
+    action: "Never Snip Milk Packet Corners Off",
+    why: "Snipping off small triangular tips creates billions of micro-scraps that escape MRF sorting screens and enter marine food webs. Keep the corner attached when pouring!",
+    impact: "Stops micro-litter"
   },
   {
-    code: '2',
-    symbol: '♴',
-    name: 'HDPE (High-Density Polyethylene)',
-    status: 'Highly Recyclable',
-    statusBadge: 'bg-teal-50 text-teal-800 border-teal-200',
-    borderColor: 'border-teal-200 bg-teal-50/50 text-teal-700',
-    uses: 'Milk jugs, detergent bottles. Highly recyclable and sturdy.',
+    id: "step-2",
+    action: "Rinse & Air-Dry Before Disposal",
+    why: "Greasy, curry-stained plastic containers cannot be processed mechanically by kabadiwalas and are diverted straight to landfills. A 5-second rinse makes them recyclable.",
+    impact: "100% Recyclability"
   },
   {
-    code: '3',
-    symbol: '♵',
-    name: 'PVC (Polyvinyl Chloride)',
-    status: 'Rarely Recycled',
-    statusBadge: 'bg-amber-50 text-amber-800 border-amber-200',
-    borderColor: 'border-amber-200 bg-amber-50/50 text-amber-700',
-    uses: 'Plumbing pipes, medical tubing. Toxic to manufacture; rarely recycled.',
+    id: "step-3",
+    action: "Carry the 'Campus Triple'",
+    why: "Keep 1 refillable stainless steel bottle (1L), 1 compact cotton tote bag, and 1 bamboo/steel spoon in your bag. Saves ~300 single-use bottles and ₹6,000+ per year.",
+    impact: "₹6,000 / year saved"
   },
   {
-    code: '4',
-    symbol: '♶',
-    name: 'LDPE (Low-Density Polyethylene)',
-    status: 'Hard to Recycle',
-    statusBadge: 'bg-stone-100 text-stone-700 border-stone-300',
-    borderColor: 'border-stone-300 bg-stone-100 text-stone-700',
-    uses: 'Grocery bags, shrink wrap. Difficult to recycle at curbside because it jams machinery.',
+    id: "step-4",
+    action: "Say 'No' to Single-Serve Sachets",
+    why: "Multi-Layered Plastics (MLP) in chip packets and shampoo sachets bond foil with polymers. Buy in larger family packs or bulk glass jars to eliminate MLP waste.",
+    impact: "Cuts 70% MLP waste"
   },
   {
-    code: '5',
-    symbol: '♷',
-    name: 'PP (Polypropylene)',
-    status: 'Recyclable',
-    statusBadge: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-    borderColor: 'border-emerald-200 bg-emerald-50/50 text-emerald-700',
-    uses: 'Yogurt containers, straws, bottle caps. Heat resistant, recycling rates are improving.',
-  },
-  {
-    code: '6',
-    symbol: '♸',
-    name: 'PS (Polystyrene)',
-    status: 'Very Hard to Recycle',
-    statusBadge: 'bg-stone-200 text-stone-700 border-stone-300',
-    borderColor: 'border-stone-300 bg-stone-100 text-stone-700',
-    uses: 'Takeout boxes, Styrofoam cups. Shatters easily into microplastics. Extremely hard to recycle.',
-  },
-  {
-    code: '7',
-    symbol: '♹',
-    name: 'Other Plastics',
-    status: 'Not Recyclable',
-    statusBadge: 'bg-stone-200 text-stone-700 border-stone-300',
-    borderColor: 'border-stone-300 bg-stone-100 text-stone-700',
-    uses: 'A catch-all category. Usually not recyclable at standard facilities.',
+    id: "step-5",
+    action: "Ditch Hot Liquid in Thin Plastic",
+    why: "Pouring hot tea (chai) into flimsy plastic cups or leaving PET bottles inside hot cars (>40°C) accelerates microplastic shedding and antimony catalyst leaching.",
+    impact: "Health Protection"
   }
 ];
 
 export default function DailyInsightsPage() {
-  // Rotate fact based on current day of the year so it changes daily
-  const today = new Date();
-  const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
-  const factIndex = dayOfYear % DAILY_FACTS.length;
-  const currentFact = DAILY_FACTS[factIndex];
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [currentFactIndex, setCurrentFactIndex] = useState(0);
+
+  const categories = ["All", "CPCB & Indian Policy", "Medical & Health", "Breakthrough Solutions", "Polymer Chemistry", "Food Safety"];
+
+  const filteredFacts = activeCategory === "All" 
+    ? FACTS_DATABASE 
+    : FACTS_DATABASE.filter(f => f.category === activeCategory);
+
+  const safeIndex = currentFactIndex % filteredFacts.length;
+  const activeFact = filteredFacts[safeIndex] || FACTS_DATABASE[0];
+
+  const handleNextFact = () => {
+    setCurrentFactIndex(prev => (prev + 1) % filteredFacts.length);
+  };
+
+  const handlePrevFact = () => {
+    setCurrentFactIndex(prev => (prev - 1 + filteredFacts.length) % filteredFacts.length);
+  };
 
   return (
     <div className="w-full max-w-[1800px] mx-auto space-y-8 font-body">
       
-      {/* Fact of the Day Section */}
-      <section className="bg-white/40 backdrop-blur-xl rounded-2xl border border-[#cfcdc1]/60 p-6 shadow-xs relative overflow-hidden">
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-stone-200/80">
-          <div className="flex items-center gap-2 text-forest font-mono text-xs font-semibold tracking-wider">
-            <BookOpen size={16} />
-            <span>FACT OF THE DAY</span>
+      {/* Top Header Banner */}
+      <div className="infra-card p-6 bg-white/50 backdrop-blur-xl border border-border/80 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 font-mono text-xs text-primary font-semibold tracking-wider uppercase mb-1">
+            <Sparkles size={16} />
+            <span>EMPIRICAL RESEARCH & STATUTORY TELEMETRY</span>
           </div>
-          <span className="font-mono text-xs px-2.5 py-1 rounded bg-stone-100 text-stone-700 border border-stone-200 font-semibold">
-            {currentFact.category}
+          <h2 className="text-2xl font-bold font-heading text-foreground tracking-tight">
+            Environmental Intelligence & Verified Research Dossier
+          </h2>
+          <p className="text-xs text-muted-foreground mt-1 max-w-2xl">
+            Sourced directly from CPCB Annual Reports, MoEFCC Gazette Notifications, NITI Aayog Monographs, NEJM (March 2024), and Nature (Sept 2024).
+          </p>
+        </div>
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <span className="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+            CPCB Verified 2023-24
+          </span>
+          <span className="px-3 py-1.5 rounded-lg bg-stone-100 text-stone-700 border border-stone-200 font-medium">
+            NEJM 2024 Cited
           </span>
         </div>
+      </div>
 
-        <div className="mt-5 max-w-3xl">
-          <h3 className="text-2xl font-bold font-heading text-stone-900 tracking-tight mb-3">
-            {currentFact.title}
-          </h3>
-          <p className="text-base text-stone-700 leading-relaxed">
-            {currentFact.content}
-          </p>
-          <div className="mt-4 flex items-center gap-1.5 text-xs text-stone-500 font-mono">
-            <Info size={14} />
-            <span>Source: {currentFact.source}</span>
+      {/* Interactive Fact Carousel Section */}
+      <section className="infra-card p-7 bg-white/60 backdrop-blur-xl border border-border relative overflow-hidden shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-border/70">
+          <div className="flex items-center gap-2 text-primary font-mono text-xs font-bold tracking-wider">
+            <BookOpen size={17} />
+            <span>RESEARCH SPOTLIGHT ({safeIndex + 1} OF {filteredFacts.length})</span>
+          </div>
+          
+          {/* Category Filter Pills */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => { setActiveCategory(cat); setCurrentFactIndex(0); }}
+                className={`text-[11px] font-mono px-2.5 py-1 rounded-md transition-all ${
+                  activeCategory === cat 
+                    ? "bg-primary text-white font-semibold shadow-xs" 
+                    : "bg-white/60 text-muted-foreground hover:text-foreground border border-border"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={activeFact.id}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="mt-6 max-w-4xl"
+          >
+            <div className="inline-flex items-center gap-2 font-mono text-xs text-accent font-semibold mb-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent"></span>
+              <span>{activeFact.tag} • {activeFact.category}</span>
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-bold font-heading text-foreground tracking-tight mb-3">
+              {activeFact.title}
+            </h3>
+            <p className="text-base sm:text-lg text-stone-700 leading-relaxed font-body">
+              {activeFact.content}
+            </p>
+            <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground font-mono bg-stone-50/80 p-2.5 rounded-lg border border-border/60 inline-flex">
+              <Info size={14} className="text-primary shrink-0" />
+              <span>Verified Citation: <strong>{activeFact.source}</strong></span>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Carousel Steppers */}
+        <div className="mt-6 pt-4 border-t border-border/60 flex items-center justify-between">
+          <span className="font-mono text-xs text-muted-foreground">
+            Swipe or use controls to browse research points
+          </span>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={handlePrevFact}
+              className="p-2 rounded-lg border border-border hover:bg-white hover:border-primary text-foreground transition-all"
+              title="Previous Fact"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <button 
+              onClick={handleNextFact}
+              className="p-2 rounded-lg border border-border hover:bg-white hover:border-primary text-foreground transition-all"
+              title="Next Fact"
+            >
+              <ChevronRight size={16} />
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Polymer Directory */}
+      {/* Statutory Policy Framework of India */}
       <section className="space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-1">
+        <div className="flex items-center justify-between pb-1">
           <div>
-            <div className="flex items-center gap-2 text-stone-700 font-mono text-xs font-semibold tracking-wider">
-              <Layers size={16} className="text-forest" />
-              <span className="uppercase font-bold text-stone-900 text-sm font-heading">
-                Plastic Identification Guide
+            <div className="flex items-center gap-2 text-primary font-mono text-xs font-semibold tracking-wider">
+              <Scale size={16} />
+              <span className="uppercase font-bold text-foreground text-sm font-heading">
+                Statutory Architecture of India (MoEFCC & CPCB)
               </span>
             </div>
-            <p className="text-xs text-stone-500 mt-1">
-              Learn which plastics are easily recycled and which to avoid.
+            <p className="text-xs text-muted-foreground mt-1">
+              National legislation and technical standards governing polymer manufacturing and disposal.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {RESIN_CODES.map((resin) => (
-            <div
-              key={resin.code}
-              className="bg-white/40 backdrop-blur-xl rounded-2xl border border-[#cfcdc1]/60 p-5 shadow-xs hover:shadow-md hover:bg-white/50 transition-all flex flex-col justify-between"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {POLICY_HIGHLIGHTS.map((item, idx) => (
+            <div 
+              key={idx}
+              className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border flex flex-col justify-between hover:shadow-md transition-all"
             >
               <div>
-                <div className="flex items-start justify-between">
-                  <div className={`w-10 h-10 rounded-xl border flex items-center justify-center font-mono font-bold text-lg ${resin.borderColor}`}>
-                    {resin.symbol} {resin.code}
-                  </div>
-                  <span className={`font-mono text-[10px] font-semibold px-2 py-0.5 rounded border ${resin.statusBadge}`}>
-                    {resin.status}
+                <div className="flex items-center justify-between mb-2">
+                  <span className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded border ${item.badgeColor}`}>
+                    {item.badge}
+                  </span>
+                  <span className="font-mono text-[11px] text-muted-foreground font-medium">
+                    {item.date}
                   </span>
                 </div>
-                <div className="mt-3">
-                  <h4 className="text-base font-bold text-stone-900">
-                    {resin.name}
-                  </h4>
+                <h4 className="text-base font-bold font-heading text-foreground mt-2">
+                  {item.title}
+                </h4>
+                <div className="text-[11px] font-mono text-primary font-medium mt-1">
+                  {item.authority}
                 </div>
-              </div>
-              <div className="mt-4 pt-3 border-t border-stone-100 text-sm text-stone-600">
-                <p className="leading-relaxed">{resin.uses}</p>
+                <p className="text-xs text-stone-600 leading-relaxed mt-3">
+                  {item.description}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </section>
+
+      {/* Action Roadmap: What Each & Everybody Should Do */}
+      <section className="infra-card p-6 bg-white/50 backdrop-blur-xl border border-border">
+        <div className="flex items-center justify-between pb-4 border-b border-border/70 mb-5">
+          <div>
+            <div className="flex items-center gap-2 text-primary font-mono text-xs font-semibold tracking-wider">
+              <CheckCircle2 size={16} className="text-emerald-700" />
+              <span className="uppercase font-bold text-foreground text-sm font-heading">
+                Actionable Roadmap: 5 High-Impact Personal Changes
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Proven everyday micro-habits that directly divert plastic from Indian landfills, cows, and waterways.
+            </p>
+          </div>
+          <span className="hidden sm:inline font-mono text-xs px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full font-semibold">
+            Zero Cost • Immediate Impact
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {ACTION_STEPS.map((step) => (
+            <div 
+              key={step.id} 
+              className="p-4 rounded-xl bg-white/80 border border-border/70 hover:border-emerald-600 transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-mono text-[11px] font-bold text-primary">
+                    {step.id.toUpperCase()}
+                  </span>
+                  <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-100/70 text-emerald-800 font-semibold">
+                    {step.impact}
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold font-heading text-foreground">
+                  {step.action}
+                </h4>
+                <p className="text-xs text-stone-600 leading-relaxed mt-2">
+                  {step.why}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Resin Code Telemetry & Indian MRF Recycling Index */}
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-1">
+          <div>
+            <div className="flex items-center gap-2 text-primary font-mono text-xs font-semibold tracking-wider">
+              <Layers size={16} />
+              <span className="uppercase font-bold text-foreground text-sm font-heading">
+                Resin Identification Code & Indian Sorting Telemetry (IS 14534)
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Standardized polymer taxonomy and actual mechanical recovery rates across Indian Material Recovery Facilities (MRFs).
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {RESIN_CODES.map((resin) => (
+            <div
+              key={resin.code}
+              className="infra-card p-5 bg-white/50 backdrop-blur-xl border border-border flex flex-col justify-between hover:shadow-md transition-all group"
+            >
+              <div>
+                <div className="flex items-start justify-between">
+                  <div className="w-11 h-11 rounded-xl border border-border bg-stone-50 flex items-center justify-center font-mono font-bold text-xl text-foreground group-hover:border-primary transition-colors">
+                    {resin.symbol} {resin.code}
+                  </div>
+                  <span className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded border ${
+                    resin.recyclable 
+                      ? "bg-emerald-50 text-emerald-800 border-emerald-200" 
+                      : "bg-red-50 text-red-700 border-red-200"
+                  }`}>
+                    {resin.recyclable ? "Recyclable" : "Non-Recyclable"}
+                  </span>
+                </div>
+                <div className="mt-3">
+                  <div className="font-mono text-[11px] text-muted-foreground font-semibold">
+                    {resin.shortName} • {resin.decompositionYears} Yrs Degradation
+                  </div>
+                  <h4 className="text-sm font-bold text-foreground font-heading mt-0.5">
+                    {resin.fullName}
+                  </h4>
+                </div>
+                <div className="mt-2.5 font-mono text-[11px] text-emerald-800 bg-emerald-50/60 p-1.5 rounded border border-emerald-100">
+                  MRF Rate: <strong>{resin.indianMRFRate}</strong>
+                </div>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border text-xs text-stone-600 leading-relaxed">
+                <p className="font-medium text-stone-800 mb-1">Common items: {resin.commonItems.slice(0, 2).join(", ")}</p>
+                <p className="text-[11px] text-muted-foreground">{resin.chemicalNotes}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
     </div>
   );
 }
