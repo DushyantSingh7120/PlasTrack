@@ -1,18 +1,129 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
+    <!-- Primary Charset & Engine Architecture -->
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+    <!-- Document Title & Primary Search Engine Meta Tags -->
+    <title>PlastiTrack | Environmental Observability &amp; Plastic Waste Audit Platform</title>
+    <meta name="title" content="PlastiTrack | Environmental Observability &amp; Plastic Waste Audit Platform" />
+    <meta 
+      name="description" 
+      content="PlastiTrack is an empirical plastic waste tracking and environmental observability platform benchmarked against Central Pollution Control Board (CPCB) data, IPCC carbon modeling, and statutory MoEFCC guidelines." 
+    />
+    <meta 
+      name="keywords" 
+      content="PlastiTrack, plastic tracker, environmental audit, single-use plastic ban, CPCB benchmark, MoEFCC rules, carbon footprint calculator, polymer recycling, DPDP Act 2023, microplastics, CHE110, Lovely Professional University" 
+    />
+    <meta name="author" content="PlastiTrack Academic Research Group | CHE110 LPU" />
+    <meta name="creator" content="Department of Environmental Sciences, Lovely Professional University" />
+    <meta name="publisher" content="PlastiTrack Environmental Systems" />
+    <meta name="application-name" content="PlastiTrack" />
+    <meta name="category" content="Environment, Sustainability, Academic Research, Waste Management" />
+    <meta name="classification" content="Environmental Observability, Plastic Waste Tracking" />
+    <meta name="rating" content="General" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    <link rel="canonical" href="https://plastitrack.web.app/" />
+
+    <!-- Search Engine Indexing Directives -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large" />
+    <meta name="bingbot" content="index, follow" />
+
+    <!-- Open Graph Protocol (Facebook, LinkedIn, WhatsApp, Telegram, Discord, Slack) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://plastitrack.web.app/" />
+    <meta property="og:site_name" content="PlastiTrack" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:title" content="PlastiTrack | Environmental Observability &amp; Plastic Waste Audit" />
+    <meta 
+      property="og:description" 
+      content="Audit campus and household plastic waste streams, calculate embodied CO₂ footprint, evaluate polymer degradation kinetics (30–500 years), and benchmark consumption against Indian CPCB 33g/day standards." 
+    />
+    <meta property="og:image" content="https://plastitrack.web.app/og-image.jpg" />
+    <meta property="og:image:secure_url" content="https://plastitrack.web.app/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="720" />
+    <meta property="og:image:alt" content="PlastiTrack Environmental Observability &amp; Plastic Footprint Audit Dashboard" />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@PlastiTrack" />
+    <meta name="twitter:creator" content="@PlastiTrack" />
+    <meta name="twitter:url" content="https://plastitrack.web.app/" />
+    <meta name="twitter:title" content="PlastiTrack | Environmental Observability &amp; Plastic Waste Audit" />
+    <meta 
+      name="twitter:description" 
+      content="Empirical single-use plastic observability, CPCB 33g/day urban benchmarking, embodied carbon calculations (2.50 kg CO₂e/kg), and 7-day habit reduction audits." 
+    />
+    <meta name="twitter:image" content="https://plastitrack.web.app/og-image.jpg" />
+    <meta name="twitter:image:alt" content="PlastiTrack Scientific Telemetry &amp; Environmental Dashboard" />
+
+    <!-- Apple iOS Safari & Web App Controls -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="PlastiTrack" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png" />
+    <link rel="mask-icon" href="/favicon.svg" color="#064e3b" />
+
+    <!-- Android, Chrome & PWA Architecture -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#064e3b" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#08120e" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#064e3b" />
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
-    <link rel="manifest" href="/manifest.webmanifest">
-    <title>PlastiTrack | Environmental Observability Platform</title>
-    <!-- Fonts: Inter, Geist Mono, Mona Sans -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.cdnfonts.com/css/mona-sans" rel="stylesheet">
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Microsoft Windows Tiles -->
+    <meta name="msapplication-TileColor" content="#064e3b" />
+    <meta name="msapplication-TileImage" content="/icons/icon-192x192.png" />
+    <meta name="msapplication-config" content="none" />
+
+    <!-- Typography & Resource Preconnections: Inter, Geist Mono, Mona Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.cdnfonts.com/css/mona-sans" rel="stylesheet" />
+
+    <!-- Structured Data (JSON-LD) for Search Engine Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://plastitrack.web.app/#webapp",
+          "name": "PlastiTrack",
+          "url": "https://plastitrack.web.app/",
+          "applicationCategory": "EducationalApplication, SustainabilityApplication",
+          "operatingSystem": "All modern web browsers (Chrome, Edge, Safari, Firefox)",
+          "description": "Empirical plastic waste tracking and environmental observability platform benchmarked against Central Pollution Control Board (CPCB) standards and IPCC carbon metrics.",
+          "browserRequirements": "Requires JavaScript. Requires HTML5 WebStorage.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "INR"
+          },
+          "screenshot": "https://plastitrack.web.app/og-image.jpg",
+          "license": "https://opensource.org/licenses/MIT"
+        },
+        {
+          "@type": "EducationalOrganization",
+          "@id": "https://plastitrack.web.app/#organization",
+          "name": "Department of Environmental Sciences, Lovely Professional University",
+          "url": "https://www.lpu.in",
+          "sameAs": "https://en.wikipedia.org/wiki/Lovely_Professional_University"
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
