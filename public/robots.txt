@@ -16,4 +16,4 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
-Sitemap: https://plastitrack.web.app/sitemap.xml
+Sitemap: https://plastitrack.dushyantsinghbhati.me/sitemap.xml
