@@ -10,20 +10,63 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'backgrounds/*', 'mockups/*'],
+      includeAssets: [
+        'favicon.ico',
+        'favicon-48x48.png',
+        'favicon-32x32.png',
+        'favicon-16x16.png',
+        'favicon.svg',
+        'apple-touch-icon.png',
+        'icons/*',
+        'robots.txt',
+        'sitemap.xml',
+        'backgrounds/*',
+        'mockups/*'
+      ],
       manifest: {
         name: 'PlastiTrack',
         short_name: 'PlastiTrack',
         description: 'Track and reduce single-use plastic consumption.',
         theme_color: '#064e3b',
-        background_color: '#ffffff',
+        background_color: '#08120e',
         display: 'standalone',
+        orientation: 'any',
         icons: [
+          {
+            src: '/favicon-48x48.png',
+            sizes: '48x48',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/icons/icon-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/icons/icon-maskable-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'maskable'
+          },
+          {
+            src: '/icons/icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/icons/icon-maskable-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
+          },
           {
             src: '/favicon.svg',
             sizes: '192x192 512x512',
             type: 'image/svg+xml',
-            purpose: 'any maskable'
+            purpose: 'any'
           }
         ]
       },

@@ -109,6 +109,7 @@ export default function LandingPage() {
               </motion.div>
 
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[68px] xl:text-[76px] 2xl:text-[88px] font-bold font-heading tracking-tight text-foreground leading-[1.08]">
+                <span className="sr-only">PlastiTrack — </span>
                 Track your plastic.<br />
                 <span className="text-primary underline decoration-emerald-600/70 decoration-wavy decoration-2 sm:decoration-[3px] xl:decoration-[4px] underline-offset-8">
                   Change your habits.

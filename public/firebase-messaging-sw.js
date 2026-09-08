@@ -30,8 +30,8 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification.title || 'PlastiTrack Reminder';
   const notificationOptions = {
     body: payload.notification.body,
-    icon: '/favicon.svg',
-    badge: '/favicon.svg'
+    icon: '/icons/icon-192x192.png',
+    badge: '/favicon-48x48.png'
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);

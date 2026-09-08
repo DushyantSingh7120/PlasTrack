@@ -47,8 +47,8 @@
     <meta property="og:image" content="https://plastitrack.web.app/og-image.jpg" />
     <meta property="og:image:secure_url" content="https://plastitrack.web.app/og-image.jpg" />
     <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1280" />
-    <meta property="og:image:height" content="720" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="PlastiTrack Environmental Observability &amp; Plastic Footprint Audit Dashboard" />
 
     <!-- Twitter / X Cards -->
@@ -68,16 +68,23 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="PlastiTrack" />
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png" />
     <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png" />
     <link rel="mask-icon" href="/favicon.svg" color="#064e3b" />
 
-    <!-- Android, Chrome & PWA Architecture -->
+    <!-- Android, Chrome, Desktop & PWA Multi-Device Icons -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#064e3b" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#064e3b" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#08120e" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.webmanifest" />
 
@@ -92,11 +99,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.cdnfonts.com/css/mona-sans" rel="stylesheet" />
 
-    <!-- Structured Data (JSON-LD) for Search Engine Rich Snippets -->
+    <!-- Structured Data (JSON-LD) for Search Engine Rich Snippets & Google Site Name -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://plastitrack.web.app/#website",
+          "name": "PlastiTrack",
+          "alternateName": [
+            "Plasti Track",
+            "PlastiTrack LPU",
+            "PlastiTrack Environmental Observability"
+          ],
+          "url": "https://plastitrack.web.app/",
+          "description": "Empirical plastic waste tracking and environmental observability platform benchmarked against Central Pollution Control Board (CPCB) data and IPCC carbon metrics.",
+          "inLanguage": "en-IN"
+        },
         {
           "@type": "WebApplication",
           "@id": "https://plastitrack.web.app/#webapp",
