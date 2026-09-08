@@ -11,7 +11,7 @@
     <meta name="title" content="PlastiTrack | Environmental Observability &amp; Plastic Waste Audit Platform" />
     <meta 
       name="description" 
-      content="PlastiTrack is an empirical plastic waste tracking and environmental observability platform benchmarked against Central Pollution Control Board (CPCB) data, IPCC carbon modeling, and statutory MoEFCC guidelines." 
+      content="Track daily plastic waste, benchmark against CPCB urban standards (33g/day), calculate embodied carbon emissions, and discover easy eco swaps with PlastiTrack." 
     />
     <meta 
       name="keywords" 
@@ -93,13 +93,15 @@
     <meta name="msapplication-TileImage" content="/icons/icon-192x192.png" />
     <meta name="msapplication-config" content="none" />
 
-    <!-- Typography & Resource Preconnections: Inter, Geist Mono, Mona Sans -->
+    <!-- Core Web Vitals Optimization: Preconnections & LCP Hero Preload -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin />
+    <link rel="preload" as="image" href="/backgrounds/hero_water_caustics.jpg" fetchpriority="high" />
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.cdnfonts.com/css/mona-sans" rel="stylesheet" />
 
-    <!-- Structured Data (JSON-LD) for Search Engine Rich Snippets & Google Site Name -->
+    <!-- Structured Data (JSON-LD) for Google Rich Snippets, FAQ Accordions, & Site Name -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -140,12 +142,99 @@
           "name": "Department of Environmental Sciences, Lovely Professional University",
           "url": "https://www.lpu.in",
           "sameAs": "https://en.wikipedia.org/wiki/Lovely_Professional_University"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://plastitrack.dushyantsinghbhati.me/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is PlastiTrack?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "PlastiTrack is an empirical plastic waste tracking and environmental observability platform designed for students and households to monitor daily consumption against Central Pollution Control Board (CPCB) benchmarks and IPCC carbon modeling."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the CPCB daily plastic consumption benchmark in India?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "According to the Central Pollution Control Board (CPCB), average urban per capita plastic consumption in India is approximately 33 grams per day (about 12 kg per year). PlastiTrack benchmarks your daily waste against this standard."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does PlastiTrack calculate plastic carbon footprint?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "PlastiTrack uses life-cycle emission factors of 2.50 kg CO₂e per kg of virgin polymer to calculate the embodied greenhouse gas emissions of items like PET bottles, LDPE carry bags, HDPE containers, and multilayered snack wrappers."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is PlastiTrack free to use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, PlastiTrack is 100% free and open-access. It operates client-side first so you can log your plastic usage, view weekly Sunday Reviews, and discover eco swaps without requiring any paid subscription or login."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://plastitrack.dushyantsinghbhati.me/#breadcrumbs",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://plastitrack.dushyantsinghbhati.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Tracker",
+              "item": "https://plastitrack.dushyantsinghbhati.me/tracker"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Dashboard",
+              "item": "https://plastitrack.dushyantsinghbhati.me/dashboard"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Eco Alternatives",
+              "item": "https://plastitrack.dushyantsinghbhati.me/alternatives"
+            }
+          ]
         }
       ]
     }
     </script>
   </head>
   <body>
+    <!-- Search Engine & Accessibility Semantic Crawl Fallback -->
+    <noscript>
+      <div style="font-family:system-ui,-apple-system,sans-serif;padding:2rem;max-width:800px;margin:0 auto;color:#1e293b;line-height:1.6;">
+        <h1>PlastiTrack | Personal Plastic Waste Tracker &amp; Environmental Observability</h1>
+        <p>Track your daily plastic consumption, benchmark against CPCB urban limits (33g/day), calculate embodied carbon emissions (2.50 kg CO₂e/kg), and find sustainable zero-waste alternatives.</p>
+        <h2>Key Platform Features</h2>
+        <ul>
+          <li><strong>Daily Usage Tracker:</strong> Log bottles, wrappers, carry bags, and food containers.</li>
+          <li><strong>CPCB Benchmarking:</strong> Real-time comparison with Indian urban consumption standards.</li>
+          <li><strong>Sunday Review:</strong> 7-day habit audit and actionable reduction playbook.</li>
+          <li><strong>Eco-Friendly Swaps:</strong> Practical zero-waste substitutes for common polymers.</li>
+          <li><strong>Academic Research Dossier:</strong> Polymer degradation kinetics (30–500 years) and MoEFCC statutory compliance.</li>
+        </ul>
+        <nav aria-label="Noscript navigation">
+          <p><a href="/dashboard">Launch Dashboard</a> | <a href="/tracker">Daily Tracker</a> | <a href="/alternatives">Eco Swaps</a> | <a href="/docs">Research Dossier</a></p>
+        </nav>
+        <p><em>Note: Please enable JavaScript in your browser to experience the full interactive 3D environmental telemetry application.</em></p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
