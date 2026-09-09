@@ -1,14 +1,32 @@
 # PlastiTrack 🌿
 
-> **Environmental Observability & Plastic Waste Habit Transformation Platform**  
-> Benchmarked against Indian Central Pollution Control Board (CPCB) standards and IPCC carbon modeling.  
-> Developed for **CHE110 — Environmental Studies (CA1 Group Project | Topic 13: Plastic Usage Tracker)**.
+<p align="center">
+  <img src="public/screenshots/hero.png" alt="PlastiTrack Web Application Preview" width="100%" />
+</p>
 
-[![Live Web Application](https://img.shields.io/badge/Live_App-plastitrack.dushyantsinghbhati.me-064e3b?style=for-the-badge&logo=vercel)](https://plastitrack.dushyantsinghbhati.me/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-emerald?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![React](https://img.shields.io/badge/React_18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+<p align="center">
+  <b>Environmental Observability & Plastic Waste Habit Transformation Platform.</b><br>
+  Benchmarked against Indian Central Pollution Control Board (CPCB) standards and IPCC carbon modeling.<br>
+  Developed for <b>CHE110 — Environmental Studies (CA1 Group Project | Topic 13: Plastic Usage Tracker)</b>.
+</p>
+
+<p align="center">
+  <a href="https://plastitrack.dushyantsinghbhati.me/"><img src="https://img.shields.io/badge/DEMO-LIVE_ON_VERCEL-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
+  <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/REACT-18-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 18" /></a>
+  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/VITE-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" /></a>
+  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/TAILWIND_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" /></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/LICENSE-MIT-10b981?style=for-the-badge" alt="License MIT" /></a>
+</p>
+
+<p align="center">
+  <a href="https://plastitrack.dushyantsinghbhati.me/"><b>Explore Live Demo</b></a> • 
+  <a href="https://plastitrack.dushyantsinghbhati.me/docs"><b>Academic Research Dossier</b></a> • 
+  <a href="https://github.com/DushyantSingh7120/PlastiTrack/issues"><b>Report Issue</b></a>
+</p>
+
+<p align="center">
+  <b>Author:</b> <a href="https://github.com/DushyantSingh7120">Dushyant Singh Bhati</a> • <a href="https://www.linkedin.com/in/dushyant-singh-bhati/">LinkedIn</a>
+</p>
 
 ---
 
@@ -21,13 +39,9 @@
 
 ## 📸 Application Previews
 
-| **Landing & Hero View** | **1-Tap Habit Tracker** |
+| **1-Tap Habit Tracker (CPCB Calibrated)** | **Interactive 3D Eco-Swaps Catalog** |
 | :---: | :---: |
-| ![PlastiTrack Hero](public/screenshots/hero.png) | ![PlastiTrack Tracker](public/screenshots/tracker.png) |
-
-| **Interactive 3D Eco-Swaps Catalog** |
-| :---: |
-| ![PlastiTrack Eco-Swaps](public/screenshots/eco-swaps.png) |
+| ![PlastiTrack Tracker](public/screenshots/tracker.png) | ![PlastiTrack Eco-Swaps](public/screenshots/eco-swaps.png) |
 
 ---
 
