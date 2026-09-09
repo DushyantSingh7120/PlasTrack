@@ -29,5 +29,10 @@ pnpm-debug.log*
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
 .playwright-mcp/
+
+# Local media & test recordings
+videos/
+cypress/videos/
+cypress/screenshots/
+*.mp4

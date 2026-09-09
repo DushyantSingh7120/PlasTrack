@@ -19,6 +19,18 @@
 
 ---
 
+## 📸 Application Previews
+
+| **Landing & Hero View** | **1-Tap Habit Tracker** |
+| :---: | :---: |
+| ![PlastiTrack Hero](public/screenshots/hero.png) | ![PlastiTrack Tracker](public/screenshots/tracker.png) |
+
+| **Interactive 3D Eco-Swaps Catalog** |
+| :---: |
+| ![PlastiTrack Eco-Swaps](public/screenshots/eco-swaps.png) |
+
+---
+
 ## 👥 Academic Course Project Attribution
 * **Course:** CHE110 – Environmental Studies (CA1 Evaluation)
 * **Assigned Topic:** Topic 13 — Plastic Usage Tracker
